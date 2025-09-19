@@ -1,0 +1,177 @@
+/* ============================= */
+/*        tarot.css 完全自適應    */
+/* ============================= */
+
+/* 標題區域 */
+.header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* 牌陣容器 */
+.wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px; /* 避開左上角標題 */
+    width: 100%;
+}
+
+.fan-container {
+    position: relative;
+    height: 160px;
+    width: 1200px;
+    margin-top: 23px;
+    overflow-x: visible;
+}
+
+/* 卡牌樣式 */
+.card {
+    position: absolute;
+    width: 100px;
+    height: 160px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    transform-origin: bottom center;
+    cursor: pointer;
+}
+.card:hover {
+    transform: scale(1.0) translateY(-10px) !important;
+    z-index: 999 !important;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.4);
+}
+.card.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none !important;
+}
+
+/* 牌陣 slot 區域 */
+.spread {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* slot-row 預設 */
+.spread .slot-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+/* slot 樣式 */
+.slot, .slot-top {
+    width: 100px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px #999;
+}
+
+/* slot-top 上方 slot */
+.slot-top {
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+/* 自適應三張 / 四張 */
+.spread[data-count="3"] .slot-row {
+    justify-content: center; /* 三張橫排置中 */
+    margin-top: 90px;          /* 無 slot-top */
+}
+
+.spread[data-count="4"] .slot-row {
+    justify-content: center; /* 三張橫排置中 */
+    margin-top: 10px;        /* 與上方 slot-top 保持距離 */
+}
+
+/* 按鈕 */
+.button-container {
+    text-align: center;
+    margin-top: 30px;
+}
+.interpret-button {
+    padding: 13px 26px;
+    font-size: 15px;
+    border: none;
+    background-color: #5e3370;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.interpret-button:hover {
+    background-color: #a678b2;
+    transform: scale(1.05);
+}
+
+/* 自訂警示框 */
+.custom-alert {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.custom-alert-content {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    max-width: 300px;
+}
+.custom-alert-content p {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+#customAlertBtn {
+    padding: 8px 16px;
+    border: none;
+    background: #5e3370;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#customAlertBtn:hover {
+    background: #a678b2;
+}
+
+
+/* ============================= */
+/*        主頁按鈕樣式            */
+/* ============================= */
+
+.choice-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 120px;
+    gap: 20px;
+}
+
+.choice-button {
+    font-size: 20px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #5e3370;
+    color: white;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.choice-button:hover {
+    background: #a678b2;
+    transform: scale(1.05);
+}
