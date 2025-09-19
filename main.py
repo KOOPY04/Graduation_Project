@@ -11,7 +11,7 @@ templates = Jinja2Templates(directory="templates")  # 模板目錄
 # 首頁路由
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("HomePage.html", {"request": request})
 
 # 抽牌頁路由
 @app.get("/tarot", response_class=HTMLResponse)
@@ -24,6 +24,6 @@ async def tarot(request: Request, count: int = 4):
 
     tarot_html = generate_tarot_html(slot_titles)  # 產生扇形牌陣 HTML
     return templates.TemplateResponse(
-        "tarot.html",
+        "DrawCard.html",
         {"request": request, "tarot_html": tarot_html}
     )
