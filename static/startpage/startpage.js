@@ -1,8 +1,58 @@
+// 顯示自訂警示框
+function showAlert(msg) {
+    const modal = document.getElementById("customAlert");
+    const msgBox = document.getElementById("customAlertMsg");
+    const btn = document.getElementById("customAlertBtn");
+
+    msgBox.textContent = msg;
+    modal.style.display = "flex";
+
+    btn.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    window.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
+    const startBtn = document.getElementById("startBtn");
+    const introBtn = document.getElementById("introBtn");
+    const formContainer = document.getElementById("formContainer");
+
+    const introModal = document.getElementById("introModal");
+    const closeIntro = document.getElementById("closeIntro");
+
     const categorySelect = document.getElementById("categorySelect");
     const subquestionSelect = document.getElementById("subquestion");
     const btn3 = document.getElementById("btn3");
     const btn4 = document.getElementById("btn4");
+
+    // 開始占卜 → 顯示表單
+    startBtn.addEventListener("click", () => {
+        formContainer.classList.remove("hidden");
+        startBtn.style.display = "none";
+        introBtn.style.display = "none";
+    });
+
+    // 打開「說明介紹」
+    introBtn.addEventListener("click", () => {
+        introModal.style.display = "flex";
+    });
+
+    // 關閉「說明介紹」
+    closeIntro.addEventListener("click", () => {
+        introModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === introModal) {
+            introModal.style.display = "none";
+        }
+    });
 
     // 取得問題類型
     const catRes = await fetch("/api/categories");
@@ -21,8 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!categoryId) return;
 
         const res = await fetch(`/api/subquestions/${categoryId}`);
-        const data = await res.json(); 
-        const subquestions = data.subquestions || data;  // 支援 API 回傳物件或陣列
+        const data = await res.json();
+        const subquestions = data.subquestions || data;
 
         subquestions.forEach(sub => {
             const opt = document.createElement("option");
@@ -37,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const categoryId = categorySelect.value;
         const subquestionId = subquestionSelect.value;
         if (!categoryId || !subquestionId) {
-            alert("請先選擇問題類型與子問題！");
+            showAlert("請先選擇問題類型與子問題！");
             return;
         }
         window.location.href = `/tarot?count=${count}&category_id=${categoryId}&subquestion_id=${subquestionId}`;
