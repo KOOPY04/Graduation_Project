@@ -152,7 +152,7 @@
 /*        主頁按鈕樣式            */
 /* ============================= */
 
-.choice-container {
+/* .choice-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -174,4 +174,4 @@
 .choice-button:hover {
     background: #a678b2;
     transform: scale(1.05);
-}
+} */ 
