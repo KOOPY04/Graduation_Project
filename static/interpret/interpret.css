@@ -5,14 +5,14 @@
 /* 頁面整體 */
 body {
     font-family: "Microsoft JhengHei", sans-serif;
-    background-color: #fafafa; /* 單色背景，不使用漸變 */
+    background-color: #ffffffff;
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center; /* 水平置中 */
-    align-items: center;     /* 垂直置中 */
-    min-height: 100vh;       /* 滿版高度 */
-    flex-direction: column;  /* 元素垂直堆疊 */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
 /* 頂部標題 */
@@ -24,7 +24,7 @@ body {
     font-weight: bold;
     color: #5e3370;
     text-shadow: 1px 1px 2px #aaa;
-    margin-bottom: 30px;
+    text-align: left;
 }
 
 /* 牌陣容器 */
@@ -32,15 +32,16 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
+    width: 90%; /* 容器自動縮放 */
+    max-width: 1000px;
+    gap: 5%; /* 上下排距離自動 */
 }
 
 /* 上排 / 下排容器 */
 .bottom-row {
     display: flex;
-    justify-content: center;
-    gap: 40px;
-    align-items: flex-start;
+    justify-content: space-between; /* 下排三張平均分佈 */
+    width: 100%;
 }
 
 /* 每張牌容器 */
@@ -48,14 +49,15 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 120px;
+    flex: 1; /* 自動分配寬度 */
     transition: transform 0.3s ease;
 }
 
 /* 卡牌圖片 */
 .interpret-card img {
-    width: 100px;
-    height: 160px;
+    width: 100%;
+    max-width: 120px; /* 上限 */
+    height: auto;     /* 自動保持比例 */
     border-radius: 8px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -93,9 +95,48 @@ body {
     text-align: center;
 }
 
+/* 逆位效果 */
+.interpret-card img[style*="rotate(180deg)"]:hover {
+    transform: rotate(180deg) scale(1.05);
+}
+
+/* 三張牌版面 */
+.spread[data-count="3"] {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+/* 四張牌版面 */
+.spread[data-count="4"] {
+    flex-direction: column;
+    gap: 5%; /* 上下排自動間距 */
+}
+
+.spread[data-count="4"] > .bottom-row {
+    gap: 2%; /* 下排三張牌間距自動 */
+}
+
+/* 響應式 */
+@media screen and (max-width: 800px) {
+    .spread {
+        width: 95%;
+        gap: 5%;
+    }
+    .spread[data-count="3"] {
+        gap: 5%;
+    }
+    .spread[data-count="4"] > .bottom-row {
+        gap: 3%;
+    }
+    .interpret-card img {
+        max-width: 80px;
+    }
+}
+
 /* 自訂警示框 */
 .custom-alert {
-    display: none; 
+    display: none; /* 預設隱藏 */
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -106,67 +147,24 @@ body {
 }
 .custom-alert-content {
     background: #fff;
-    padding: 25px 35px;
-    border-radius: 12px;
+    padding: 20px 30px;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    max-width: 320px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    max-width: 300px;
 }
 .custom-alert-content p {
     margin-bottom: 20px;
     font-size: 16px;
 }
 #customAlertBtn {
-    padding: 10px 20px;
+    padding: 8px 16px;
     border: none;
     background: #5e3370;
     color: #fff;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
 }
 #customAlertBtn:hover {
     background: #a678b2;
-}
-
-/* ============================= */
-/*      三張 vs 四張版面         */
-/* ============================= */
-
-/* 三張牌：過去、現在、未來 */
-.spread[data-count="3"] {
-    flex-direction: row;
-    justify-content: center;
-    gap: 50px;
-    align-items: flex-start; /* 高度對齊 */
-}
-
-/* 四張牌：問題核心上排 + 下排三張 */
-.spread[data-count="4"] {
-    flex-direction: column;
-    gap: 40px;
-    align-items: center; /* 水平置中 */
-}
-
-/* 上排牌居中 */
-.spread[data-count="4"] > .interpret-card:first-child {
-    margin-bottom: 20px;
-}
-
-/* 下排三張 */
-.spread[data-count="4"] > .bottom-row {
-    gap: 40px;
-    align-items: flex-start; /* 高度對齊 */
-}
-
-/* 逆位效果：若 JS 已經用 img.style.transform = rotate(180deg)，保持 hover 縮放 */
-.interpret-card img[style*="rotate(180deg)"]:hover {
-    transform: rotate(180deg) scale(1.05);
-}
-
-/* 響應式 */
-@media screen and (max-width: 800px) {
-    .interpret-card img { width: 80px; height: 130px; }
-    .spread[data-count="3"] { gap: 30px; }
-    .spread[data-count="4"] > .bottom-row { gap: 25px; }
 }
