@@ -1,24 +1,9 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> eaf4bbfa65d2589b7ef69d1deeeca978a15d984c
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import mysql.connector
 import random
-<<<<<<< HEAD
-=======
-# StartPage.py
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-import mysql.connector
->>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
-=======
->>>>>>> eaf4bbfa65d2589b7ef69d1deeeca978a15d984c
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -38,29 +23,13 @@ async def index(request: Request):
 
 # 塔羅抽牌頁
 @app.get("/tarot", response_class=HTMLResponse)
-<<<<<<< HEAD
-<<<<<<< HEAD
 async def tarot(request: Request, count: int = 4, category_id: int = 1):
     from tarot_ui import generate_tarot_html
     slot_titles = ["過去", "現在", "未來"] if count == 3 else ["問題核心", "障礙或短處", "對策", "資源或長處"]
-=======
-async def tarot(request: Request, count: int = 4, category_id: int = None, subquestion_id: int = None):
-    slot_titles = ["過去", "現在", "未來"] if count == 3 else ["問題核心", "障礙或短處", "對策", "資源或長處"]
-    from tarot_ui import generate_tarot_html
->>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
-=======
-async def tarot(request: Request, count: int = 4, category_id: int = 1):
-    from tarot_ui import generate_tarot_html
-    slot_titles = ["過去", "現在", "未來"] if count == 3 else ["問題核心", "障礙或短處", "對策", "資源或長處"]
->>>>>>> eaf4bbfa65d2589b7ef69d1deeeca978a15d984c
     tarot_html = generate_tarot_html(slot_titles)
     return templates.TemplateResponse("DrawCard.html", {
         "request": request,
         "tarot_html": tarot_html,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> eaf4bbfa65d2589b7ef69d1deeeca978a15d984c
         "count": count,
         "category_id": category_id
     })
@@ -72,13 +41,6 @@ async def interpret_page(request: Request, count: int = 3, category_id: int = 1)
         "request": request,
         "count": count,
         "category_id": category_id
-<<<<<<< HEAD
-=======
-        "category_id": category_id,
-        "subquestion_id": subquestion_id
->>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
-=======
->>>>>>> eaf4bbfa65d2589b7ef69d1deeeca978a15d984c
     })
 
 # API: 取得 categories
