@@ -1,6 +1,10 @@
 console.log("🟢 Tarot JS loaded.");
+<<<<<<< HEAD
 
 // 自訂警示框
+=======
+// 顯示自訂警示框
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
 function showAlert(msg) {
     const modal = document.getElementById("customAlert");
     const msgBox = document.getElementById("customAlertMsg");
@@ -32,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let selected = [];
 
     const cards = document.querySelectorAll(".card");
+<<<<<<< HEAD
     const interpretBtn = document.getElementById("interpretBtn");
 
     // 從 URL 拿 category_id、subquestion_id
@@ -45,6 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 點選卡牌
+=======
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
     cards.forEach(card => {
         card.addEventListener("click", () => {
             const index = card.dataset.index;
@@ -74,15 +81,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+<<<<<<< HEAD
     // 點解牌 → 跳轉
+=======
+    const interpretBtn = document.getElementById("interpretBtn");
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
     if (interpretBtn) {
         interpretBtn.addEventListener("click", () => {
             if (selected.length < maxSelect) {
                 showAlert(`請先選滿 ${maxSelect} 張牌再解牌！`);
                 return;
             }
+<<<<<<< HEAD
 
             window.location.href = `/interpret?category_id=${category_id}&count=${maxSelect}`;
+=======
+            showAlert(`解牌觸發！已選牌序號：${selected.join(", ")}`);
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
         });
     }
 });
