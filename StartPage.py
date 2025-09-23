@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import mysql.connector
 import random
+=======
+# StartPage.py
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import mysql.connector
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -23,13 +32,20 @@ async def index(request: Request):
 
 # 塔羅抽牌頁
 @app.get("/tarot", response_class=HTMLResponse)
+<<<<<<< HEAD
 async def tarot(request: Request, count: int = 4, category_id: int = 1):
     from tarot_ui import generate_tarot_html
     slot_titles = ["過去", "現在", "未來"] if count == 3 else ["問題核心", "障礙或短處", "對策", "資源或長處"]
+=======
+async def tarot(request: Request, count: int = 4, category_id: int = None, subquestion_id: int = None):
+    slot_titles = ["過去", "現在", "未來"] if count == 3 else ["問題核心", "障礙或短處", "對策", "資源或長處"]
+    from tarot_ui import generate_tarot_html
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
     tarot_html = generate_tarot_html(slot_titles)
     return templates.TemplateResponse("DrawCard.html", {
         "request": request,
         "tarot_html": tarot_html,
+<<<<<<< HEAD
         "count": count,
         "category_id": category_id
     })
@@ -41,6 +57,10 @@ async def interpret_page(request: Request, count: int = 3, category_id: int = 1)
         "request": request,
         "count": count,
         "category_id": category_id
+=======
+        "category_id": category_id,
+        "subquestion_id": subquestion_id
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
     })
 
 # API: 取得 categories
@@ -64,6 +84,7 @@ async def get_subquestions(category_id: int):
     cursor.close()
     conn.close()
     return rows
+<<<<<<< HEAD
 
 # API: 自動抽牌 + 解釋（加上牌位名稱）
 @app.post("/api/interpret")
@@ -141,3 +162,5 @@ async def interpret_api(request: Request):
     cursor.close()
     conn.close()
     return {"status": "ok", "cards": result}
+=======
+>>>>>>> cbe040e1e5fe1c94924d944b8d1148727ad47eb0
