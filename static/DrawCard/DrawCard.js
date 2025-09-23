@@ -1,5 +1,3 @@
-console.log("🟢 Tarot JS loaded.");
-// 自訂警示框
 function showAlert(msg) {
     const modal = document.getElementById("customAlert");
     const msgBox = document.getElementById("customAlertMsg");
@@ -44,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 點選卡牌
+
     cards.forEach(card => {
         card.addEventListener("click", () => {
             const index = card.dataset.index;
@@ -74,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 點解牌 → 跳轉
-
     if (interpretBtn) {
         interpretBtn.addEventListener("click", () => {
             if (selected.length < maxSelect) {
@@ -83,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             window.location.href = `/interpret?category_id=${category_id}&count=${maxSelect}`;
-
         });
     }
 });
