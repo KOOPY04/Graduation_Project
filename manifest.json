@@ -1,0 +1,8 @@
+{
+  "name": "Tarot App",
+  "short_name": "Tarot",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5e3370"
+}
