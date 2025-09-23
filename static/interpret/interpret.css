@@ -1,0 +1,172 @@
+/* ============================= */
+/*        interpret.css          */
+/* ============================= */
+
+/* 頁面整體 */
+body {
+    font-family: "Microsoft JhengHei", sans-serif;
+    background-color: #fafafa; /* 單色背景，不使用漸變 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* 水平置中 */
+    align-items: center;     /* 垂直置中 */
+    min-height: 100vh;       /* 滿版高度 */
+    flex-direction: column;  /* 元素垂直堆疊 */
+}
+
+/* 頂部標題 */
+.header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #5e3370;
+    text-shadow: 1px 1px 2px #aaa;
+    margin-bottom: 30px;
+}
+
+/* 牌陣容器 */
+.spread {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* 上排 / 下排容器 */
+.bottom-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* 每張牌容器 */
+.interpret-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    transition: transform 0.3s ease;
+}
+
+/* 卡牌圖片 */
+.interpret-card img {
+    width: 100px;
+    height: 160px;
+    border-radius: 8px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    object-fit: cover;
+}
+
+.interpret-card img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* 卡牌名稱 */
+.card-name {
+    margin-top: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    color: #5e3370;
+}
+
+/* 卡牌解釋 */
+.card-meaning {
+    margin-top: 4px;
+    font-size: 13px;
+    text-align: center;
+    color: #333;
+}
+
+/* 牌位置標題 (過去/現在/未來 或 問題核心…) */
+.card-position {
+    font-weight: bold;
+    font-size: 14px;
+    color: #5e3370;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+/* 自訂警示框 */
+.custom-alert {
+    display: none; 
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.custom-alert-content {
+    background: #fff;
+    padding: 25px 35px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    max-width: 320px;
+}
+.custom-alert-content p {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+#customAlertBtn {
+    padding: 10px 20px;
+    border: none;
+    background: #5e3370;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+#customAlertBtn:hover {
+    background: #a678b2;
+}
+
+/* ============================= */
+/*      三張 vs 四張版面         */
+/* ============================= */
+
+/* 三張牌：過去、現在、未來 */
+.spread[data-count="3"] {
+    flex-direction: row;
+    justify-content: center;
+    gap: 50px;
+    align-items: flex-start; /* 高度對齊 */
+}
+
+/* 四張牌：問題核心上排 + 下排三張 */
+.spread[data-count="4"] {
+    flex-direction: column;
+    gap: 40px;
+    align-items: center; /* 水平置中 */
+}
+
+/* 上排牌居中 */
+.spread[data-count="4"] > .interpret-card:first-child {
+    margin-bottom: 20px;
+}
+
+/* 下排三張 */
+.spread[data-count="4"] > .bottom-row {
+    gap: 40px;
+    align-items: flex-start; /* 高度對齊 */
+}
+
+/* 逆位效果：若 JS 已經用 img.style.transform = rotate(180deg)，保持 hover 縮放 */
+.interpret-card img[style*="rotate(180deg)"]:hover {
+    transform: rotate(180deg) scale(1.05);
+}
+
+/* 響應式 */
+@media screen and (max-width: 800px) {
+    .interpret-card img { width: 80px; height: 130px; }
+    .spread[data-count="3"] { gap: 30px; }
+    .spread[data-count="4"] > .bottom-row { gap: 25px; }
+}
