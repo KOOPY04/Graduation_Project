@@ -9,6 +9,21 @@ body {
     margin-top: 50px;
 }
 
+.form-container {
+    margin-top: 40px;
+}
+
+select {
+    width: 250px;
+    padding: 8px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.button-row {
+    margin-top: 20px;
+}
+
 button {
     padding: 12px 20px;
     margin: 5px;
@@ -53,20 +68,6 @@ button:hover {
     position: relative;
 }
 
-.modal-content h2 {
-    margin-top: 0;
-    color: #5e3370;
-}
-
-.modal-content p, .modal-content ul {
-    font-size: 16px;
-    color: #333;
-}
-
-.modal-content ul {
-    padding-left: 20px;
-}
-
 .close-btn {
     position: absolute;
     top: 10px;
@@ -77,7 +78,6 @@ button:hover {
     cursor: pointer;
 }
 
-/* customAlert 專用調整 */
 .alert-content {
     background: linear-gradient(135deg, #fce4ec, #f3e5f5);
     text-align: center;
