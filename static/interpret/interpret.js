@@ -27,16 +27,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         spreadContainer.innerHTML = "";
 
+        // 三張牌情況
         if (count === 3) {
-            // 過去、現在、未來橫排
             data.cards.forEach(card => {
                 const div = document.createElement("div");
                 div.classList.add("interpret-card");
 
-                // 牌位置標題
                 const positionLabel = document.createElement("div");
                 positionLabel.classList.add("card-position");
-                positionLabel.textContent = card.position_name; // 從 API 拿的位置文字
+                positionLabel.textContent = card.position_name;
 
                 const img = document.createElement("img");
                 img.src = card.image;
@@ -44,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 const name = document.createElement("div");
                 name.classList.add("card-name");
-                name.textContent = card.name + " (" + card.position + ")";
+                name.textContent = `${card.name} (${card.position})`;
 
                 const meaning = document.createElement("div");
                 meaning.classList.add("card-meaning");
@@ -54,42 +53,69 @@ document.addEventListener("DOMContentLoaded", async () => {
                 div.appendChild(img);
                 div.appendChild(name);
                 div.appendChild(meaning);
-
                 spreadContainer.appendChild(div);
             });
-        } else if (count === 4) {
-            // 四張牌：上排 1，下排 3
-            const topPositionLabel = document.createElement("div");
-            topPositionLabel.classList.add("card-position");
+        }
+
+        // 四張牌情況
+        else if (count === 4) {
+            // 上排：問題核心牌
             const topCard = data.cards[0];
-            topPositionLabel.textContent = topCard.position_name;
             const topDiv = document.createElement("div");
-            topDiv.classList.add("interpret-card");
+            topDiv.classList.add("interpret-card", "first-card");
+
+            // 左側：圖片與名稱
+            const leftDiv = document.createElement("div");
+            leftDiv.style.display = "flex";
+            leftDiv.style.flexDirection = "column";
+            leftDiv.style.alignItems = "center";
+
+            const positionLabel = document.createElement("div");
+            positionLabel.classList.add("card-position");
+            positionLabel.textContent = topCard.position_name;
+
             const topImg = document.createElement("img");
             topImg.src = topCard.image;
             if (topCard.position === "逆位") topImg.style.transform = "rotate(180deg)";
+
             const topName = document.createElement("div");
             topName.classList.add("card-name");
-            topName.textContent = topCard.name + " (" + topCard.position + ")";
+            topName.textContent = `${topCard.name} (${topCard.position})`;
+
+            leftDiv.appendChild(positionLabel);
+            leftDiv.appendChild(topImg);
+            leftDiv.appendChild(topName);
+
+            // 右側：解釋文字（垂直置中）
+            const rightDiv = document.createElement("div");
+            rightDiv.style.display = "flex";
+            rightDiv.style.flexDirection = "column";
+            rightDiv.style.justifyContent = "center"; // ✅ 垂直置中
+            rightDiv.style.maxWidth = "300px";
+
             const topMeaning = document.createElement("div");
             topMeaning.classList.add("card-meaning");
             topMeaning.textContent = topCard.meaning;
-            topDiv.appendChild(topPositionLabel);
-            topDiv.appendChild(topImg);
-            topDiv.appendChild(topName);
-            topDiv.appendChild(topMeaning);
+
+            rightDiv.appendChild(topMeaning);
+
+            // 合併左右區塊
+            topDiv.appendChild(leftDiv);
+            topDiv.appendChild(rightDiv);
             spreadContainer.appendChild(topDiv);
 
+            // 下排三張牌
             const bottomRow = document.createElement("div");
             bottomRow.classList.add("bottom-row");
-            for (let i = 1; i < data.cards.length; i++) {
-                const positionLabel = document.createElement("div");
-                positionLabel.classList.add("card-position");
-                positionLabel.textContent = data.cards[i].position_name;
 
+            for (let i = 1; i < data.cards.length; i++) {
                 const c = data.cards[i];
                 const div = document.createElement("div");
                 div.classList.add("interpret-card");
+
+                const posLabel = document.createElement("div");
+                posLabel.classList.add("card-position");
+                posLabel.textContent = c.position_name;
 
                 const img = document.createElement("img");
                 img.src = c.image;
@@ -97,17 +123,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 const name = document.createElement("div");
                 name.classList.add("card-name");
-                name.textContent = c.name + " (" + c.position + ")";
+                name.textContent = `${c.name} (${c.position})`;
 
                 const meaning = document.createElement("div");
                 meaning.classList.add("card-meaning");
                 meaning.textContent = c.meaning;
 
-                div.appendChild(positionLabel);
+                div.appendChild(posLabel);
                 div.appendChild(img);
                 div.appendChild(name);
                 div.appendChild(meaning);
-
                 bottomRow.appendChild(div);
             }
             spreadContainer.appendChild(bottomRow);

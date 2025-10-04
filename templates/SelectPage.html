@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>選擇問題類型與占卜張數</title>
+    <link rel="stylesheet" href="/static/selectpage/SelectPage.css">
+    <link rel="stylesheet" href="/static/startpage/StartPage.css"> <!-- 引用回主頁按鈕樣式 -->
+</head>
+<body>
+    <div class="header">
+        <h1>🃏 選擇你的占卜</h1>
+    </div>
+
+    <div class="form-container">
+        <label for="categorySelect">問題類型：</label>
+        <select id="categorySelect">
+            <option value="">-- 請選擇類型 --</option>
+        </select>
+
+        <label for="subquestion">子問題：</label>
+        <select id="subquestion">
+            <option value="">-- 請先選擇分類 --</option>
+        </select>
+
+        <div class="button-row">
+            <button id="btn3">三張牌（時間之流）</button>
+            <button id="btn4">四張牌（直指核心）</button>
+        </div>
+
+        <!-- 回主頁按鈕放在這裡 -->
+        <div class="button-row">
+            <button onclick="window.location.href='/'">回主頁</button>
+        </div>
+    </div>
+
+    <!-- customAlert modal -->
+    <div id="customAlert" class="modal">
+        <div class="modal-content alert-content">
+            <span class="close-btn" id="customAlertBtn">&times;</span>
+            <h2>提醒</h2>
+            <p id="customAlertMsg"></p>
+        </div>
+    </div>
+
+    <script src="/static/selectpage/SelectPage.js" defer></script>
+</body>
+</html>

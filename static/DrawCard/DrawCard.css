@@ -1,5 +1,5 @@
 /* ============================= */
-/*        tarot.css 完全自適應    */
+/*        DrawCard.css 完全自適應    */
 /* ============================= */
 
 /* 標題區域 */
@@ -145,4 +145,26 @@
 }
 #customAlertBtn:hover {
     background: #a678b2;
+}
+/* 解牌文字樣式 */
+.card-interpret {
+    font-size: 15px;
+    text-align: left;
+    margin-top: 8px;
+    color: #222;
+}
+
+/* 問題核心卡：文字在右邊 */
+.slot-top.with-text {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+}
+.slot-top.with-text .card {
+    flex-shrink: 0;
+}
+.slot-top.with-text .card-interpret {
+    width: 180px;
+    text-align: left;
 }
