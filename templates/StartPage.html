@@ -15,23 +15,6 @@
         <button id="introBtn">說明介紹</button>
     </div>
 
-    <!-- 原本的表單，預設隱藏 -->
-    <div class="form-container hidden" id="formContainer">
-        <label for="categorySelect">問題類型：</label>
-        <select id="categorySelect">
-            <option value="">-- 請選擇類型 --</option>
-        </select>
-
-        <label for="subquestion">子問題：</label>
-        <select id="subquestion">
-            <option value="">-- 請先選擇分類 --</option>
-        </select>
-
-        <div class="button-row">
-            <button id="btn3">三張牌（時間之流）</button>
-            <button id="btn4">四張牌（直指核心）</button>
-        </div>
-    </div>
 
     <!-- 說明介紹 Modal -->
     <div id="introModal" class="modal">
@@ -70,14 +53,18 @@
         </div>
     </div>
 
-    <!-- customAlert modal -->
-    <div id="customAlert" class="modal">
-        <div class="modal-content alert-content">
-            <span class="close-btn" id="customAlertBtn">&times;</span>
-            <h2>提醒</h2>
-            <p id="customAlertMsg"></p>
-        </div>
-    </div>
-    <script src="/static/startpage/StartPage.js" defer></script>
+    <script>
+        document.getElementById("startBtn").addEventListener("click", () => {
+            window.location.href = "/select";
+        });
+
+        const introBtn = document.getElementById("introBtn");
+        const introModal = document.getElementById("introModal");
+        const closeIntro = document.getElementById("closeIntro");
+        introBtn.addEventListener("click", () => { introModal.style.display = "flex"; });
+        closeIntro.addEventListener("click", () => { introModal.style.display = "none"; });
+        window.addEventListener("click", (e) => { if(e.target===introModal) introModal.style.display="none"; });
+    </script>
 </body>
 </html>
+

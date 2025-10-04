@@ -1,9 +1,8 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import mysql.connector
-import random
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -11,6 +10,7 @@ templates = Jinja2Templates(directory="templates")
 
 db_config = {
     "host": "localhost",
+    "port": 3307,
     "user": "root",
     "password": "",  # 改成你的密碼
     "database": "tarot_db"
@@ -21,27 +21,38 @@ db_config = {
 async def index(request: Request):
     return templates.TemplateResponse("StartPage.html", {"request": request})
 
-# 塔羅抽牌頁
+# 選擇問題類型 / 子問題 / 占卜張數頁
+@app.get("/select", response_class=HTMLResponse)
+async def select_page(request: Request):
+    return templates.TemplateResponse("SelectPage.html", {"request": request})
+
+# 塔羅抽牌頁 
 @app.get("/tarot", response_class=HTMLResponse)
 async def tarot(request: Request, count: int = 4, category_id: int = 1):
     from tarot_ui import generate_tarot_html
     slot_titles = ["過去", "現在", "未來"] if count == 3 else ["問題核心", "障礙或短處", "對策", "資源或長處"]
     tarot_html = generate_tarot_html(slot_titles)
-    return templates.TemplateResponse("DrawCard.html", {
-        "request": request,
-        "tarot_html": tarot_html,
-        "count": count,
-        "category_id": category_id
-    })
+    return templates.TemplateResponse(
+        "DrawCard.html",
+        {
+            "request": request,
+            "tarot_html": tarot_html,
+            "count": count,
+            "category_id": category_id
+        }
+    )
 
-# 解牌頁
+# 解牌頁 
 @app.get("/interpret", response_class=HTMLResponse)
 async def interpret_page(request: Request, count: int = 3, category_id: int = 1):
-    return templates.TemplateResponse("interpret.html", {
-        "request": request,
-        "count": count,
-        "category_id": category_id
-    })
+    return templates.TemplateResponse(
+        "interpret.html",
+        {
+            "request": request,
+            "count": count,
+            "category_id": category_id
+        }
+    )
 
 # API: 取得 categories
 @app.get("/api/categories")
@@ -65,9 +76,12 @@ async def get_subquestions(category_id: int):
     conn.close()
     return rows
 
-# API: 自動抽牌 + 解釋（加上牌位名稱）
+# API: 自動抽牌 + 解釋（加上牌位名稱） 
 @app.post("/api/interpret")
 async def interpret_api(request: Request):
+    import random
+    from fastapi.responses import JSONResponse
+
     data = await request.json()
     category_id = data.get("category_id")
     count = data.get("count", random.choice([3, 4]))
@@ -91,11 +105,14 @@ async def interpret_api(request: Request):
     # 一次查完所有 selected_cards 的 meanings
     card_ids = [c["id"] for c in selected_cards]
     format_ids = ",".join(["%s"] * len(card_ids))
-    cursor.execute(f"""
+    cursor.execute(
+        f"""
         SELECT card_id, upright_meaning, reversed_meaning
         FROM card_meanings
         WHERE category_id = %s AND card_id IN ({format_ids})
-    """, [category_id, *card_ids])
+        """,
+        [category_id, *card_ids]
+    )
     meanings_rows = cursor.fetchall()
     meanings_dict = {row["card_id"]: row for row in meanings_rows}
 
@@ -114,7 +131,8 @@ async def interpret_api(request: Request):
 
         # 圖片路徑：根據卡牌名稱找對應資料夾
         name = card["cards_name"]
-        if name in ["愚人","魔術師","女祭司","皇后","皇帝","教皇","戀人","戰車","力量","隱者","命運之輪","正義","倒吊人","死神","節制","惡魔","高塔","星星","月亮","太陽","審判","世界"]:
+        if name in ["愚人","魔術師","女祭司","皇后","皇帝","教皇","戀人","戰車","力量","隱者","命運之輪"
+                    ,"正義","倒吊人","死神","節制","惡魔","高塔","星星","月亮","太陽","審判","世界"]:
             folder = "大阿爾克"
         elif "聖杯" in name:
             folder = "聖杯"
@@ -126,7 +144,6 @@ async def interpret_api(request: Request):
             folder = "權杖"
         else:
             folder = "其他"
-
         image_path = f"/static/images/{folder}/{name}.png"
 
         result.append({
