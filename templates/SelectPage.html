@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
+    
     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>選擇問題類型與占卜張數</title>
     <link rel="stylesheet" href="/static/selectpage/SelectPage.css">
 </head>
@@ -11,21 +13,28 @@
     </div>
 
     <div class="form-container">
-        <label for="categorySelect">問題類型：</label>
-        <select id="categorySelect">
-            <option value="">-- 請選擇類型 --</option>
-        </select>
+    <div class="select-row">
+        <div class="select-group">
+            <label for="categorySelect">問題類型：</label>
+            <select id="categorySelect">
+                <option value="">-- 請選擇類型 --</option>
+            </select>
+        </div>
 
-        <label for="subquestion">子問題：</label>
-        <select id="subquestion">
-            <option value="">-- 請先選擇分類 --</option>
-        </select>
-
-        <div class="button-row">
-            <button id="btn3">三張牌（時間之流）</button>
-            <button id="btn4">四張牌（直指核心）</button>
+        <div class="select-group">
+            <label for="subquestion">子問題：</label>
+            <select id="subquestion">
+                <option value="">-- 請先選擇分類 --</option>
+            </select>
         </div>
     </div>
+
+    <div class="button-row">
+        <button id="btn3">三張牌（時間之流）</button>
+        <button id="btn4">四張牌（直指核心）</button>
+    </div>
+</div>
+
 
     <!-- customAlert modal -->
     <div id="customAlert" class="modal">
