@@ -1,19 +1,13 @@
+console.log("🟢 Interpret JS loaded.");
+
 function showAlert(msg) {
     const modal = document.getElementById("customAlert");
     const msgBox = document.getElementById("customAlertMsg");
     const btn = document.getElementById("customAlertBtn");
-
-    if (!modal || !msgBox || !btn) {
-        console.error("customAlert 元素未找到！");
-        return;
-    }
-
+    if (!modal || !msgBox || !btn) return;
     msgBox.textContent = msg;
     modal.style.display = "flex";
-
-    btn.onclick = () => {
-        modal.style.display = "none";
-    };
+    btn.onclick = () => { modal.style.display = "none"; };
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -79,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 showAlert(`請先選滿 ${maxSelect} 張牌再解牌！`);
                 return;
             }
-
             window.location.href = `/interpret?category_id=${category_id}&count=${maxSelect}`;
         });
     }

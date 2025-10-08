@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>選擇問題類型與占卜張數</title>
     <link rel="stylesheet" href="/static/selectpage/SelectPage.css">
+
+    <link rel="stylesheet" href="/static/startpage/StartPage.css"> <!-- 引用回主頁按鈕樣式 -->
 </head>
 <body>
     <div class="header">
@@ -25,6 +27,12 @@
             <button id="btn3">三張牌（時間之流）</button>
             <button id="btn4">四張牌（直指核心）</button>
         </div>
+
+        <!-- 回主頁按鈕放在這裡 -->
+        <div class="button-row">
+            <button onclick="window.location.href='/'">回主頁</button>
+        </div>
+
     </div>
 
     <!-- customAlert modal -->

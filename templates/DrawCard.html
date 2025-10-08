@@ -1,19 +1,22 @@
-<!doctype html>
+<!doctype html> 
 <html lang="zh">
   <head>
     <meta charset="UTF-8" />
     <title>🃏 塔羅占卜</title>
     <link rel="stylesheet" href="/static/DrawCard/DrawCard.css" />
+    <link rel="stylesheet" href="/static/startpage/StartPage.css"> <!-- 引用回主頁按鈕樣式 -->
   </head>
   <body>
-    <div class="header"><h2>🃏 塔羅占卜</h2></div>
+    <div class="header">
+      <h2>🃏 塔羅占卜</h2>
+    </div>
+
     {{ tarot_html | safe }}
     <!-- 回主頁按鈕 -->
     <div class="button-row">
         <button onclick="window.location.href='/'">回主頁</button>
     </div>
     
-
     <!-- 自訂警示框 -->
     <div id="customAlert" class="custom-alert">
       <div class="custom-alert-content">

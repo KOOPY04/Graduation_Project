@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <title>解牌</title>
     <link rel="stylesheet" href="/static/interpret/interpret.css">
+    <link rel="stylesheet" href="/static/startpage/StartPage.css"> <!-- 引用統一按鈕樣式 -->
 </head>
 <body>
     <div class="header"><h2>🃏 塔羅解牌</h2></div>
 
+    <!-- 牌面 -->
     <div id="spreadContainer" class="spread" data-count="{{ count }}"></div>
+
+    <!-- 回主頁按鈕 -->
+    <div class="button-row">
+        <button onclick="window.location.href='/'">回主頁</button>
+    </div>
 
     <!-- 自訂警示框 -->
     <div id="customAlert" class="custom-alert">
