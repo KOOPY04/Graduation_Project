@@ -166,5 +166,10 @@ body {
     cursor: pointer;
 }
 #customAlertBtn:hover {
+<<<<<<< Updated upstream
     background: #a678b2;
 }
+=======
+    background-color: #a678b2;
+}
+>>>>>>> Stashed changes
