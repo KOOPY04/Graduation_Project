@@ -1,4 +1,4 @@
-/* 頁面整體 */
+/* 頁面整體 */ 
 body {
     font-family: "Microsoft JhengHei", sans-serif;
     background-color: #fff;
@@ -82,18 +82,20 @@ body {
 
 /* ✅ 四張牌陣特殊樣式 */
 .spread[data-count="4"] {
-    flex-direction: column; /* 四張牌為上下結構 */
+    flex-direction: column; /* 上下排列 */
     align-items: center;
-    gap: 5%;
+    margin-top: 60px;
+    gap: 12%; /* 上下間距加大 */
 }
 
 /* 上排：問題核心牌置中＋右側解釋靠右 */
 .spread[data-count="4"] .first-card {
     position: relative;
     display: flex;
-    justify-content: center;  /* 牌居中 */
-    align-items: center;      /* 垂直置中 */
+    justify-content: center;
+    align-items: center;
     width: 100%;
+    margin-bottom: 20px; /* 額外增加上排與下排距離 */
 }
 
 /* 右側的解釋獨立靠右側 */
@@ -110,7 +112,7 @@ body {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    gap: 2%;
+    gap: 4%; /* 下排三張牌間距稍微加大 */
 }
 
 /* ✅ 三張牌陣保持水平排列 */
@@ -169,10 +171,10 @@ body {
 }
 #customAlertBtn:hover {
     background-color: #a678b2;
-<<<<<<< Updated upstream
-    background: #a678b2;
 }
-=======
-    background-color: #a678b2;
+
+/* 回主頁按鈕 */
+.button-row {
+    margin-top: 20px; /* 往下移 20px */
+    text-align: center; /* 按鈕置中 */
 }
->>>>>>> Stashed changes
