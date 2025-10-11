@@ -173,8 +173,49 @@ body {
     background-color: #a678b2;
 }
 
+.summary-section {
+    background: #f9f3fb;
+    border: 2px solid #c8a2c8;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 700px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    color: #4b2e59;
+    text-align: left;
+    display: none; /* 初始隱藏 */
+}
+
+.summary-toggle-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#toggleSummaryBtn {
+    padding: 8px 16px;
+    border: none;
+    background: #5e3370;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#toggleSummaryBtn:hover {
+    background-color: #a678b2;
+}
+
+/* summary-text 內每段落初始隱藏 */
+.summary-text p {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* 加上 show 類別時淡入 */
+.summary-text p.show {
+    opacity: 1;
+    transform: translateY(0);
+=======
 /* 回主頁按鈕 */
 .button-row {
     margin-top: 20px; /* 往下移 20px */
     text-align: center; /* 按鈕置中 */
-}
