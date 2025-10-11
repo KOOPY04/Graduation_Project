@@ -5,11 +5,17 @@
     <meta charset="UTF-8" />
     <title>🃏 塔羅占卜</title>
     <link rel="stylesheet" href="/static/DrawCard/DrawCard.css" />
+    <link rel="stylesheet" href="/static/startpage/StartPage.css" />
   </head>
   <body>
-    <div class="header"><h2>🃏 塔羅占卜</h2></div>
-    {{ tarot_html | safe }}
-    
+    <div class="header">
+      <h2>🃏 塔羅占卜</h2>
+    </div>
+
+    <!-- 抽牌區域（由後端生成） -->
+    <div class="draw-container">
+      {{ tarot_html | safe }}
+    </div>
 
     <!-- 自訂警示框 -->
     <div id="customAlert" class="custom-alert">
@@ -18,6 +24,7 @@
         <button id="customAlertBtn">確定</button>
       </div>
     </div>
+
     <script src="/static/DrawCard/DrawCard.js" defer></script>
   </body>
 </html>
