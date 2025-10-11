@@ -1,5 +1,339 @@
 /* 頁面整體 */ 
 body {
+  font-family: "Microsoft JhengHei", sans-serif;
+  background-color: #ffffffff;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* 頂部標題 */
+.header {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #5e3370;
+  text-shadow: 1px 1px 2px #aaa;
+  text-align: left;
+}
+
+/* 牌陣容器 */
+.spread {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1000px;
+  gap: 1.5%;
+  box-sizing: border-box;
+  padding: 10px 10px;
+  overflow-x: hidden;
+}
+
+/* 每張牌容器 */
+.interpret-card {
+  width: 150px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 12px;
+  box-sizing: border-box;
+}
+
+/* 卡牌圖片 */
+.interpret-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  object-fit: cover;
+}
+
+.interpret-card img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* 卡牌文字區塊 */
+.card-name {
+  margin-top: 6px;
+  font-weight: bold;
+  font-size: clamp(12px, 2vw, 14px);
+  text-align: center;
+  color: #5e3370;
+  min-height: 20px;
+}
+
+.card-meaning {
+  margin-top: 4px;
+  font-size: clamp(9px, 2.2vw, 12px);
+  text-align: center;
+  color: #333;
+  line-height: 1.3;
+  min-height: 40px;
+  padding: 0 4px;
+}
+
+.card-position {
+  font-weight: bold;
+  font-size: clamp(10px, 2.5vw, 13px);
+  color: #5e3370;
+  margin-bottom: 6px;
+  text-align: center;
+  min-height: 20px;
+}
+
+/* 逆位效果 */
+.interpret-card img[style*="rotate(180deg)"]:hover {
+  transform: rotate(180deg) scale(1.05);
+}
+
+/* 三張牌排版 */
+.spread[data-count="3"] {
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: nowrap;
+}
+
+/* 四張牌排版：上面一張 + 下面三張 */
+.spread[data-count="4"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.spread[data-count="4"] > .top-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.spread[data-count="4"] > .bottom-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+/* 自訂警示框 */
+.custom-alert {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.custom-alert-content {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  max-width: 300px;
+}
+
+.custom-alert-content p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+#customAlertBtn {
+  padding: 8px 16px;
+  border: none;
+  background: #5e3370;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#customAlertBtn:hover {
+  background: #a678b2;
+}
+
+/* ============================= */
+/*     平板版 (600px - 1024px) 調整     */
+/* ============================= */
+@media screen and (min-width: 600px) and (max-width: 1024px) {
+    .spread {
+        width: 95%;
+        gap: 1.5%;
+    }
+
+    .interpret-card {
+        width: calc(22vw - 8px);
+        min-width: 100px;
+    }
+
+    .spread[data-count="3"] {
+        justify-content: space-evenly;
+    }
+
+    .spread[data-count="4"] .bottom-row {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}
+
+/* ============================= */
+/*     手機版 (<=600px) 調整 - 完全顯示無滾動     */
+/* ============================= */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 5px;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .header {
+        font-size: 13px;
+        top: 8px;
+        left: 8px;
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    /* 三張牌扇形佈局優化 */
+    .spread[data-count="3"] {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 100vw;
+        gap: 1%;
+        padding: 10px 5px;
+        overflow: visible;
+    }
+
+    .spread[data-count="3"] > .interpret-card {
+        width: clamp(85px, 28vw, 120px);
+        margin: 0 2px;
+    }
+
+    .spread[data-count="3"] > .interpret-card img {
+        width: 100%;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+
+    /* 四張牌佈局 */
+    .spread[data-count="4"] {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 2%;
+        width: 100%;
+        padding: 10px 5px;
+    }
+
+    .spread[data-count="4"] > .bottom-row {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 2%;
+    }
+
+    .spread[data-count="4"] .interpret-card {
+        width: calc(48% - 5px);
+        max-width: 48%;
+        min-width: 130px;
+        margin: 5px 0;
+    }
+
+    .interpret-card {
+        margin: 3px 1px;
+    }
+
+    .interpret-card img {
+        max-width: 100%;
+        border-radius: 6px;
+    }
+
+    .card-name {
+        font-size: clamp(9px, 2.5vw, 11px);
+        margin-top: 4px;
+        padding: 0 2px;
+        line-height: 1.2;
+    }
+
+    .card-meaning {
+        font-size: clamp(8px, 2.2vw, 10px);
+        margin-top: 2px;
+        padding: 0 2px;
+        line-height: 1.2;
+    }
+
+    .card-position {
+        font-size: clamp(9px, 2.5vw, 11px);
+        margin-bottom: 4px;
+    }
+
+    /* 極小螢幕 (<400px) - 三張牌變垂直 */
+    @media screen and (max-width: 400px) {
+        .spread[data-count="3"] {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spread[data-count="3"] > .interpret-card {
+            width: 70vw;
+            max-width: 70vw;
+            min-width: 200px;
+        }
+    }
+
+    /* 超小螢幕 (<350px) */
+    @media screen and (max-width: 350px) {
+        .spread[data-count="3"] > .interpret-card {
+            width: 75vw;
+            max-width: 75vw;
+            min-width: 180px;
+        }
+
+        .spread[data-count="4"] .interpret-card {
+            width: 45%;
+            min-width: 110px;
+        }
+    }
+}
+
+/* 確保不會有水平滾動 */
+html {
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}/* ============================= */
+/*        interpret.css          */
+/* ============================= */
+
+/* 頁面整體 */
+body {
     font-family: "Microsoft JhengHei", sans-serif;
     background-color: #fff;
     margin: 0;
@@ -9,6 +343,7 @@ body {
     align-items: center;
     min-height: 100vh;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 /* 標題 */
@@ -25,25 +360,53 @@ body {
 /* 牌陣容器（預設三張牌使用） */
 .spread {
     display: flex;
+    flex-wrap: nowrap;
     justify-content: center;
-    align-items: center;
-    gap: 5%;
-    width: 90%;
+    align-items: flex-start;
+    width: 100%;
     max-width: 1000px;
+    gap: 1.5%;
+    box-sizing: border-box;
+    padding: 10px 10px;
+    overflow-x: hidden;
 }
 
-/* 單張牌 */
+/* 上排 / 下排容器 */
+.bottom-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 2%;
+    flex-wrap: wrap;
+}
+
+/* 每張牌容器 */
 .interpret-card {
+    flex: 0 0 auto;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1;
-    transition: transform 0.3s ease;
+    margin: 5px;
+}
+
+/* 三張牌 - 大螢幕固定寬度 */
+.spread[data-count="3"] > .interpret-card {
+    width: 150px;
+    max-width: 150px;
+    min-width: 100px;
+    margin: 0 4px;
+}
+
+/* 四張牌 - 大螢幕使用 clamp 控制寬度 */
+.spread[data-count="4"] .interpret-card {
+    width: clamp(100px, 22%, 140px);
+    margin: 5px 2px;
 }
 
 .interpret-card img {
     width: 100%;
-    max-width: 120px;
+    aspect-ratio: 2 / 3;
     height: auto;
     border-radius: 8px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
@@ -56,25 +419,26 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
-/* 卡牌名稱與解釋 */
+/* 卡牌文字 */
 .card-name {
     margin-top: 6px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: clamp(12px, 2vw, 14px);
     text-align: center;
     color: #5e3370;
 }
 
 .card-meaning {
     margin-top: 4px;
-    font-size: 13px;
+    font-size: clamp(9px, 2.2vw, 12px);
+    text-align: center;
     color: #333;
+    line-height: 1.3;
 }
 
-/* 牌位置標題 */
 .card-position {
     font-weight: bold;
-    font-size: 14px;
+    font-size: clamp(10px, 2.5vw, 13px);
     color: #5e3370;
     margin-bottom: 6px;
     text-align: center;
@@ -88,54 +452,25 @@ body {
     gap: 12%; /* 上下間距加大 */
 }
 
-/* 上排：問題核心牌置中＋右側解釋靠右 */
-.spread[data-count="4"] .first-card {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 20px; /* 額外增加上排與下排距離 */
+/* 三張牌排版 */
+.spread[data-count="3"] {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 2%;
+    flex-wrap: nowrap;
 }
 
-/* 右側的解釋獨立靠右側 */
-.spread[data-count="4"] .first-card > div:last-child {
-    position: absolute;
-    right: 8%;
-    top: 50%;
-    transform: translateY(-50%);
-    max-width: 300px;
+/* 四張牌排版 */
+.spread[data-count="4"] {
+    flex-direction: column;
+    gap: 2%;
 }
 
 /* 下排三張 */
 .spread[data-count="4"] > .bottom-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    gap: 4%; /* 下排三張牌間距稍微加大 */
-}
-
-/* ✅ 三張牌陣保持水平排列 */
-.spread[data-count="3"] {
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 5%;
-}
-
-/* 響應式 */
-@media screen and (max-width: 800px) {
-    .spread {
-        width: 95%;
-        flex-wrap: wrap;
-    }
-    .interpret-card img {
-        max-width: 80px;
-    }
-    .spread[data-count="4"] .first-card > div:last-child {
-        right: 3%;
-        max-width: 200px;
-    }
+    gap: 2%;
+    justify-content: space-around;
 }
 
 /* 自訂警示框 */
@@ -149,6 +484,7 @@ body {
     align-items: center;
     z-index: 2000;
 }
+
 .custom-alert-content {
     background: #fff;
     padding: 20px 30px;
@@ -157,10 +493,12 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     max-width: 300px;
 }
+
 .custom-alert-content p {
     margin-bottom: 20px;
     font-size: 16px;
 }
+
 #customAlertBtn {
     padding: 8px 16px;
     border: none;
@@ -169,6 +507,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
 }
+
 #customAlertBtn:hover {
     background-color: #a678b2;
 }
@@ -191,6 +530,133 @@ body {
     text-align: center;
 }
 
+/* ============================= */
+/*     平板版 (600px - 1024px)     */
+/* ============================= */
+@media screen and (min-width: 600px) and (max-width: 1024px) {
+    .spread {
+        width: 95%;
+        gap: 1.5%;
+    }
+
+    .interpret-card {
+        width: calc(22vw - 8px);
+        min-width: 100px;
+    }
+
+    .spread[data-count="3"] {
+        justify-content: space-evenly;
+    }
+
+    .spread[data-count="4"] .bottom-row {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}
+
+/* ============================= */
+/*     手機版 (<=600px)           */
+/* ============================= */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 5px;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .header {
+        font-size: 13px;
+        top: 8px;
+        left: 8px;
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .spread[data-count="3"] {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 100vw;
+        gap: 1%;
+        padding: 10px 5px;
+        overflow: visible;
+    }
+
+    .spread[data-count="3"] > .interpret-card {
+        width: clamp(85px, 28vw, 120px);
+        margin: 0 2px;
+    }
+
+    .spread[data-count="4"] {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 2%;
+        width: 100%;
+        padding: 10px 5px;
+    }
+
+    .spread[data-count="4"] .interpret-card {
+        width: clamp(100px, 44vw, 130px);
+        margin: 5px 2px;
+    }
+
+    .interpret-card {
+        margin: 3px 1px;
+    }
+
+    .interpret-card img {
+        max-width: 100%;
+        border-radius: 6px;
+    }
+
+    .card-name {
+        font-size: clamp(9px, 2.5vw, 11px);
+        margin-top: 4px;
+        padding: 0 2px;
+        line-height: 1.2;
+    }
+
+    .card-meaning {
+        font-size: clamp(8px, 2.2vw, 10px);
+        margin-top: 2px;
+        padding: 0 2px;
+        line-height: 1.2;
+    }
+
+    .card-position {
+        font-size: clamp(9px, 2.5vw, 11px);
+        margin-bottom: 4px;
+    }
+}
+
+    /* 極小螢幕 (<400px) - 三張牌垂直排列 */
+    @media screen and (max-width: 400px) {
+        .spread[data-count="3"] {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spread[data-count="3"] > .interpret-card {
+            width: 70vw;
+            max-width: 70vw;
+            min-width: 200px;
+        }
+
+        .spread[data-count="4"] {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spread[data-count="4"] .interpret-card {
+            width: 70vw;
+            max-width: 70vw;
+        }
+    }
 #toggleSummaryBtn {
     padding: 8px 16px;
     border: none;
@@ -214,7 +680,6 @@ body {
 .summary-text p.show {
     opacity: 1;
     transform: translateY(0);
-=======
 /* 回主頁按鈕 */
 .button-row {
     margin-top: 20px; /* 往下移 20px */

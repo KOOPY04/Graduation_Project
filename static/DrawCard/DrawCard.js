@@ -111,9 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const clone = card.cloneNode(true);
-            clone.style = "";
-            clone.style.width = "100px";
-            clone.style.height = "160px";
+            
+            clone.removeAttribute("style");
+            clone.style.position = "relative";
             clone.style.transform = "none";
             clone.style.margin = "0 auto";
 

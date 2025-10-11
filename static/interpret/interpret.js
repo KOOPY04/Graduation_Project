@@ -16,9 +16,11 @@ function showAlert(message) {
 // DOM 載入
 document.addEventListener("DOMContentLoaded", async () => {
     const spreadContainer = document.getElementById("spreadContainer");
-    const count = parseInt(spreadContainer.dataset.count) || 3;
     const urlParams = new URLSearchParams(window.location.search);
+    const count = parseInt(urlParams.get("count"), 10) || 3;
     const categoryId = urlParams.get("category_id") || 1;
+
+    spreadContainer.dataset.count = count;
 
     try {
         const res = await fetch("/api/interpret", {
@@ -26,8 +28,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ category_id: categoryId, count: count })
         });
+
         const data = await res.json();
-        if (data.status !== "ok") { showAlert(data.msg || "取得牌義失敗！"); return; }
+        console.log("🔍 API Response:", data);
+
+        if (data.status !== "ok" || !data.cards || data.cards.length === 0) {
+            showAlert(data.msg || "取得牌義失敗！");
+            return;
+        }
 
         // ✅ 先渲染牌面
         renderCards(spreadContainer, data.cards, count);
@@ -108,6 +116,29 @@ function createCardDiv(card) {
     posLabel.classList.add("card-position");
     posLabel.textContent = card.position_name;
 
+        if (count === 3) {
+            // 三張牌：橫排
+            data.cards.forEach(card => {
+                const div = createCardElement(card);
+                spreadContainer.appendChild(div);
+            });
+        } else if (count === 4) {
+            // 四張牌：上排 1 張，下排 3 張
+            const topCard = data.cards[0];
+            const topWrapper = document.createElement("div");
+            topWrapper.classList.add("top-card");
+            topWrapper.appendChild(createCardElement(topCard));
+            spreadContainer.appendChild(topWrapper);
+
+            const bottomRow = document.createElement("div");
+            bottomRow.classList.add("bottom-row");
+
+            for (let i = 1; i < data.cards.length; i++) {
+                const card = data.cards[i];
+                bottomRow.appendChild(createCardElement(card));
+            }
+
+            spreadContainer.appendChild(bottomRow);
     const img = new Image();
     img.src = card.image;
     img.loading = "lazy";
@@ -197,6 +228,39 @@ async function generateSummary(cards) {
         summaryText.dataset.loaded = true;
 
     } catch (err) {
+        console.error("❌ API Error:", err);
+        showAlert("發生錯誤，請稍後再試！");
+    }
+});
+
+// ✅ 抽出共用卡片建立函式
+function createCardElement(card) {
+    const div = document.createElement("div");
+    div.classList.add("interpret-card");
+
+    const positionLabel = document.createElement("div");
+    positionLabel.classList.add("card-position");
+    positionLabel.textContent = card.position_name;
+
+    const img = document.createElement("img");
+    img.src = card.image;
+    if (card.position === "逆位") img.style.transform = "rotate(180deg)";
+
+    const name = document.createElement("div");
+    name.classList.add("card-name");
+    name.textContent = `${card.name} (${card.position})`;
+
+    const meaning = document.createElement("div");
+    meaning.classList.add("card-meaning");
+    meaning.textContent = card.meaning;
+
+    div.appendChild(positionLabel);
+    div.appendChild(img);
+    div.appendChild(name);
+    div.appendChild(meaning);
+
+    return div;
+}
         console.error(err);
         summaryText.textContent = "⚠️ 發生錯誤，請稍後再試。";
         summaryText.dataset.loaded = true;
