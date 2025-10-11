@@ -1,8 +1,4 @@
-/* ============================= */
-/*        interpret.css          */
-/* ============================= */
-
-/* 頁面整體 */
+/* 頁面整體 */ 
 body {
   font-family: "Microsoft JhengHei", sans-serif;
   background-color: #ffffffff;
@@ -339,7 +335,7 @@ html {
 /* 頁面整體 */
 body {
     font-family: "Microsoft JhengHei", sans-serif;
-    background-color: #ffffffff;
+    background-color: #fff;
     margin: 0;
     padding: 0;
     display: flex;
@@ -350,7 +346,7 @@ body {
     box-sizing: border-box;
 }
 
-/* 頂部標題 */
+/* 標題 */
 .header {
     position: absolute;
     top: 20px;
@@ -359,10 +355,9 @@ body {
     font-weight: bold;
     color: #5e3370;
     text-shadow: 1px 1px 2px #aaa;
-    text-align: left;
 }
 
-/* 牌陣容器 */
+/* 牌陣容器（預設三張牌使用） */
 .spread {
     display: flex;
     flex-wrap: nowrap;
@@ -409,7 +404,6 @@ body {
     margin: 5px 2px;
 }
 
-/* 卡牌圖片 */
 .interpret-card img {
     width: 100%;
     aspect-ratio: 2 / 3;
@@ -450,9 +444,12 @@ body {
     text-align: center;
 }
 
-/* 逆位效果 */
-.interpret-card img[style*="rotate(180deg)"]:hover {
-    transform: rotate(180deg) scale(1.05);
+/* ✅ 四張牌陣特殊樣式 */
+.spread[data-count="4"] {
+    flex-direction: column; /* 上下排列 */
+    align-items: center;
+    margin-top: 60px;
+    gap: 12%; /* 上下間距加大 */
 }
 
 /* 三張牌排版 */
@@ -470,6 +467,7 @@ body {
     gap: 2%;
 }
 
+/* 下排三張 */
 .spread[data-count="4"] > .bottom-row {
     gap: 2%;
     justify-content: space-around;
@@ -511,7 +509,25 @@ body {
 }
 
 #customAlertBtn:hover {
-    background: #a678b2;
+    background-color: #a678b2;
+}
+
+.summary-section {
+    background: #f9f3fb;
+    border: 2px solid #c8a2c8;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 700px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    color: #4b2e59;
+    text-align: left;
+    display: none; /* 初始隱藏 */
+}
+
+.summary-toggle-container {
+    margin-top: 20px;
+    text-align: center;
 }
 
 /* ============================= */
@@ -641,3 +657,30 @@ body {
             max-width: 70vw;
         }
     }
+#toggleSummaryBtn {
+    padding: 8px 16px;
+    border: none;
+    background: #5e3370;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#toggleSummaryBtn:hover {
+    background-color: #a678b2;
+}
+
+/* summary-text 內每段落初始隱藏 */
+.summary-text p {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* 加上 show 類別時淡入 */
+.summary-text p.show {
+    opacity: 1;
+    transform: translateY(0);
+/* 回主頁按鈕 */
+.button-row {
+    margin-top: 20px; /* 往下移 20px */
+    text-align: center; /* 按鈕置中 */
