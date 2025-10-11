@@ -1,11 +1,7 @@
-/* ============================= */
-/*        interpret.css          */
-/* ============================= */
-
-/* 頁面整體 */
+/* 頁面整體 */ 
 body {
     font-family: "Microsoft JhengHei", sans-serif;
-    background-color: #ffffffff;
+    background-color: #fff;
     margin: 0;
     padding: 0;
     display: flex;
@@ -15,7 +11,7 @@ body {
     flex-direction: column;
 }
 
-/* 頂部標題 */
+/* 標題 */
 .header {
     position: absolute;
     top: 20px;
@@ -24,40 +20,31 @@ body {
     font-weight: bold;
     color: #5e3370;
     text-shadow: 1px 1px 2px #aaa;
-    text-align: left;
 }
 
-/* 牌陣容器 */
+/* 牌陣容器（預設三張牌使用） */
 .spread {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    width: 90%; /* 容器自動縮放 */
+    gap: 5%;
+    width: 90%;
     max-width: 1000px;
-    gap: 5%; /* 上下排距離自動 */
 }
 
-/* 上排 / 下排容器 */
-.bottom-row {
-    display: flex;
-    justify-content: space-between; /* 下排三張平均分佈 */
-    width: 100%;
-}
-
-/* 每張牌容器 */
+/* 單張牌 */
 .interpret-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1; /* 自動分配寬度 */
+    flex: 1;
     transition: transform 0.3s ease;
 }
 
-/* 卡牌圖片 */
 .interpret-card img {
     width: 100%;
-    max-width: 120px; /* 上限 */
-    height: auto;     /* 自動保持比例 */
+    max-width: 120px;
+    height: auto;
     border-radius: 8px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -69,7 +56,7 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
-/* 卡牌名稱 */
+/* 卡牌名稱與解釋 */
 .card-name {
     margin-top: 6px;
     font-weight: bold;
@@ -78,15 +65,13 @@ body {
     color: #5e3370;
 }
 
-/* 卡牌解釋 */
 .card-meaning {
     margin-top: 4px;
     font-size: 13px;
-    text-align: center;
     color: #333;
 }
 
-/* 牌位置標題 (過去/現在/未來 或 問題核心…) */
+/* 牌位置標題 */
 .card-position {
     font-weight: bold;
     font-size: 14px;
@@ -95,48 +80,67 @@ body {
     text-align: center;
 }
 
-/* 逆位效果 */
-.interpret-card img[style*="rotate(180deg)"]:hover {
-    transform: rotate(180deg) scale(1.05);
+/* ✅ 四張牌陣特殊樣式 */
+.spread[data-count="4"] {
+    flex-direction: column; /* 上下排列 */
+    align-items: center;
+    margin-top: 60px;
+    gap: 12%; /* 上下間距加大 */
 }
 
-/* 三張牌版面 */
+/* 上排：問題核心牌置中＋右側解釋靠右 */
+.spread[data-count="4"] .first-card {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px; /* 額外增加上排與下排距離 */
+}
+
+/* 右側的解釋獨立靠右側 */
+.spread[data-count="4"] .first-card > div:last-child {
+    position: absolute;
+    right: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 300px;
+}
+
+/* 下排三張 */
+.spread[data-count="4"] > .bottom-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 4%; /* 下排三張牌間距稍微加大 */
+}
+
+/* ✅ 三張牌陣保持水平排列 */
 .spread[data-count="3"] {
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     align-items: flex-start;
-}
-
-/* 四張牌版面 */
-.spread[data-count="4"] {
-    flex-direction: column;
-    gap: 5%; /* 上下排自動間距 */
-}
-
-.spread[data-count="4"] > .bottom-row {
-    gap: 2%; /* 下排三張牌間距自動 */
+    gap: 5%;
 }
 
 /* 響應式 */
 @media screen and (max-width: 800px) {
     .spread {
         width: 95%;
-        gap: 5%;
-    }
-    .spread[data-count="3"] {
-        gap: 5%;
-    }
-    .spread[data-count="4"] > .bottom-row {
-        gap: 3%;
+        flex-wrap: wrap;
     }
     .interpret-card img {
         max-width: 80px;
+    }
+    .spread[data-count="4"] .first-card > div:last-child {
+        right: 3%;
+        max-width: 200px;
     }
 }
 
 /* 自訂警示框 */
 .custom-alert {
-    display: none; /* 預設隱藏 */
+    display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -166,5 +170,11 @@ body {
     cursor: pointer;
 }
 #customAlertBtn:hover {
-    background: #a678b2;
+    background-color: #a678b2;
+}
+
+/* 回主頁按鈕 */
+.button-row {
+    margin-top: 20px; /* 往下移 20px */
+    text-align: center; /* 按鈕置中 */
 }

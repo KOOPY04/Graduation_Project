@@ -10,6 +10,7 @@ templates = Jinja2Templates(directory="templates")
 
 db_config = {
     "host": "localhost",
+    "port": 3307,
     "user": "root",
     "password": "",  # 改成你的密碼
     "database": "tarot_db"
