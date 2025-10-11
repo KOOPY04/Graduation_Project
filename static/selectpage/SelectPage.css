@@ -14,11 +14,45 @@ body {
 }
 
 select {
-    width: 250px;
+    width: 100%;
     padding: 8px;
-    margin: 10px;
+    margin: 0;
     border-radius: 5px;
 }
+
+.select-row {
+    display: flex;
+    flex-wrap: wrap; /* 空間不足時才換行 */
+    justify-content: center; /* 水平置中 */
+    gap: 32px; /* 選單之間的間距 */
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.select-group {
+    display: flex;
+    flex-direction: row; /* label 和 select 同一排 */
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 280px; /* 最小寬度，空間不足才換行 */
+    max-width: 360px;
+    justify-content: center; /* 讓每組也置中 */
+}
+
+.select-group label {
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+.select-group select {
+    flex: 1;
+    max-width: 200px;
+    padding: 8px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
 
 .button-row {
     margin-top: 20px;
@@ -81,4 +115,74 @@ button:hover {
 .alert-content {
     background: linear-gradient(135deg, #fce4ec, #f3e5f5);
     text-align: center;
+}
+
+/* ============================= */
+/*       響應式排版設定          */
+/* ============================= */
+@media screen and (max-width: 600px) {
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    select {
+        width: 80%;
+        max-width: 300px;
+    }
+
+    .select-row {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap; /* 只有空間不足時才換行 */
+        margin-bottom: 20px;
+    }
+
+    .select-group {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+
+    .select-group label {
+        white-space: nowrap;
+    }
+
+    .select-group select {
+        max-width: 160px;
+    }
+
+    select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+    }
+
+    .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    /* 若有「子問題」區塊（例如 .sub-question），讓它與框框並列 */
+    .sub-question {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    /* modal 在小螢幕置中顯示 */
+    .modal-content {
+        width: 95%;
+        padding: 15px 20px;
+        font-size: 14px;
+    }
 }
