@@ -1,45 +1,47 @@
 <!doctype html>
 <html lang="zh">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>解牌</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🃏 塔羅占卜 | 解牌</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/global.css" />
     <link rel="stylesheet" href="/static/interpret/interpret.css" />
-    <link rel="stylesheet" href="/static/startpage/StartPage.css" />
   </head>
-  <body>
-    <div class="header"><h2>🃏 塔羅解牌</h2></div>
+  <body class="interpret">
+    <div class="scroll-container">
+      <!-- 標題 -->
+      <div class="header"><h2>🃏 塔羅解牌</h2></div>
 
-    <!-- 牌面 -->
-    <div id="spreadContainer" class="spread" data-count="{{ count }}"></div>
+      <!-- 牌面容器 -->
+      <div id="spreadContainer" class="spread" data-count="{{ count }}"></div>
 
-    <!-- GPT 占卜總結按鈕 -->
-    <div class="summary-toggle-container">
-      <button id="toggleSummaryBtn">🌟 查看整體解讀</button>
-    </div>
+      <!-- 按鈕列 -->
+      <div class="button-row">
+        <button id="toggleSummaryBtn">🌟 查看整體解讀</button>
+        <button onclick="window.location.href='/'">回主頁</button>
+      </div>
 
-    <!-- GPT 占卜總結 -->
-    <div id="summarySection" class="summary-section">
-      <h3>🌟 整體解讀</h3>
-      <div id="summaryText" class="summary-text">
-        🔮 正在生成整體占卜解讀，請稍候...
+      <!-- 整體解讀 modal -->
+      <div id="summaryModal" class="modal">
+        <div class="modal-content">
+          <span id="closeSummaryBtn" class="close-btn">&times;</span>
+          <h2>🌟 整體解讀</h2>
+          <div id="summaryText" class="modal-body">
+            🔮 正在生成整體占卜解讀，請稍候...
+          </div>
+        </div>
+      </div>
+
+      <!-- 自訂警示框 -->
+      <div id="customAlert" class="custom-alert">
+        <div class="custom-alert-content">
+          <p id="customAlertMsg"></p>
+          <button id="customAlertBtn">確定</button>
+        </div>
       </div>
     </div>
-
-    <!-- 回主頁按鈕 -->
-    <div class="button-row">
-      <button onclick="window.location.href='/'">回主頁</button>
-    </div>
-
-    <!-- 自訂警示框 -->
-    <div id="customAlert" class="custom-alert">
-      <div class="custom-alert-content">
-        <p id="customAlertMsg"></p>
-        <button id="customAlertBtn">確定</button>
-      </div>
-    </div>
-
+    
     <script src="/static/interpret/interpret.js" defer></script>
   </body>
 </html>
-

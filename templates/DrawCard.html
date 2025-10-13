@@ -1,27 +1,29 @@
 <!doctype html>
 <html lang="zh">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8" />
-    <title>🃏 塔羅占卜</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🃏 塔羅占卜 | 抽牌</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/global.css" />
     <link rel="stylesheet" href="/static/DrawCard/DrawCard.css" />
-    <link rel="stylesheet" href="/static/startpage/StartPage.css" />
   </head>
-  <body>
-    <div class="header">
-      <h2>🃏 塔羅占卜</h2>
-    </div>
+  <body class="drawcard">
+    <div class="scroll-container">
+      <div class="header">
+        <h2>🃏 塔羅占卜</h2>
+      </div>
 
-    <!-- 抽牌區域（由後端生成） -->
-    <div class="draw-container">
-      {{ tarot_html | safe }}
-    </div>
+      <div class="draw-container" id="tarotContainer">
+        {{ tarot_html | safe }}
+      </div>
 
-    <!-- 自訂警示框 -->
-    <div id="customAlert" class="custom-alert">
-      <div class="custom-alert-content">
-        <p id="customAlertMsg"></p>
-        <button id="customAlertBtn">確定</button>
+      <!-- 自訂警示框 -->
+      <div id="customAlert" class="custom-alert">
+        <div class="custom-alert-content">
+          <p id="customAlertMsg"></p>
+          <button id="customAlertBtn">確定</button>
+        </div>
       </div>
     </div>
 
