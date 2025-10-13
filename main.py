@@ -30,55 +30,44 @@ db_config = {
 }
 
 # ===== 首頁 =====
-
-
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("StartPage.html", {"request": request})
 
 # ===== 選擇問題類型 / 子問題 / 占卜張數頁 =====
-
-
 @app.get("/select", response_class=HTMLResponse)
 async def select_page(request: Request):
     return templates.TemplateResponse("SelectPage.html", {"request": request})
 
 # ===== 塔羅抽牌頁 =====
-
-
 @app.get("/tarot", response_class=HTMLResponse)
-async def tarot(request: Request, count: int = 4, category_id: int = 1):
-    from tarot_ui import generate_tarot_html
-    slot_titles = ["過去", "現在", "未來"] if count == 3 else [
-        "問題核心", "障礙或短處", "對策", "資源或長處"]
-    tarot_html = generate_tarot_html(slot_titles)
+async def tarot(request: Request, count: int = 3, category_id: int = 1, subquestion: str = ""):
+    
     return templates.TemplateResponse(
         "DrawCard.html",
         {
             "request": request,
-            "tarot_html": tarot_html,
+            # "tarot_html": tarot_html,
             "count": count,
-            "category_id": category_id
+            "category_id": category_id,
+            "subquestion_text": subquestion  # ✅ 新增傳入模板
         }
     )
 
 # ===== 解牌頁 =====
-
-
 @app.get("/interpret", response_class=HTMLResponse)
-async def interpret_page(request: Request, count: int = 3, category_id: int = 1):
+async def interpret_page(request: Request, count: int = 3, category_id: int = 1, subquestion: str = ""):
     return templates.TemplateResponse(
         "interpret.html",
         {
             "request": request,
             "count": count,
-            "category_id": category_id
+            "category_id": category_id,
+            "subquestion_text": subquestion  # ✅ 新增傳入模板
         }
     )
 
 # ===== API: 取得 categories =====
-
-
 @app.get("/api/categories")
 async def get_categories():
     conn = mysql.connector.connect(**db_config)
@@ -89,32 +78,21 @@ async def get_categories():
     conn.close()
     return rows
 
-# ===== API: 取得子問題 =====
-
-
-@app.get("/api/subquestions/{category_id}")
-async def get_subquestions(category_id: int):
-    conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        "SELECT id, question FROM subquestions WHERE category_id = %s", (category_id,))
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return rows
-
 # ===== API: 自動抽牌 + 解釋 =====
-
-
 @app.post("/api/interpret")
 async def interpret_api(request: Request):
     data = await request.json()
+    print("Request JSON:", data)
     category_id = data.get("category_id")
-    subquestion_id = data.get("subquestion_id")
+    subquestion = data.get("subquestion_text")
     count = data.get("count", random.choice([3, 4]))
+    print("Received category_id, subquestion_text, count:", category_id, subquestion, count)
 
     if not category_id:
         return JSONResponse({"status": "error", "msg": "缺少 category_id"}, status_code=400)
+    
+    if subquestion is None:
+        return JSONResponse({"status": "error", "msg": "缺少 subquestion_text"}, status_code=400)
 
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor(dictionary=True)
@@ -189,15 +167,16 @@ async def interpret_api(request: Request):
     return {"status": "ok", "cards": result, "count": count}
 
 # ===== API: GPT 占卜總結 =====
-
-
 @app.post("/api/summary")
 async def tarot_summary(request: Request):
     try:
         data = await request.json()
-        question = data.get("question", "一般問題")
-        subquestion = data.get("subquestion", "")
+        # print("Request JSON:", data)
+        category_id = data.get("category_id")
+        subquestion = data.get("subquestion_text")
         cards = data.get("cards", [])
+        
+        # print("Received question,subquestion:", category_id, subquestion)
 
         if not cards:
             return {"status": "error", "msg": "缺少卡牌資料"}
@@ -207,6 +186,8 @@ async def tarot_summary(request: Request):
             f"{c['position_name']}：{c['name']}（{c['position']}）→ {c['meaning']} [關鍵詞: {c.get('keyword', '')}]"
             for c in cards
         ])
+        
+        # print("Card Text:", card_text)
 
         prompt = f"""
             你是一位溫柔的塔羅占卜師。請根據以下抽牌結果撰寫完整占卜故事。
@@ -218,7 +199,7 @@ async def tarot_summary(request: Request):
             5. 給使用者溫暖建議。
             篇幅約 200~300 字。
 
-            問題：{question}
+            問題：{category_id}
             子問題：{subquestion}
             抽到的牌：
             {card_text}

@@ -1,188 +1,165 @@
-body {
-    font-family: sans-serif;
-    background-color: #f3f3f3;
-    text-align: center;
-}
 
-.header h1 {
-    color: #5e3370;
-    margin-top: 50px;
-}
-
-.form-container {
-    margin-top: 40px;
-}
-
-select {
-    width: 100%;
-    padding: 8px;
-    margin: 0;
-    border-radius: 5px;
-}
-
+/* ============================= */
+/*     卡片風格選單 & 輸入欄位    */
+/* ============================= */
 .select-row {
-    display: flex;
-    flex-wrap: wrap; /* 空間不足時才換行 */
-    justify-content: center; /* 水平置中 */
-    gap: 32px; /* 選單之間的間距 */
-    margin-bottom: 20px;
-    width: 100%;
-    box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
 }
 
 .select-group {
-    display: flex;
-    flex-direction: row; /* label 和 select 同一排 */
-    align-items: center;
-    gap: 8px;
-    flex: 1 1 280px; /* 最小寬度，空間不足才換行 */
-    max-width: 360px;
-    justify-content: center; /* 讓每組也置中 */
+  display: flex;
+  flex-direction: column; /* label 在上方 */
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1 1 300px; /* 最小 300px，自動伸縮 */
+  max-width: 360px;
+  background: #f7ebfa; /* 淡紫卡片背景 */
+  padding: 16px 20px;
+  border-radius: 16px; /* 大圓角 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 內縮陰影 */
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.select-group:hover {
+  transform: translateY(-4px); /* 浮起效果 */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .select-group label {
-    white-space: nowrap;
-    font-weight: bold;
+  font-weight: 600;
+  font-size: 16px;
+  color: #5e3370;
 }
 
-.select-group select {
-    flex: 1;
-    max-width: 200px;
-    padding: 8px;
-    border-radius: 5px;
-    box-sizing: border-box;
+.select-group select,
+#subquestionInput {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 2px solid #d6b3e0;
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
-
-.button-row {
-    margin-top: 20px;
+.select-group select:focus,
+#subquestionInput:focus {
+  outline: none;
+  border-color: #5e3370;
+  box-shadow: 0 0 12px rgba(94, 51, 112, 0.25);
 }
 
-button {
-    padding: 12px 20px;
-    margin: 5px;
-    font-size: 16px;
-    background-color: #5e3370;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
+/* placeholder 文字顏色 */
+#subquestionInput::placeholder {
+  color: #a678b2;
+  opacity: 1;
 }
 
-button:hover {
-    background-color: #a678b2;
-    transform: scale(1.05);
+/* -----------------------------
+   扇形牌陣卡片風格（置中版）
+   ----------------------------- */
+.spread-card-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-/* modal 基本樣式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
+.spread-card {
+  background: #f7ebfa;
+  border-radius: 16px;
+  padding: 30px 20px 35px 20px;
+  width: 530px;
+  min-height: 280px;
+  margin: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.modal-content {
-    background: linear-gradient(135deg, #fff0f5, #f3e5f5);
-    margin: auto;
-    padding: 20px 30px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-    text-align: left;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    position: relative;
+.spread-card h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #5e3370;
+  transition: transform 0.3s ease, text-shadow 0.3s ease;
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    color: #5e3370;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
+/* 扇形容器 */
+.spread-card .fan-container {
+  position: relative;
+  height: 200px;
+  width: 100%;
+  margin: 20px;
 }
 
-.alert-content {
-    background: linear-gradient(135deg, #fce4ec, #f3e5f5);
-    text-align: center;
+/* 扇形卡牌樣式 */
+.spread-card .fan-container .card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 126px;
+  height: 189px;
+  margin-left: -63px; /* 負的一半寬度置中 */
+  border-radius: 12px;
+  background: url("/static/images/card_back.png") no-repeat center/cover;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-origin: bottom center;
+  cursor: pointer;
+  animation: card-sway 3s ease-in-out infinite;
 }
 
-/* ============================= */
-/*       響應式排版設定          */
-/* ============================= */
-@media screen and (max-width: 600px) {
-    .form-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
+/* 初始偏移量：三張牌以中間牌為基準 */
+.spread-card[data-count="3"] .card:nth-child(1) { --rotate: -8deg; --tx: -120px; }
+.spread-card[data-count="3"] .card:nth-child(2) { --rotate: 0deg; --tx: 0; }
+.spread-card[data-count="3"] .card:nth-child(3) { --rotate: 8deg; --tx: 120px; }
 
-    select {
-        width: 80%;
-        max-width: 300px;
-    }
+/* 初始偏移量：四張牌以第二+第三牌中線為基準 */
+.spread-card[data-count="4"] .card:nth-child(1) { --rotate: -10deg; --tx: -150px; }
+.spread-card[data-count="4"] .card:nth-child(2) { --rotate: -3deg; --tx: -50px; }
+.spread-card[data-count="4"] .card:nth-child(3) { --rotate: 3deg; --tx: 50px; }
+.spread-card[data-count="4"] .card:nth-child(4) { --rotate: 10deg; --tx: 150px; }
 
-    .select-row {
-        display: flex;
-        justify-content: center;
-        gap: 24px;
-        flex-wrap: wrap; /* 只有空間不足時才換行 */
-        margin-bottom: 20px;
-    }
+/* 套用偏移和旋轉 */
+.spread-card .fan-container .card {
+  transform: translateX(var(--tx)) rotate(var(--rotate));
+}
 
-    .select-group {
-        flex-direction: row;
-        align-items: center;
-        flex-wrap: nowrap;
-        width: 100%;
-    }
+/* 卡片懸浮效果 */
+.spread-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
+}
 
-    .select-group label {
-        white-space: nowrap;
-    }
+.spread-card:hover h3 {
+  transform: translateY(-2px);
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.4);
+}
 
-    .select-group select {
-        max-width: 160px;
-    }
+/* 懸浮展開 */
+.spread-card:hover[data-count="3"] .card:nth-child(1) { --rotate: -18deg; --tx: -140px; }
+.spread-card:hover[data-count="3"] .card:nth-child(2) { --rotate: 0deg; --tx: 0; }
+.spread-card:hover[data-count="3"] .card:nth-child(3) { --rotate: 18deg; --tx: 140px; }
 
-    select {
-        width: 100%;
-        padding: 8px;
-        border-radius: 5px;
-    }
+.spread-card:hover[data-count="4"] .card:nth-child(1) { --rotate: -22deg; --tx: -170px; }
+.spread-card:hover[data-count="4"] .card:nth-child(2) { --rotate: -7deg; --tx: -60px; }
+.spread-card:hover[data-count="4"] .card:nth-child(3) { --rotate: 7deg; --tx: 60px; }
+.spread-card:hover[data-count="4"] .card:nth-child(4) { --rotate: 22deg; --tx: 170px; }
 
-    .button-row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        width: 100%;
-    }
-
-    /* 若有「子問題」區塊（例如 .sub-question），讓它與框框並列 */
-    .sub-question {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 10px;
-        width: 100%;
-    }
-
-    /* modal 在小螢幕置中顯示 */
-    .modal-content {
-        width: 95%;
-        padding: 15px 20px;
-        font-size: 14px;
-    }
+/* 輕微晃動動畫 */
+@keyframes card-sway {
+  0%   { transform: translateX(var(--tx)) rotate(var(--rotate)) translateY(0); }
+  25%  { transform: translateX(var(--tx)) rotate(calc(var(--rotate) + 2deg)) translateY(-2px); }
+  50%  { transform: translateX(var(--tx)) rotate(var(--rotate)) translateY(0); }
+  75%  { transform: translateX(var(--tx)) rotate(calc(var(--rotate) - 2deg)) translateY(-2px); }
+  100% { transform: translateX(var(--tx)) rotate(var(--rotate)) translateY(0); }
 }

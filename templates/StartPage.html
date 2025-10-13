@@ -1,111 +1,99 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <title>塔羅占卜首頁</title>
-    <link rel="stylesheet" href="/static/startpage/StartPage.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🃏 塔羅占卜 | 首頁</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/global.css" />
+    <link rel="stylesheet" href="/static/StartPage/startpage.css" />
+  </head>
+  <body class="startpage">
     <div class="header">
-        <h1>🃏 塔羅占卜</h1>
+      <h1>🃏 塔羅占卜</h1>
+    </div>
+
+    <!-- 大卡背 -->
+    <div class="tarot-preview">
+      <div class="card-back-container">
+        <div id="cardBack" class="card-back"></div>
+      </div>
+    </div>
+
+    <!-- 扇形牌陣 -->
+    <div id="fanContainer" class="spread-card"></div>
+
+    <!-- 卡名 Modal -->
+    <div id="cardNameModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeCardName">&times;</span>
+        <h3 id="cardNameText"></h3>
+      </div>
     </div>
 
     <div class="button-row">
-        <button id="startBtn">開始占卜</button>
-        <button id="introBtn">說明介紹</button>
+      <button id="startBtn">開始占卜</button>
+      <button id="introBtn">說明介紹</button>
     </div>
 
-
     <!-- 說明介紹 Modal -->
-    <style>
-
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0,0,0,0.5); 
-            justify-content: center; 
-            align-items: center; 
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            text-align: left;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            position: relative;
-            overflow-y: auto;
-        }
-        .close-btn {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close-btn:hover,
-        .close-btn:focus {
-            color: black;
-            text-decoration: none;
-        }
-    </style>
     <div id="introModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeIntro">&times;</span>
-            <h2>🔮 塔羅占卜介紹</h2>
-            <p><strong>歡迎來到塔羅的世界</strong><br>
+      <div class="modal-content">
+        <span class="close-btn" id="closeIntro">&times;</span>
+        <h2>🔮 塔羅占卜介紹</h2>
+        <div id="summaryText" class="modal-body">
+          <p>
+            <strong>歡迎來到塔羅的世界</strong><br />
             塔羅牌自中世紀以來，承載著人類對未知的探索與對心靈的洞察。
             每一張牌，都蘊藏著象徵與隱喻，像是一面映照內心與未來的鏡子。
             占卜並非單純的「預測」，而是一場自我對話──
-            透過牌面的啟示，幫助你看清當下處境，理解內心的糾結，並找到前進的方向。</p>
-
-            <h3>✨ 占卜方式</h3>
-            <p><strong>三張牌陣（時間之流）</strong><br>
-            呈現事件的時間脈絡：<br>
-            ① 過去的影響 → ② 當下的狀態 → ③ 未來的可能<br>
-            適合事件推演、感情或事業發展。</p>
-
-            <p><strong>四張牌陣（直指核心）</strong><br>
-            聚焦於問題的深層結構：<br>
-            ① 問題核心 → ② 障礙或短處 → ③ 對策 → ④ 資源或長處<br>
-            適合決策、釐清狀態、尋找解方。</p>
-
-            <h3>✨ 使用方式</h3>
-            <ol>
-                <li>點擊「開始占卜」，選擇問題類型與子問題。</li>
-                <li>選擇想使用的牌陣（三張 / 四張）。</li>
-                <li>靜心誠心，帶著問題，隨機抽牌。</li>
-                <li>依牌面揭示，進行解讀與反思。</li>
-            </ol>
-
-            <h3>🌙 小提醒</h3>
-            <p>塔羅是一種指引工具，而非絕對的命運判決。<br>
-            它啟發我們看見不同的可能性，並幫助你更有智慧地做出選擇。<br>
-            <strong>最終的答案，仍掌握在你自己手中。</strong></p>
+            透過牌面的啟示，幫助你看清當下處境，理解內心的糾結，並找到前進的方向。
+          </p>
+          <h3>✨ 占卜方式</h3>
+          <p>
+            <strong>三張牌陣（時間之流）</strong><br />
+            呈現事件的時間脈絡：<br />
+            ① 過去的影響 → ② 當下的狀態 → ③ 未來的可能<br />
+            適合事件推演、感情或事業發展。
+          </p>
+          <p>
+            <strong>四張牌陣（直指核心）</strong><br />
+            聚焦於問題的深層結構：<br />
+            ① 問題核心 → ② 障礙或短處 → ③ 對策 → ④ 資源或長處<br />
+            適合決策、釐清狀態、尋找解方。
+          </p>
+          <h3>✨ 使用方式</h3>
+          <ol>
+            <li>點擊「開始占卜」，選擇問題類型與子問題。</li>
+            <li>選擇想使用的牌陣（三張 / 四張）。</li>
+            <li>靜心誠心，帶著問題，隨機抽牌。</li>
+            <li>依牌面揭示，進行解讀與反思。</li>
+          </ol>
+          <h3>🌙 小提醒</h3>
+          <p>
+            塔羅是一種指引工具，而非絕對的命運判決。<br />
+            它啟發我們看見不同的可能性，並幫助你更有智慧地做出選擇。<br />
+            <strong>最終的答案，仍掌握在你自己手中。</strong>
+          </p>
         </div>
+      </div>
     </div>
 
-    <script>
-        document.getElementById("startBtn").addEventListener("click", () => {
-            window.location.href = "/select";
-        });
-
-        const introBtn = document.getElementById("introBtn");
-        const introModal = document.getElementById("introModal");
-        const closeIntro = document.getElementById("closeIntro");
-        introBtn.addEventListener("click", () => { introModal.style.display = "flex"; });
-        closeIntro.addEventListener("click", () => { introModal.style.display = "none"; });
-        window.addEventListener("click", (e) => { if(e.target===introModal) introModal.style.display="none"; });
-    </script>
-</body>
+    <!-- 卡牌懸浮顯示 -->
+    <div id="modalOverlay" class="modal-overlay"></div>
+    <img id="modalCard" class="modal-card" />
+    <h3
+      id="modalCardName"
+      style="
+        display: none;
+        position: fixed;
+        top: calc(50% + 250px);
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        z-index: 1002;
+      "
+    ></h3>
+    <script src="/static/startpage/startpage.js"></script>
+  </body>
 </html>
