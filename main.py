@@ -197,6 +197,7 @@ async def tarot_summary(request: Request):
             3. 牌位、關鍵詞或重要建議用 <strong>加粗</strong>。
             4. 依據正逆位關鍵詞加強故事性。
             5. 給使用者溫暖建議。
+            6. 最後做一段總結，給予正向鼓勵。
             篇幅約 200~300 字。
 
             問題：{category_id}
