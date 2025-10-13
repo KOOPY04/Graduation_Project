@@ -1,58 +1,74 @@
-<!DOCTYPE html> 
+<!doctype html>
 <html lang="zh">
-<head>
-    
-    <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>選擇問題類型與占卜張數</title>
-    <link rel="stylesheet" href="/static/selectpage/SelectPage.css">
-
-    <link rel="stylesheet" href="/static/startpage/StartPage.css"> <!-- 引用回主頁按鈕樣式 -->
-</head>
-<body>
-    <div class="header">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🃏 塔羅占卜 | 選擇問題</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/global.css" />
+    <link rel="stylesheet" href="/static/selectpage/SelectPage.css" />
+  </head>
+  <body class="selectpage">
+    <div class="scroll-container">
+      <div class="header">
         <h1>🃏 選擇你的占卜</h1>
-    </div>
+      </div>
 
-    <div class="form-container">
-    <div class="select-row">
-        <div class="select-group">
+      <div class="form-container">
+        <div class="select-row">
+          <div class="select-group">
             <label for="categorySelect">問題類型：</label>
             <select id="categorySelect">
-                <option value="">-- 請選擇類型 --</option>
+              <option value="">-- 請選擇類型 --</option>
             </select>
+          </div>
+
+          <div class="select-group">
+            <label for="subquestion">子問題：</label>
+            <input
+              type="text"
+              id="subquestionInput"
+              placeholder="請輸入你想問的具體問題..."
+            />
+          </div>
         </div>
 
-        <div class="select-group">
-            <label for="subquestion">子問題：</label>
-            <select id="subquestion">
-                <option value="">-- 請先選擇分類 --</option>
-            </select>
+        <div class="spread-card-row">
+          <div class="spread-card" data-count="3">
+            <h3>三張牌（時間之流）</h3>
+            <div class="fan-container">
+              <div class="card"></div>
+              <div class="card"></div>
+              <div class="card"></div>
+            </div>
+          </div>
+
+          <div class="spread-card" data-count="4">
+            <h3>四張牌（直指核心）</h3>
+            <div class="fan-container">
+              <div class="card"></div>
+              <div class="card"></div>
+              <div class="card"></div>
+              <div class="card"></div>
+            </div>
+          </div>
         </div>
 
         <!-- 回主頁按鈕放在這裡 -->
         <div class="button-row">
-            <button onclick="window.location.href='/'">回主頁</button>
+          <button onclick="window.location.href='/'">回主頁</button>
         </div>
+      </div>
 
-    </div>
-
-    <div class="button-row">
-        <button id="btn3">三張牌（時間之流）</button>
-        <button id="btn4">四張牌（直指核心）</button>
-    </div>
-</div>
-
-
-    <!-- customAlert modal -->
-    <div id="customAlert" class="modal">
-        <div class="modal-content alert-content">
-            <span class="close-btn" id="customAlertBtn">&times;</span>
-            <h2>提醒</h2>
-            <p id="customAlertMsg"></p>
+      <!-- 自訂警示框 -->
+      <div id="customAlert" class="custom-alert">
+        <div class="custom-alert-content">
+          <p id="customAlertMsg"></p>
+          <button id="customAlertBtn">確定</button>
         </div>
+      </div>
     </div>
 
     <script src="/static/selectpage/SelectPage.js" defer></script>
-</body>
+  </body>
 </html>
