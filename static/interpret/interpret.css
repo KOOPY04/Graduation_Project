@@ -1,3 +1,5 @@
+
+
 /* interpret */
 /* 頁面整體 */
 body {
@@ -152,7 +154,9 @@ body {
 .summary-text p.show {
   opacity: 1;
   transform: translateY(0);
-} /* 段落漸入動畫 */
+} 
+
+/* 段落漸入動畫 */
 .modal-body p {
   opacity: 0;
   transform: translateY(20px);
@@ -174,4 +178,69 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   text-align: left;
   animation: fadeIn 1s ease-out;
+}
+
+.music-recommend {
+  margin-top: 30px;
+  padding: 20px 15px;
+  background: rgba(94,51,112,0.6); /* 半透明紫色背景 */
+  border-radius: 16px;
+  text-align: center;
+  animation: fadeIn 1.2s ease-in-out;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  max-height: 50vh; /* 防止單個區塊過高 */
+  /* overflow-y: auto; 內容超出可滾動 */
+  max-height: none; /* ✅ 不要限制高度，讓它自然撐開 */
+}
+
+.music-recommend h3 {
+  color: #fff;
+  text-shadow: 0 0 6px #a678b2;
+  font-weight: bold;
+  margin-bottom: 10px;
+  animation: glow 1.5s infinite alternate;
+}
+
+.music-recommend p {
+  color: #eee;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+/* .song-item {
+  margin: 10px auto;
+  text-align: center;
+} */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-content{
+  overflow-y: auto;
+}
+
+.modal.body {
+  max-height: 70vh;
+  padding-right: 10px; /* 避免滾軸遮住文字 */
+  scroll-behavior: smooth; /* 滑動平滑 */
+  margin: 0 10px;
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow:
+      0 0 5px #a678b2,
+      0 0 10px #a678b2,
+      0 0 20px #a678b2,
+      0 0 40px #a678b2;
+  }
+  50% {
+    text-shadow:
+      0 0 10px #a678b2,
+      0 0 20px #a678b2,
+      0 0 30px #a678b2,
+      0 0 60px #a678b2;
+  }
 }
