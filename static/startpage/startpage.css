@@ -1,3 +1,11 @@
+/* .modal-body {
+  overflow-y: auto;
+} */
+
+.modal-content{
+  overflow: hidden;
+}
+
 .card-back-container {
   display: flex;
   justify-content: center;   /* 水平置中 */
