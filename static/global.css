@@ -233,6 +233,8 @@ button:hover,
   max-height: 80vh;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   position: relative;
+  /* overflow-y: auto; */
+  /* overflow: hidden; */
 }
 
 .modal-body {
@@ -389,6 +391,7 @@ body::-webkit-scrollbar {
   width: 14px;
   background: transparent;
   z-index: 10;
+  margin-top: -10px;
 }
 
 /* 滑軌透明，微光陰影 */
