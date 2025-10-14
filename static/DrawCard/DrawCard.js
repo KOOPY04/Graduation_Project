@@ -1,39 +1,95 @@
-// /static/DrawCard/DrawCard.js
 console.log("🟢 DrawCard JS loaded.");
 
+const cardBackUrl = "/static/images/card_back.png";
+
+// 自訂警示框
 function showAlert(msg) {
     const modal = document.getElementById("customAlert");
     const msgBox = document.getElementById("customAlertMsg");
     const btn = document.getElementById("customAlertBtn");
-    if (!modal || !msgBox || !btn) return;
+    if (!modal || !msgBox || !btn) { alert(msg); return; }
     msgBox.textContent = msg;
     modal.style.display = "flex";
     btn.onclick = () => { modal.style.display = "none"; };
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+// 生成塔羅牌 HTML 
+function generate_tarot_html(slotTitles) {
+    const totalCards = 78;
+    const cardWidth = 100;
+    const containerWidth = 1200;
+    const radius = 600;
+    const centerX = containerWidth / 2;
+    const centerY = 580; const angleStart = -40;
+    const angleEnd = 40; const angleStep = (angleEnd - angleStart) / (totalCards - 1);
+    let html = "<div class='wrapper'><div class='fan-container'>";
+    for (let i = 0; i < totalCards; i++) {
+        const angleDeg = angleStart + i * angleStep;
+        const angleRad = angleDeg * Math.PI / 180;
+        const x = centerX + radius * Math.sin(angleRad) - cardWidth / 2;
+        const y = centerY - radius * Math.cos(angleRad);
+        html += `<img src='${cardBackUrl}' class='card' data-index='${i}' style='transform: rotate(${angleDeg}deg); z-index:${i}; left:${x}px; top:${y}px;' />`;
+    } html += "</div></div>";
+    // slot 區域 
+    html += `<div class='spread' data-count='${slotTitles.length}'>`; if (slotTitles.length === 4) {
+        html += `<div class='slot slot-top' id='slot0'>${slotTitles[0]}</div>`;
+        html += "<div class='slot-row'>"; slotTitles.slice(1).forEach((title, i) => {
+            html += `<div class='slot' id='slot${i + 1}'>${title}</div>`;
+        });
+        html += "</div>";
+    } else {
+        html += "<div class='slot-row'>";
+        slotTitles.forEach((title, i) => {
+            html += `<div class='slot' id='slot${i}'>${title}</div>`;
+        });
+        html += "</div>";
+    }
+    html += "</div>";
+    return html;
+}
+
+// DOMContentLoaded
+document.addEventListener("DOMContentLoaded", async () => {
     console.log("🟢 Tarot JS running...");
 
-    // 嘗試找到主要區塊與 spread
-    const drawContainer = document.querySelector('.draw-container') || document.body;
-    const spread = document.querySelector('.spread') || null;
+    // 讀取 sessionStorage
+    const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
+    const categoryId = sessionStorage.getItem("category_id");
+    const subquestionText = sessionStorage.getItem("subquestion_text");
 
-    // 建或取 button-container（如果不存在就建立一個並放到 spread 後或 drawContainer 內）
+    if (!categoryId || !subquestionText) {
+        showAlert("缺少必要資料，請重新選擇問題類型！");
+        setTimeout(() => { window.location.href = "/select"; }, 1500);
+        return;
+    }
+
+    const slotTitles = count === 3
+        ? ["過去", "現在", "未來"]
+        : ["問題核心", "障礙或短處", "對策", "資源或長處"];
+
+    // 生成塔羅牌
+    const tarotContainer = document.getElementById("tarotContainer") || document.body;
+    tarotContainer.innerHTML = generate_tarot_html(slotTitles);
+
+    // 按鈕容器
     let buttonContainer = document.querySelector('.button-container');
     if (!buttonContainer) {
         buttonContainer = document.createElement('div');
         buttonContainer.className = 'button-container';
-        if (spread && spread.parentNode) {
-            // 插入到 spread 之後
-            spread.parentNode.insertBefore(buttonContainer, spread.nextSibling);
-        } else if (drawContainer) {
-            drawContainer.appendChild(buttonContainer);
-        } else {
-            document.body.appendChild(buttonContainer);
-        }
+        tarotContainer.appendChild(buttonContainer);
     }
 
-    // 取得或建立回主頁按鈕
+    // 解牌按鈕
+    let interpretBtn = document.getElementById('interpretBtn');
+    if (!interpretBtn) {
+        interpretBtn = document.createElement('button');
+        interpretBtn.id = 'interpretBtn';
+        interpretBtn.className = 'interpret-button';
+        interpretBtn.textContent = '🔮 解牌';
+        buttonContainer.appendChild(interpretBtn);
+    }
+
+    // 回主頁按鈕
     let homeBtn = document.getElementById('homeBtn');
     if (!homeBtn) {
         homeBtn = document.createElement('button');
@@ -42,67 +98,23 @@ document.addEventListener("DOMContentLoaded", () => {
         homeBtn.textContent = '🏠 回主頁';
         buttonContainer.appendChild(homeBtn);
     }
+    homeBtn.onclick = () => { window.location.href = '/'; };
 
-    // 找出頁面上所有可能的「解牌」按鈕（包含文字含「解牌」的）
-    const candidateInterpretButtons = Array.from(document.querySelectorAll('button'))
-        .filter(b => {
-            if (!b.textContent) return false;
-            // 移除空白後包含「解牌」
-            return b.textContent.replace(/\s/g, '').indexOf('解牌') !== -1;
-        });
-
-    // 選一個要保留的 interpretBtn（優先找有 id 的）
-    let interpretBtn = document.getElementById('interpretBtn') || candidateInterpretButtons[0] || null;
-
-    // 若都找不到，就建立一個（通常不會需要，但保險起見）
-    if (!interpretBtn) {
-        interpretBtn = document.createElement('button');
-        interpretBtn.id = 'interpretBtn';
-        interpretBtn.className = 'interpret-button';
-        interpretBtn.textContent = '🔮 解牌';
-        buttonContainer.prepend(interpretBtn);
-    } else {
-        // 刪除多餘的「解牌」按鈕，只保留 interpretBtn
-        candidateInterpretButtons.forEach(btn => {
-            if (btn !== interpretBtn) {
-                if (btn.parentNode) btn.parentNode.removeChild(btn);
-            }
-        });
-        // 將 interpretBtn 移入 buttonContainer（如果尚未在裡面）
-        if (interpretBtn.parentNode !== buttonContainer) {
-            buttonContainer.prepend(interpretBtn);
-        }
-        // 加上樣式 class（保險）
-        interpretBtn.classList.add('interpret-button');
-        interpretBtn.id = interpretBtn.id || 'interpretBtn';
-    }
-
-    // 設定 homeBtn 事件（如果尚未綁）
-    if (homeBtn) {
-        homeBtn.onclick = null;
-        homeBtn.addEventListener('click', () => { window.location.href = '/'; });
-    }
-
-    // 準備卡牌選取邏輯
-    const maxSelect = parseInt(spread?.dataset.count) || 4;
+    // 卡牌選取
+    const maxSelect = count;
     let selected = [];
     const cards = Array.from(document.querySelectorAll('.card'));
 
-    // 先移除舊的 event（避免重複綁定）——透過 clone 技巧重新綁
+    // 移除舊事件
     cards.forEach(card => {
         const newCard = card.cloneNode(true);
         card.parentNode.replaceChild(newCard, card);
     });
 
-    // 重新取得 cards
     const freshCards = Array.from(document.querySelectorAll('.card'));
-
     freshCards.forEach(card => {
         card.addEventListener('click', () => {
             const index = card.dataset.index;
-            if (!index && index !== 0 && index !== '0') {
-                // 若沒有 index 屬性，嘗試用 dataset.indexString 或其它（不強制）
-            }
             if (selected.includes(index)) return;
 
             if (selected.length >= maxSelect) {
@@ -111,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const clone = card.cloneNode(true);
-            
             clone.removeAttribute("style");
             clone.style.position = "relative";
             clone.style.transform = "none";
@@ -128,22 +139,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 設定解牌按鈕功能（先移除原本 onclick，然後綁新的）
-    if (interpretBtn) {
-        interpretBtn.onclick = null;
-        interpretBtn.addEventListener('click', () => {
-            if (selected.length < maxSelect) {
-                showAlert(`請先選滿 ${maxSelect} 張牌再解牌！`);
-                return;
-            }
-            const urlParams = new URLSearchParams(window.location.search);
-            const category_id = urlParams.get("category_id") || "";
-            window.location.href = `/interpret?category_id=${category_id}&count=${maxSelect}`;
-        });
-    }
+    // 解牌按鈕事件
+    interpretBtn.onclick = () => {
+        if (selected.length < maxSelect) {
+            showAlert(`請先選滿 ${maxSelect} 張牌再解牌！`);
+            return;
+        }
 
-    // debug log：顯示目前按鈕情況
-    console.log('buttonContainer:', buttonContainer);
-    console.log('interpretBtn:', interpretBtn);
-    console.log('homeBtn:', homeBtn);
+        sessionStorage.setItem("selected_cards", JSON.stringify(selected));
+        sessionStorage.setItem("count", maxSelect);
+        sessionStorage.setItem("category_id", categoryId);
+        sessionStorage.setItem("subquestion_text", subquestionText);
+
+        window.location.href = `/interpret`;
+    };
+
+    console.log("slotTitles:", slotTitles);
+    console.log("maxSelect:", maxSelect, "categoryId:", categoryId);
 });

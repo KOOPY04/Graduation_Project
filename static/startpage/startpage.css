@@ -1,93 +1,190 @@
-body {
-    font-family: sans-serif;
-    background-color: #f3f3f3;
-    text-align: center;
+/* .modal-body {
+  overflow-y: auto;
+} */
+
+.modal-content{
+  overflow: hidden;
 }
 
-.header h1 {
-    color: #5e3370;
-    margin-top: 50px;
+.card-back-container {
+  display: flex;
+  justify-content: center;   /* 水平置中 */
+  align-items: center;       /* 垂直置中 */
+  width: 100%;
+  position: relative;
+  z-index: 2;                /* 確保不被下層扇形遮住 */
+  background: transparent;   /* 不影響背景 */
+}
+.card-back {
+  width: 300px;
+  height: 450px;
+  margin: 20px auto;
+  background: url("/static/images/card_back.png") no-repeat center/cover;
+  cursor: pointer;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
-button {
-    padding: 12px 20px;
-    margin: 5px;
-    font-size: 16px;
-    background-color: #5e3370;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
+.card-back:hover {
+  transform: scale(1.05) rotateY(5deg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
-button:hover {
-    background-color: #a678b2;
-    transform: scale(1.05);
+.spread-card {
+  position: relative;
+  width: 100%;
+  height: 550px;
+  perspective: 1600px; /* 加強 3D 透視感 */
+  display: none;
+  margin: 20px auto;
+  pointer-events: none;
 }
 
-/* modal 基本樣式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
+.spread-card .card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 126px;
+  height: 189px;
+  border-radius: 14px;
+  cursor: pointer;
+  pointer-events: auto;
+  transform-origin: bottom center;
+  transition:
+    transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+    box-shadow 0.6s ease,
+    opacity 0.4s ease;
+  background: linear-gradient(180deg, #fff 0%, #f8f8f8 60%, #ddd 100%);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(255, 255, 255, 0.3) inset;
+  transform-style: preserve-3d;
 }
 
-.modal-content {
-    background: linear-gradient(135deg, #fff0f5, #f3e5f5);
-    margin: auto;
-    overflow: auto;
-    overflow-y: auto;
-    padding: 20px 30px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 80vh;
-    text-align: left;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    position: relative;
+/* 當滑鼠懸停時卡片輕微抬起 */
+.spread-card .card:hover {
+  transform: translateY(-20px) rotateY(5deg) scale(1.05);
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.6),
+    0 5px 10px rgba(255, 255, 255, 0.3) inset;
+  z-index: 200;
 }
 
-.modal-body {
-    overflow-y: auto;    /* 只讓內文可以捲動 */
-    padding-right: 10px; /* 預留一點避免文字貼到滾輪 */
-    max-height: calc(80vh - 60px); /* 扣掉標題和內距 */
+/* 卡背厚度模擬（假 3D 邊） */
+.spread-card .card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent);
+  border-radius: 0 0 12px 12px;
+  transform: translateZ(-3px);
 }
 
-.modal-content h2 {
-    margin-top: 0;
-    color: #5e3370;
+.spread-card .card:hover::before {
+  content: "";
+  position: absolute;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  border-radius: 16px;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.25),
+    transparent 70%
+  );
+  pointer-events: none;
+  filter: blur(4px);
 }
 
-.modal-content p, .modal-content ul {
-    font-size: 16px;
-    color: #333;
+/* 懸浮顯示 */
+.modal-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 460px;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+  z-index: 1001;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
 }
 
-.modal-content ul {
-    padding-left: 20px;
+/* 背景遮罩 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 1000;
+  pointer-events: none;
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    color: #5e3370;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
+/* 顯示遮罩 */
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* customAlert 專用調整 */
-.alert-content {
-    background: linear-gradient(135deg, #fce4ec, #f3e5f5);
-    text-align: center;
+/* 顯示牌 */
+.modal-card.active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* 牌名文字 */
+.modal-card h3 {
+  text-align: center;
+  margin-top: 10px;
+  color: #fff;
+}
+
+/* 螢光閃爍動畫 */
+@keyframes glow {
+  0%, 100% {
+    text-shadow:
+      0 0 5px #a678b2,
+      0 0 10px #a678b2,
+      0 0 20px #a678b2,
+      0 0 40px #a678b2;
+  }
+  50% {
+    text-shadow:
+      0 0 10px #a678b2,
+      0 0 20px #a678b2,
+      0 0 30px #a678b2,
+      0 0 60px #a678b2;
+  }
+}
+
+/* 卡牌名稱文字 */
+#modalCardName {
+  display: none;
+  position: fixed;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  color: #a678b2;
+  font-size: 28px;
+  font-weight: bold;
+  z-index: 1002;
+  text-align: center;
+  pointer-events: none;
+
+  /* 動畫 */
+  animation: glow 1.5s infinite alternate;
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }

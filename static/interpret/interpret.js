@@ -1,5 +1,7 @@
 
+
 console.log("🟢 Interpret JS loaded.");
+
 
 // 顯示錯誤訊息
 function showAlert(message) {
@@ -16,9 +18,16 @@ function showAlert(message) {
 // DOM 載入
 document.addEventListener("DOMContentLoaded", async () => {
     const spreadContainer = document.getElementById("spreadContainer");
-    const urlParams = new URLSearchParams(window.location.search);
-    const count = parseInt(urlParams.get("count"), 10) || 3;
-    const categoryId = urlParams.get("category_id") || 1;
+    const count = parseInt(sessionStorage.getItem("count"), 10) || 3;
+    const categoryId = sessionStorage.getItem("category_id");
+    const subquestionText = sessionStorage.getItem("subquestion_text");
+    // console.log("Retrieved from sessionStorage:", { count, categoryId, subquestionText });
+
+    if (!categoryId || !subquestionText) {
+        showAlert("缺少問題資料，請回主頁重新選擇！");
+        window.location.href = "/";
+        return;
+    }
 
     spreadContainer.dataset.count = count;
 
@@ -26,21 +35,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         const res = await fetch("/api/interpret", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ category_id: categoryId, count: count })
+            body: JSON.stringify({ category_id: categoryId, subquestion_text: subquestionText, count })
         });
 
         const data = await res.json();
-        console.log("🔍 API Response:", data);
+        // console.log("🔍 API Response:", data);
 
         if (data.status !== "ok" || !data.cards || data.cards.length === 0) {
             showAlert(data.msg || "取得牌義失敗！");
             return;
         }
 
-        // ✅ 先渲染牌面
+        // 渲染牌面
         renderCards(spreadContainer, data.cards, count);
 
-        // ✅ GPT 總結按鈕事件（懶加載）
+        // GPT 總結按鈕事件
         setupSummaryButton(data.cards);
 
     } catch (err) {
@@ -49,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// 將牌面渲染拆出
+// 渲染牌面
 function renderCards(container, cards, count) {
     container.innerHTML = "";
 
@@ -72,7 +81,7 @@ function renderCards(container, cards, count) {
 
         const topImg = new Image();
         topImg.src = topCard.image;
-        topImg.loading = "lazy"; // 🔹 加快載入
+        topImg.loading = "lazy";
         if (topCard.position === "逆位") topImg.style.transform = "rotate(180deg)";
 
         const topName = document.createElement("div");
@@ -116,29 +125,6 @@ function createCardDiv(card) {
     posLabel.classList.add("card-position");
     posLabel.textContent = card.position_name;
 
-        if (count === 3) {
-            // 三張牌：橫排
-            data.cards.forEach(card => {
-                const div = createCardElement(card);
-                spreadContainer.appendChild(div);
-            });
-        } else if (count === 4) {
-            // 四張牌：上排 1 張，下排 3 張
-            const topCard = data.cards[0];
-            const topWrapper = document.createElement("div");
-            topWrapper.classList.add("top-card");
-            topWrapper.appendChild(createCardElement(topCard));
-            spreadContainer.appendChild(topWrapper);
-
-            const bottomRow = document.createElement("div");
-            bottomRow.classList.add("bottom-row");
-
-            for (let i = 1; i < data.cards.length; i++) {
-                const card = data.cards[i];
-                bottomRow.appendChild(createCardElement(card));
-            }
-
-            spreadContainer.appendChild(bottomRow);
     const img = new Image();
     img.src = card.image;
     img.loading = "lazy";
@@ -160,110 +146,160 @@ function createCardDiv(card) {
     return div;
 }
 
-// 設定總結按鈕事件（懶加載 GPT）
-// 設定總結按鈕事件（懶加載 GPT）
 function setupSummaryButton(cards) {
     const toggleBtn = document.getElementById("toggleSummaryBtn");
-    const summarySection = document.getElementById("summarySection");
-    // const summaryText = document.getElementById("summaryText");
-
-    // 🔹 用布林變數控制是否已生成
+    const modal = document.getElementById("summaryModal");
+    const closeBtn = document.getElementById("closeSummaryBtn");
+    const summaryText = document.getElementById("summaryText");
     let summaryLoaded = false;
 
-    toggleBtn.style.display = "inline-block";
+    // 打開 modal
     toggleBtn.onclick = async () => {
-        toggleBtn.style.display = "none";  // 按鈕消失
-        summarySection.style.display = "block"; // 顯示總結區
-
-        console.log("🔮 Summary section shown.");
-
+        // If you have an element with class 'modal-body', set its overflow
+        const modalBody = document.querySelector('.modal-body');
+        if (modalBody) modalBody.style.overflow = 'hidden';
+        document.getElementById('summaryModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
         if (!summaryLoaded) {
-            console.log("🔮 Summary not loaded yet. Generating...");
-            await generateSummary(cards);
+            await generateSummary(cards, summaryText);
             summaryLoaded = true;
-            console.log("🔮 Summary generated.");
-        } else {
-            console.log("🔮 Summary already loaded, skipping generation.");
         }
+    };
+
+    // 關閉 modal
+    closeBtn.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    // 點擊 modal 背景也可以關閉
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.style.display = "none";
+        document.body.style.overflow = 'auto';
     };
 }
 
+// GPT 生成總結 + Spotify 音樂推薦
+let summaryLoaded = false;      // summary 是否生成過
+let musicLoaded = false;        // 音樂是否生成過
+let musicDataCache = null;      // 儲存第一次生成的音樂推薦
 
-async function generateSummary(cards) {
-    const summaryText = document.getElementById("summaryText");
-    const urlParams = new URLSearchParams(window.location.search);
-    const question = urlParams.get("category") || "一般問題";
-    const subquestion = urlParams.get("subquestion") || "";
+async function generateSummary(cards, summaryText) {
+    const categoryId = sessionStorage.getItem("category_id");
+    const subquestionText = sessionStorage.getItem("subquestion_text");
 
-    try {
-        const res = await fetch("/api/summary", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question, subquestion, cards })
-        });
+    // 顯示 loading
+    summaryText.innerHTML = `<p class="show">🔮 正在生成占卜總結...</p>`;
 
-        if (!res.ok) throw new Error("網路或伺服器錯誤");
+    let summary = "";
 
-        const data = await res.json();
-        if (data.status === "ok") {
-            // ✅ 插入 HTML
-            summaryText.innerHTML = data.summary;
+    // 1️⃣ GPT 占卜總結
+    if (!summaryLoaded) {
+        try {
+            const res = await fetch("/api/summary", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ category_id: categoryId, subquestion_text: subquestionText, cards })
+            });
+            const data = await res.json();
 
-            // ✅ 取得所有 <p>，依序延遲淡入
-            const paragraphs = summaryText.querySelectorAll("p");
-            paragraphs.forEach((p, i) => {
+            if (data.status === "ok") {
+                summary = data.summary;
+                summaryText.innerHTML = summary;
+
+                // 漸入動畫
+                const paragraphs = summaryText.querySelectorAll("p");
+                paragraphs.forEach((p, i) => {
+                    setTimeout(() => p.classList.add("show"), i * 1000);
+                });
                 setTimeout(() => {
-                    // 加上 show class 淡入
-                    p.classList.add("show");
+                    const musicContainer = document.getElementById("musicRecommend");
+                    if (musicContainer) {
+                        musicContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                }, paragraphs.length * 1000 + 500); // 確保在最後一段後滾動
+                summaryLoaded = true;
+            } else {
+                summaryText.textContent = "生成失敗：" + (data.msg || "未知錯誤");
+                return;
+            }
+        } catch (err) {
+            console.error("GPT summary 錯誤：", err);
+            summaryText.textContent = "⚠️ 生成總結時發生錯誤，請稍後再試。";
+            return;
+        }
+    } else {
+        summary = summaryText.innerText; // 已生成過 summary
+    }
 
-                    // 自動滾動到該段落，平滑效果
-                    p.scrollIntoView({ behavior: "smooth", block: "center" });
+    // 2️⃣ 音樂推薦
+    const musicContainer = document.getElementById("musicRecommend");
+    if (!musicLoaded) {
+        musicContainer.innerHTML = `<p>🎵 正在為你尋找與牌意相符的音樂...</p>`;
 
-                }, i * 500); // 每段落延遲 0.5 秒
+        try {
+            const musicRes = await fetch("/api/recommend_music", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ summary, subquestion_text: subquestionText })
             });
 
-        } else {
-            summaryText.textContent = "生成失敗：" + (data.msg || "");
+            const musicData = await musicRes.json();
+            musicDataCache = musicData; // 儲存第一次結果
+            // console.log("🎵 Music Recommendation Response:", musicData);
+            if (musicData.status === "ok" && musicData.music.length > 0) {
+                renderMusicRecommendation(musicData, musicContainer);
+                setTimeout(() => {
+                    musicContainer.scrollIntoView({ behavior: "smooth", block: "end" });
+                }, 300); // 小延遲確保內容渲染完成
+            } else {
+                musicContainer.innerHTML = `<p>未能找到合適的音樂推薦。</p>`;
+            }
+            musicLoaded = true;
+        } catch (err) {
+            console.error("音樂推薦錯誤：", err);
+            musicContainer.innerHTML = `<p>⚠️ 無法取得音樂推薦，請稍後再試。</p>`;
         }
-        summaryText.dataset.loaded = true;
-
-    } catch (err) {
-        console.error("❌ API Error:", err);
-        showAlert("發生錯誤，請稍後再試！");
-    }
-});
-
-// ✅ 抽出共用卡片建立函式
-function createCardElement(card) {
-    const div = document.createElement("div");
-    div.classList.add("interpret-card");
-
-    const positionLabel = document.createElement("div");
-    positionLabel.classList.add("card-position");
-    positionLabel.textContent = card.position_name;
-
-    const img = document.createElement("img");
-    img.src = card.image;
-    if (card.position === "逆位") img.style.transform = "rotate(180deg)";
-
-    const name = document.createElement("div");
-    name.classList.add("card-name");
-    name.textContent = `${card.name} (${card.position})`;
-
-    const meaning = document.createElement("div");
-    meaning.classList.add("card-meaning");
-    meaning.textContent = card.meaning;
-
-    div.appendChild(positionLabel);
-    div.appendChild(img);
-    div.appendChild(name);
-    div.appendChild(meaning);
-
-    return div;
-}
-        console.error(err);
-        summaryText.textContent = "⚠️ 發生錯誤，請稍後再試。";
-        summaryText.dataset.loaded = true;
+    } else if (musicDataCache) {
+        // 已生成過，直接使用 cache
+        renderMusicRecommendation(musicDataCache, musicContainer);
     }
 }
 
+// 渲染音樂推薦內容
+function renderMusicRecommendation(musicData, container) {
+    // console.log("Rendering music recommendation:", musicData);
+
+    // 清空容器
+    container.innerHTML = "";
+
+    // 顯示主題
+    const title = document.createElement("h3");
+    title.style.color = "#fff";
+    title.textContent = `🎧 推薦主題：${musicData.theme}`;
+    container.appendChild(title);
+
+    // 歌曲列表
+    const listDiv = document.createElement("div");
+    listDiv.style.marginTop = "10px";
+    listDiv.style.textAlign = "center";
+
+    musicData.music.forEach((m) => {
+        const songDiv = document.createElement("div");
+        songDiv.style.marginBottom = "20px"; // 每首歌間距
+
+        songDiv.innerHTML = `
+            <p><strong>${m.name}</strong><br><span style="color:#aaa;">${m.artist}</span></p>
+            <p style="font-style:italic; color:#ccc;">🎵 歌詞重點：${m.lyrics_hint}</p>
+            <iframe style="border-radius:16px; border:none; box-shadow:0 8px 20px rgba(0,0,0,0.3);"
+                src="${m.embed_url}" 
+                width="350" height="80" 
+                allowtransparency="true" 
+                allow="encrypted-media">
+            </iframe>
+        `;
+
+        listDiv.appendChild(songDiv);
+    });
+
+    container.appendChild(listDiv);
+}
