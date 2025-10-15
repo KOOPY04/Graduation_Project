@@ -7,6 +7,54 @@
   position: relative;
 }
 
+
+/*------------------------------
+   回到主頁按鈕
+   --------------------------- */
+/* 左上角主頁區域 */
+.home-section {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+}
+
+/* 主頁按鈕 */
+.home-button {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
+}
+
+.home-button:hover {
+  transform: translateY(-2px) scale(1.1);
+}
+
+.home-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.site-title {
+  text-decoration: none; /* 移除底線 */
+}
+
+/* 網站標題 */
+.site-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #5e3370;
+  letter-spacing: 2px;
+}
+
 .fan-container {
   position: relative;
   height: 250px;
