@@ -95,10 +95,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         homeBtn = document.createElement('button');
         homeBtn.id = 'homeBtn';
         homeBtn.className = 'interpret-button';
-        homeBtn.textContent = '🏠 回主頁';
+        homeBtn.textContent = '回上一頁';
         buttonContainer.appendChild(homeBtn);
     }
-    homeBtn.onclick = () => { window.location.href = '/'; };
+    homeBtn.onclick = () => { window.history.back(); };
 
     // 卡牌選取
     const maxSelect = count;
