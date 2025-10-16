@@ -424,3 +424,50 @@ body::-webkit-scrollbar {
 .scroll-container {
   scrollbar-color: #DCBEDC transparent;
 }
+
+/* 左上角主頁區塊 */
+.home-section {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(8px);
+  transition: all 0.35s ease;
+  transform: translateY(0);
+  cursor: default; /* 不再是連結 */
+  text-decoration: none;
+}
+
+/* hover 時仍有輕微浮起的效果（可留可不留） */
+.home-section:hover {
+  transform: translateY(-4px);
+}
+
+/* 圖示 */
+.home-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+/* hover 動畫 */
+.home-section:hover .home-icon {
+  transform: scale(1.15) rotate(-8deg);
+}
+
+/* 標題文字 */
+.site-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #5e3370;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  user-select: none;
+  text-decoration: none;
+}
