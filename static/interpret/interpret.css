@@ -123,7 +123,7 @@ body {
 .spread[data-count="4"] {
   flex-direction: column; /* 上下排列 */
     align-items: center;
-    margin: 60px auto;
+    margin: 40px auto;
 }
 
 .spread[data-count="4"] .first-card {
