@@ -41,7 +41,7 @@
   height: 550px;
   perspective: 1600px; /* 加強 3D 透視感 */
   display: none;
-  margin: 20px auto;
+  margin: auto;
   pointer-events: none;
 }
 
@@ -263,4 +263,8 @@ label {
 }
 .google-btn:hover {
   background: #f1f1f1;
+}
+
+html, body {
+  overflow-y: hidden;
 }
