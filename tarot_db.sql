@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- 主機： 127.0.0.1:3307
--- 產生時間： 2025-10-18 12:02:21
+-- 主機： 127.0.0.1
+-- 產生時間： 2025-10-18 19:31:15
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -1059,6 +1059,20 @@ INSERT INTO `subquestions` (`id`, `category_id`, `question`) VALUES
 (45, 5, '自學會比補習更有效嗎？'),
 (46, 5, '選擇這個學科會有未來嗎？');
 
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- 已傾印資料表的索引
 --
@@ -1098,6 +1112,13 @@ ALTER TABLE `subquestions`
   ADD KEY `subquestions_category_id` (`category_id`);
 
 --
+-- 資料表索引 `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
 --
 
@@ -1130,6 +1151,12 @@ ALTER TABLE `keywords`
 --
 ALTER TABLE `subquestions`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- 已傾印資料表的限制式
