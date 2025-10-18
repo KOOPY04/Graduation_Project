@@ -72,10 +72,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     tarotContainer.innerHTML = generate_tarot_html(slotTitles);
 
     // 按鈕容器
-    let buttonContainer = document.querySelector('.button-container');
+    let buttonContainer = document.querySelector('.button-row');
     if (!buttonContainer) {
         buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
+        buttonContainer.className = 'button-row';
         tarotContainer.appendChild(buttonContainer);
     }
 
