@@ -2,65 +2,9 @@
 /* ============================= */
 /*     卡片風格選單 & 輸入欄位    */
 /* ============================= */
-.select-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 40px;
-  margin-bottom: 30px;
-}
-
-.select-group {
-  display: flex;
-  flex-direction: column; /* label 在上方 */
-  align-items: flex-start;
-  gap: 8px;
-  flex: 1 1 300px; /* 最小 300px，自動伸縮 */
-  max-width: 360px;
-  background: #f7ebfa; /* 淡紫卡片背景 */
-  padding: 16px 20px;
-  border-radius: 16px; /* 大圓角 */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 內縮陰影 */
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.select-group:hover {
-  transform: translateY(-4px); /* 浮起效果 */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.select-group label {
-  font-weight: 600;
-  font-size: 16px;
-  color: #5e3370;
-}
-
-.select-group select,
-#subquestionInput {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: 2px solid #d6b3e0;
-  background-color: #fff;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
-
-.select-group select:focus,
-#subquestionInput:focus {
-  outline: none;
-  border-color: #5e3370;
-  box-shadow: 0 0 12px rgba(94, 51, 112, 0.25);
-}
 
 /* placeholder 文字顏色 */
-#subquestionInput::placeholder {
-  color: #a678b2;
-  opacity: 1;
-}
+
 
 /* -----------------------------
    扇形牌陣卡片風格（置中版）

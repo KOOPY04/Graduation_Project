@@ -1,3 +1,14 @@
+// 自訂警示框
+function showAlert(msg) {
+    const modal = document.getElementById("customAlert");
+    const msgBox = document.getElementById("customAlertMsg");
+    const btn = document.getElementById("customAlertBtn");
+    if (!modal || !msgBox || !btn) { alert(msg); return; }
+    msgBox.textContent = msg;
+    modal.style.display = "flex";
+    btn.onclick = () => { modal.style.display = "none"; };
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const cardBack = document.getElementById("cardBack");
     const fanContainer = document.getElementById("fanContainer");
@@ -6,6 +17,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const introBtn = document.getElementById("introBtn");
     const introModal = document.getElementById("introModal");
     const closeIntro = document.getElementById("closeIntro");
+    const loginBtn = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const registerBtn = document.getElementById("register-btn");
+    const loginModal = document.getElementById("loginModal");
+    const closeLogin = document.getElementById("closeLogin");
+    const loginForm = document.getElementById("loginForm");
+    const loginError = document.getElementById("loginError");
+    const googleLoginBtn = document.getElementById("googleLoginBtn");
+    const registerModal = document.getElementById("registerModal");
+    const closeRegister = document.getElementById("closeRegister");
+    const registerForm = document.getElementById("registerForm");
+    const registerMessage = document.getElementById("registerMessage");
 
     const tarotCards = ["權杖首牌", "權杖二", "權杖三", "權杖四", "權杖五", "權杖六", "權杖七", "權杖八", "權杖九", "權杖十", "權杖侍從", "權杖騎士", "權杖皇后", "權杖國王",
         "聖杯首牌", "聖杯二", "聖杯三", "聖杯四", "聖杯五", "聖杯六", "聖杯七", "聖杯八", "聖杯九", "聖杯十", "聖杯侍從", "聖杯騎士", "聖杯皇后", "聖杯國王",
@@ -174,4 +197,149 @@ document.addEventListener("DOMContentLoaded", () => {
 
     closeCardName.addEventListener("click", () => cardNameModal.style.display = "none");
     window.addEventListener("click", e => { if (e.target === cardNameModal) cardNameModal.style.display = "none"; });
+    // === 登入狀態檢查 ===
+    async function checkLogin() {
+        const loginBtnOld = document.getElementById("login-btn");
+        const logoutBtn = document.getElementById("logout-btn");
+        const registerBtn = document.getElementById("register-btn");
+
+        try {
+            const res = await fetch("/api/me");
+            if (!res.ok) throw new Error();
+            const user = await res.json();
+
+            // 移除舊的 loginBtn 事件
+            const loginBtn = loginBtnOld.cloneNode(true);
+            loginBtnOld.parentNode.replaceChild(loginBtn, loginBtnOld);
+
+            // 設定登入後樣式
+            loginBtn.textContent = `嗨，${user.name || "使用者"} 👋`;
+            loginBtn.style.backgroundImage = user.picture ? `url(${user.picture})` : "";
+            loginBtn.style.backgroundSize = "cover";
+            loginBtn.style.borderRadius = "50%";
+
+            loginBtn.classList.remove("hidden");
+            logoutBtn.classList.remove("hidden");
+            registerBtn.classList.add("hidden");
+
+            // 登入後點擊行為（不開 modal，可自訂）
+            loginBtn.addEventListener("click", () => {
+                showAlert(`你已登入，歡迎 ${user.name || "使用者"} 🌟`);
+            });
+
+        } catch {
+            // 使用者未登入
+            const loginBtn = loginBtnOld.cloneNode(true);
+            loginBtnOld.parentNode.replaceChild(loginBtn, loginBtnOld);
+
+            loginBtn.textContent = "登入";
+            loginBtn.style.backgroundImage = "";
+            loginBtn.classList.remove("hidden");
+            logoutBtn.classList.add("hidden");
+            registerBtn.classList.remove("hidden");
+
+            // 點擊開啟登入 modal
+            loginBtn.addEventListener("click", () => {
+                loginModal.style.display = "flex";
+            });
+        }
+    }
+    checkLogin();
+
+    // === 打開 / 關閉登入 Modal ===
+    loginBtn.addEventListener("click", () => {
+        loginModal.style.display = "flex";
+    });
+
+    closeLogin.addEventListener("click", () => {
+        loginModal.style.display = "none";
+    });
+
+    window.addEventListener("click", e => {
+        if (e.target === loginModal) loginModal.style.display = "none";
+    });
+
+    // === Google 登入 ===
+    googleLoginBtn.addEventListener("click", () => {
+        // 跳轉 FastAPI 的 Google 登入路由
+        window.location.href = "/login/google";
+    });
+
+    // === 登入表單提交 ===
+    loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        loginError.style.display = "none";
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const resp = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ username: email, password: password })
+            });
+            const data = await resp.json();
+
+            if (resp.ok) {
+                localStorage.setItem("token", data.access_token);
+                loginModal.style.display = "none";
+                showAlert("登入成功 🌟");
+                checkLogin();
+            } else {
+                loginError.textContent = data.error || "登入失敗";
+                loginError.style.display = "block";
+            }
+        } catch (err) {
+            console.error(err);
+            loginError.textContent = "登入發生錯誤";
+            loginError.style.display = "block";
+        }
+    });
+
+    // === 登出 ===
+    logoutBtn.addEventListener("click", async () => {
+        localStorage.removeItem("token");
+        await fetch("/api/logout", { method: "POST" });
+        showAlert("您已登出 🌙");
+        checkLogin();
+    });
+
+    // === 打開註冊 Modal ===
+    registerBtn.addEventListener("click", () => {
+        registerModal.style.display = "flex";
+    });
+
+    closeRegister.addEventListener("click", () => {
+        registerModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === registerModal) registerModal.style.display = "none";
+    });
+
+    // === 提交註冊表單 ===
+    registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const res = await fetch("/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            registerMessage.textContent = result.message || result.error;
+            if (res.ok) {
+                showAlert("註冊成功 ✅，請查看 Email！");
+                setTimeout(() => {
+                    registerModal.style.display = "none";
+                }, 1500);
+            }
+        } catch (err) {
+            console.error(err);
+            registerMessage.textContent = "註冊時發生錯誤";
+        }
+    });
 });
