@@ -471,3 +471,120 @@ body::-webkit-scrollbar {
   user-select: none;
   text-decoration: none;
 }
+
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffffcc;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  z-index: 1000;
+}
+
+.site-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #5e3370;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.site-title:hover {
+  color: #8b5ba1;
+}
+
+.nav-btn {
+  background-color: #5e3370;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: #7b4a8a;
+  transform: translateY(-2px);
+}
+
+.hidden {
+  display: none;
+}
+
+.select-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.select-group {
+  display: flex;
+  flex-direction: column; /* label 在上方 */
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1 1 300px; /* 最小 300px，自動伸縮 */
+  max-width: 360px;
+  background: #f7ebfa; /* 淡紫卡片背景 */
+  padding: 16px 20px;
+  border-radius: 16px; /* 大圓角 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 內縮陰影 */
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.select-group:hover {
+  transform: translateY(-4px); /* 浮起效果 */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.select-group label, {
+  font-weight: 600;
+  font-size: 16px;
+  color: #5e3370;
+}
+
+.select-group select,
+#subquestionInput,
+#email, #password, #registerEmail, #registerPassword, #registerName {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 2px solid #d6b3e0;
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.select-group select:focus,
+#subquestionInput:focus,
+#email:focus,
+#password:focus,
+#registerEmail:focus,
+#registerPassword:focus,
+#registerName:focus {
+  outline: none;
+  border-color: #5e3370;
+  box-shadow: 0 0 12px rgba(94, 51, 112, 0.25);
+}
+
+::placeholder,
+#email::placeholder,
+#password::placeholder,
+#registerEmail::placeholder,
+#registerPassword::placeholder,
+#registerName::placeholder
+{
+  color: #a678b2;
+  opacity: 1;
+}
