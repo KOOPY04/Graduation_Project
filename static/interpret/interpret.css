@@ -244,3 +244,55 @@ body {
       0 0 60px #a678b2;
   }
 }
+
+/* ===== 新增：可滾動內容包裝器 ===== */
+.modal-scroll-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 15px;
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  scroll-behavior: smooth;
+}
+
+/* 美化滾動條 */
+.modal-scroll-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-scroll-wrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.modal-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(166, 120, 178, 0.5);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.modal-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(166, 120, 178, 0.8);
+}
+
+/* 調整原有樣式 */
+.modal-content {
+  overflow-y: visible; /* 移除原本的滾動 */
+}
+
+.modal-body {
+  max-height: none; /* 移除高度限制 */
+  padding-right: 0;
+  margin: 0;
+}
+
+.music-recommend {
+  margin-top: 20px;
+  max-height: none; /* 讓它自然撐開 */
+  padding: 20px 15px;
+  background: rgba(94, 51, 112, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
