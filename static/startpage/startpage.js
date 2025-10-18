@@ -215,8 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
             // 設定登入後樣式
             loginBtn.textContent = `嗨，${user.name || "使用者"} 👋`;
             loginBtn.style.backgroundImage = user.picture ? `url(${user.picture})` : "";
-            loginBtn.style.backgroundSize = "cover";
-            loginBtn.style.borderRadius = "50%";
 
             loginBtn.classList.remove("hidden");
             logoutBtn.classList.remove("hidden");
