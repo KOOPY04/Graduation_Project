@@ -1,22 +1,94 @@
 # main.py
-import os
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-import mysql.connector
 from openai import OpenAI
+from starlette.requests import Request
+import os
+import jwt
+import bcrypt
 import random
 import traceback
+import mysql.connector
 import requests
 import base64
+from datetime import datetime, timedelta
+from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from authlib.integrations.starlette_client import OAuth
+from pydantic import BaseModel, EmailStr
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import load_dotenv
+from starlette.middleware.sessions import SessionMiddleware
+# from OAuth import OAuth2PasswordRequestFormWithCookie
+# from email_config import conf
 
+# ========= 初始化 =========
 load_dotenv()
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+# ========= 資料庫 =========
+db_config = {
+    "host": "localhost",
+    # "port":3307,
+    "user": "root",
+    "password": "",  # 改成你的密碼
+    "database": "tarot_db"
+}
+
+# ========= 安全設定 =========
+SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_THIS_SECRET")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 小時
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
+
+# ========= 郵件設定 =========
+conf = ConnectionConfig(
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
+    MAIL_FROM=os.getenv("MAIL_FROM"),
+    MAIL_PORT=587,
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_STARTTLS=True,    # ⚡新版參數
+    MAIL_SSL_TLS=False,    # ⚡新版參數
+    USE_CREDENTIALS=True,
+    # TEMPLATE_FOLDER='templates/email'  # ⚡email template 資料夾
+)
+
+# ========= 設定 session middleware =========
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET_KEY", "超級秘密字串"),  # ⚠️建議放 .env
+    https_only=False  # 若用 HTTPS，上線時改成 True
+)
+
+# ========= Google 登入 =========
+oauth = OAuth()
+CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+oauth.register(
+    name='google',
+    server_metadata_url=CONF_URL,
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    client_kwargs={'scope': 'openid email profile'}
+)
+
+# ========= 模型 =========
+
+
+class User(BaseModel):
+    email: str
+    name: str
+    picture: str | None = None
+
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+
 
 if not OPENAI_API_KEY:
     raise RuntimeError("請先在 .env 檔中設定 OPENAI_API_KEY")
@@ -27,33 +99,46 @@ if not OPENAI_API_KEY:
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# FastAPI 初始化
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+# ========= 工具函數 =========
 
-# 資料庫設定
-db_config = {
-    "host": "localhost",
-    "user": "root",
-    "password": "",  # 改成你的密碼
-    "database": "tarot_db"
-}
+
+def get_user_by_email(email: str):
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
+
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
 
 # ===== 首頁 =====
+
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("StartPage.html", {"request": request})
 
 # ===== 選擇問題類型 / 子問題 / 占卜張數頁 =====
+
+
 @app.get("/select", response_class=HTMLResponse)
 async def select_page(request: Request):
     return templates.TemplateResponse("SelectPage.html", {"request": request})
 
 # ===== 塔羅抽牌頁 =====
+
+
 @app.get("/tarot", response_class=HTMLResponse)
 async def tarot(request: Request, count: int = 3, category_id: int = 1, subquestion: str = ""):
-    
+
     return templates.TemplateResponse(
         "DrawCard.html",
         {
@@ -66,6 +151,8 @@ async def tarot(request: Request, count: int = 3, category_id: int = 1, subquest
     )
 
 # ===== 解牌頁 =====
+
+
 @app.get("/interpret", response_class=HTMLResponse)
 async def interpret_page(request: Request, count: int = 3, category_id: int = 1, subquestion: str = ""):
     return templates.TemplateResponse(
@@ -79,6 +166,8 @@ async def interpret_page(request: Request, count: int = 3, category_id: int = 1,
     )
 
 # ===== API: 取得 categories =====
+
+
 @app.get("/api/categories")
 async def get_categories():
     conn = mysql.connector.connect(**db_config)
@@ -90,6 +179,8 @@ async def get_categories():
     return rows
 
 # ===== API: 自動抽牌 + 解釋 =====
+
+
 @app.post("/api/interpret")
 async def interpret_api(request: Request):
     data = await request.json()
@@ -101,7 +192,7 @@ async def interpret_api(request: Request):
 
     if not category_id:
         return JSONResponse({"status": "error", "msg": "缺少 category_id"}, status_code=400)
-    
+
     if subquestion is None:
         return JSONResponse({"status": "error", "msg": "缺少 subquestion_text"}, status_code=400)
 
@@ -172,7 +263,7 @@ async def interpret_api(request: Request):
             "image": image_path,
             "position_name": position_names[i]
         })
-        
+
     # 先查 category_id 對應的名稱（除錯）
     cursor.execute("SELECT name FROM categories WHERE id = %s", (category_id,))
     category_row = cursor.fetchone()
@@ -184,6 +275,8 @@ async def interpret_api(request: Request):
     return {"status": "ok", "cards": result, "count": count}
 
 # ===== API: GPT 占卜總結 =====
+
+
 @app.post("/api/summary")
 async def tarot_summary(request: Request):
     try:
@@ -192,7 +285,7 @@ async def tarot_summary(request: Request):
         category_id = data.get("category_id")
         subquestion = data.get("subquestion_text")
         cards = data.get("cards", [])
-        
+
         # print("Received question,subquestion:", category_id, subquestion)
 
         if not cards:
@@ -203,7 +296,7 @@ async def tarot_summary(request: Request):
             f"{c['position_name']}：{c['name']}（{c['position']}）→ {c['meaning']} [關鍵詞: {c.get('keyword', '')}]"
             for c in cards
         ])
-        
+
         # print("Card Text:", card_text)
 
         prompt = f"""
@@ -244,6 +337,7 @@ async def tarot_summary(request: Request):
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
+
 def get_spotify_token():
     """取得 Spotify API Token"""
     auth = f"{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}"
@@ -254,6 +348,7 @@ def get_spotify_token():
         data={"grant_type": "client_credentials"}
     )
     return response.json().get("access_token")
+
 
 @app.post("/api/recommend_music")
 async def recommend_music(request: Request):
@@ -278,7 +373,8 @@ async def recommend_music(request: Request):
 {{
     "theme": "XXX",
     "songs": [
-        {{ "name":"...", "artist":"...", "style":"...", "mood":"...", "lyrics_hint":"..." }},
+        {{ "name":"...", "artist":"...", "style":"...",
+            "mood":"...", "lyrics_hint":"..." }},
         ...
     ]
 }}
@@ -305,7 +401,8 @@ async def recommend_music(request: Request):
         music_data = {
             "theme": "心靈療癒",
             "songs": [
-                {"name":"心靈療癒","artist":"未知","style":"輕音樂","mood":"療癒","lyrics_hint":"正向鼓勵","embed_url":""}
+                {"name": "心靈療癒", "artist": "未知", "style": "輕音樂",
+                    "mood": "療癒", "lyrics_hint": "正向鼓勵", "embed_url": ""}
             ]
         }
 
@@ -318,7 +415,8 @@ async def recommend_music(request: Request):
             query = f'track:"{m["name"]}" artist:"{m["artist"]}"'
             resp = requests.get(
                 "https://api.spotify.com/v1/search",
-                params={"q": query, "type": "track", "limit": 1, "market": "TW"},
+                params={"q": query, "type": "track",
+                        "limit": 1, "market": "TW"},
                 headers=headers,
                 timeout=5
             )
@@ -338,3 +436,145 @@ async def recommend_music(request: Request):
         "theme": music_data.get("theme", "心靈療癒"),
         "music": spotify_songs
     }
+
+
+# ========= 登入 API =========
+@app.post("/api/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    email = form_data.username
+    password = form_data.password
+    user = get_user_by_email(email)
+
+    if not user or not bcrypt.checkpw(password.encode(), user["password_hash"].encode()):
+        return JSONResponse({"error": "帳號或密碼錯誤"}, status_code=401)
+
+    access_token = create_access_token(data={"sub": user["email"]})
+    response = JSONResponse(
+        {"access_token": access_token, "token_type": "bearer"})
+    response.set_cookie("token", access_token,
+                        httponly=True, max_age=3600 * 24)
+    return response
+
+# ========= 取得使用者資訊 API =========
+
+
+@app.get("/api/userinfo")
+async def get_userinfo(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        user = get_user_by_email(email)
+        if not user:
+            return JSONResponse({"error": "使用者不存在"}, status_code=404)
+        return {"email": user["email"], "name": user["name"]}
+    except jwt.ExpiredSignatureError:
+        return JSONResponse({"error": "Token 已過期"}, status_code=401)
+    except jwt.InvalidTokenError:
+        return JSONResponse({"error": "Token 無效"}, status_code=401)
+
+# ========= 登出 =========
+
+
+@app.post("/api/logout")
+async def logout():
+    response = JSONResponse({"message": "已登出"})
+    response.delete_cookie("token")
+    return response
+
+# ========= 註冊 API =========
+@app.get("/auth/google")
+async def auth_google(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    resp = await oauth.google.get('https://openidconnect.googleapis.com/v1/userinfo', token=token)
+    user_info = resp.json()
+    # {"sub": "...", "email": "...", "name": "...", "picture": "..."}
+
+    first_time = False  # 判斷是否第一次登入
+    if not get_user_by_email(user_info["email"]):
+        first_time = True
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO users (email, name) VALUES (%s, %s)",
+            (user_info["email"], user_info["name"])
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    # 如果是第一次登入，寄歡迎信
+    if first_time:
+        try:
+            message = MessageSchema(
+                subject="塔羅占卜網站 - 歡迎加入 🌟",
+                recipients=[user_info["email"]],
+                body=f"<h3>嗨 {user_info.get('name', '占卜者')}，</h3>"
+                     f"<p>感謝使用 Google 帳號註冊塔羅占卜網站，歡迎開始你的靈性旅程！</p>",
+                subtype="html"
+            )
+            fm = FastMail(conf)
+            await fm.send_message(message)
+        except Exception as e:
+            print("寄送歡迎信失敗:", e)
+
+    jwt_token = create_access_token(data={"sub": user_info["email"]})
+    response = RedirectResponse(url="/")
+    response.set_cookie("token", jwt_token, httponly=True, max_age=3600 * 24)
+    return response
+
+# ========= Google OAuth2 登入 =========
+
+
+@app.get("/login/google")
+async def login_google(request: Request):
+    redirect_uri = "http://127.0.0.1:8000/auth/google"
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+
+@app.get("/auth/google")
+async def auth_google(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    resp = await oauth.google.get('https://openidconnect.googleapis.com/v1/userinfo', token=token)
+    user_info = resp.json()
+    # {"sub": "...", "email": "...", "name": "...", "picture": "..."}
+
+    # 存入資料庫（若不存在）
+    if not get_user_by_email(user_info["email"]):
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO users (email, name) VALUES (%s, %s)",
+                       (user_info["email"], user_info["name"]))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    jwt_token = create_access_token(data={"sub": user_info["email"]})
+    response = RedirectResponse(url="/")
+    response.set_cookie("token", jwt_token, httponly=True, max_age=3600 * 24)
+    return response
+
+# ========= 驗證登入狀態 =========
+
+
+def get_current_user(token: str | None = Cookie(default=None)) -> User:
+    if not token:
+        raise HTTPException(status_code=401, detail="未登入")
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        user = get_user_by_email(email)
+        if not user:
+            raise HTTPException(status_code=404, detail="使用者不存在")
+        return User(email=user["email"], name=user["name"], picture=user.get("picture"))
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="登入已過期")
+
+
+@app.get("/api/me", response_model=User)
+async def me(user: User = Depends(get_current_user)):
+    return user
+
+
+@app.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    return templates.TemplateResponse("LoginPage.html", {"request": request})
