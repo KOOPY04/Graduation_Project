@@ -32,7 +32,6 @@ templates = Jinja2Templates(directory="templates")
 # ========= 資料庫 =========
 db_config = {
     "host": "localhost",
-    "port":3307,
     "user": "root",
     "password": "",  # 改成你的密碼
     "database": "tarot_db"
@@ -531,28 +530,6 @@ async def login_google(request: Request):
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
-@app.get("/auth/google")
-async def auth_google(request: Request):
-    token = await oauth.google.authorize_access_token(request)
-    resp = await oauth.google.get('https://openidconnect.googleapis.com/v1/userinfo', token=token)
-    user_info = resp.json()
-    # {"sub": "...", "email": "...", "name": "...", "picture": "..."}
-
-    # 存入資料庫（若不存在）
-    if not get_user_by_email(user_info["email"]):
-        conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (email, name) VALUES (%s, %s)",
-                       (user_info["email"], user_info["name"]))
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-    jwt_token = create_access_token(data={"sub": user_info["email"]})
-    response = RedirectResponse(url="/")
-    response.set_cookie("token", jwt_token, httponly=True, max_age=3600 * 24)
-    return response
-
 # ========= 驗證登入狀態 =========
 
 
@@ -578,3 +555,39 @@ async def me(user: User = Depends(get_current_user)):
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("LoginPage.html", {"request": request})
+
+
+@app.post("/api/register")
+async def register(request: Request):
+    data = await request.json()
+    email = data.get("email")
+    password = data.get("password")
+    name = data.get("name", "")
+
+    if not email or not password:
+        return JSONResponse({"error": "Email 與密碼必填"}, status_code=400)
+
+    if get_user_by_email(email):
+        return JSONResponse({"error": "Email 已被註冊"}, status_code=400)
+
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO users (email, password_hash, name) VALUES (%s, %s, %s)",
+        (email, hashed, name)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return {"message": "註冊成功 🎉"}
+
+
+
+
+
+
+
+
