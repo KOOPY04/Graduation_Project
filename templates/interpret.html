@@ -25,7 +25,8 @@
       <!-- 按鈕列 -->
       <div class="button-row">
         <button id="toggleSummaryBtn">🌟 查看整體解讀</button>
-        <button onclick="window.history.back()">回上一頁</button>
+        <!-- 修改：清除舊結果後返回上一頁 -->
+        <button id="backBtn">回上一頁</button>
       </div>
 
       <!-- 整體解讀 modal -->
@@ -34,13 +35,13 @@
           <span id="closeSummaryBtn" class="close-btn">&times;</span>
           <h2>🌟 整體解讀</h2>
           
-          <!-- 新增：可滾動內容框 -->
+          <!-- 可滾動內容框 -->
           <div class="modal-scroll-wrapper">
             <div id="summaryText" class="modal-body">
               🔮 正在生成整體占卜解讀，請稍候...
             </div>
 
-            <!-- 🎧 音樂推薦區塊 -->
+            <!-- 音樂推薦區塊 -->
             <div id="musicRecommend" class="music-recommend">
               <h3>🎧 音樂推薦</h3>
               <p id="musicLoading" style="color: #ccc">
@@ -59,6 +60,21 @@
         </div>
       </div>
     </div>
+
     <script src="/static/interpret/interpret.js" defer></script>
+
+    <!-- 新增：清除 sessionStorage 後返回上一頁 -->
+    <script>
+      const backBtn = document.getElementById("backBtn");
+      backBtn.onclick = () => {
+        // 清除解牌相關 sessionStorage
+        sessionStorage.removeItem("saved_cards");
+        sessionStorage.removeItem("saved_summary");
+        sessionStorage.removeItem("saved_music");
+
+        // 返回上一頁
+        window.history.back();
+      };
+    </script>
   </body>
 </html>
