@@ -10,6 +10,9 @@ function showAlert(msg) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    sessionStorage.removeItem("saved_cards");
+    sessionStorage.removeItem("saved_summary");
+    sessionStorage.removeItem("saved_music");
     const cardBack = document.getElementById("cardBack");
     const fanContainer = document.getElementById("fanContainer");
     const cardNameModal = document.getElementById("cardNameModal");
@@ -178,6 +181,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("startBtn").addEventListener("click", () => {
+        // 🧹 清除上一輪占卜資料再進入選擇頁
+        sessionStorage.removeItem("saved_cards");
+        sessionStorage.removeItem("saved_summary");
+        sessionStorage.removeItem("saved_music");
         window.location.href = "/select";
     });
     document.getElementById("introBtn").addEventListener("click", () => {
