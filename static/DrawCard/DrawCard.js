@@ -20,8 +20,10 @@ function generate_tarot_html(slotTitles) {
     const containerWidth = 1200;
     const radius = 600;
     const centerX = containerWidth / 2;
-    const centerY = 580; const angleStart = -40;
-    const angleEnd = 40; const angleStep = (angleEnd - angleStart) / (totalCards - 1);
+    const centerY = 580; 
+    const angleStart = -40;
+    const angleEnd = 40; 
+    const angleStep = (angleEnd - angleStart) / (totalCards - 1);
     let html = "<div class='wrapper'><div class='fan-container'>";
     for (let i = 0; i < totalCards; i++) {
         const angleDeg = angleStart + i * angleStep;
@@ -29,11 +31,15 @@ function generate_tarot_html(slotTitles) {
         const x = centerX + radius * Math.sin(angleRad) - cardWidth / 2;
         const y = centerY - radius * Math.cos(angleRad);
         html += `<img src='${cardBackUrl}' class='card' data-index='${i}' style='transform: rotate(${angleDeg}deg); z-index:${i}; left:${x}px; top:${y}px;' />`;
-    } html += "</div></div>";
+    } 
+    html += "</div></div>";
+
     // slot 區域 
-    html += `<div class='spread' data-count='${slotTitles.length}'>`; if (slotTitles.length === 4) {
+    html += `<div class='spread' data-count='${slotTitles.length}'>`; 
+    if (slotTitles.length === 4) {
         html += `<div class='slot slot-top' id='slot0'>${slotTitles[0]}</div>`;
-        html += "<div class='slot-row'>"; slotTitles.slice(1).forEach((title, i) => {
+        html += "<div class='slot-row'>";
+        slotTitles.slice(1).forEach((title, i) => {
             html += `<div class='slot' id='slot${i + 1}'>${title}</div>`;
         });
         html += "</div>";
@@ -48,11 +54,13 @@ function generate_tarot_html(slotTitles) {
     return html;
 }
 
-// DOMContentLoaded
-document.addEventListener("DOMContentLoaded", async () => {
+// 初始化函式
+function initTarotPage() {
     console.log("🟢 Tarot JS running...");
 
-    // 讀取 sessionStorage
+    // 清空舊選牌（回上一頁也會觸發）
+    sessionStorage.removeItem("selected_cards");
+
     const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
     const categoryId = sessionStorage.getItem("category_id");
     const subquestionText = sessionStorage.getItem("subquestion_text");
@@ -67,7 +75,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? ["過去", "現在", "未來"]
         : ["問題核心", "障礙或短處", "對策", "資源或長處"];
 
-    // 生成塔羅牌
     const tarotContainer = document.getElementById("tarotContainer") || document.body;
     tarotContainer.innerHTML = generate_tarot_html(slotTitles);
 
@@ -89,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         buttonContainer.appendChild(interpretBtn);
     }
 
-    // 回主頁按鈕
+    // 回上一頁按鈕
     let homeBtn = document.getElementById('homeBtn');
     if (!homeBtn) {
         homeBtn = document.createElement('button');
@@ -103,8 +110,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 卡牌選取
     const maxSelect = count;
     let selected = [];
-    const cards = Array.from(document.querySelectorAll('.card'));
+    window.selected = selected; // 全局保存，用於回上一頁時清空
 
+    const cards = Array.from(document.querySelectorAll('.card'));
     // 移除舊事件
     cards.forEach(card => {
         const newCard = card.cloneNode(true);
@@ -156,4 +164,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("slotTitles:", slotTitles);
     console.log("maxSelect:", maxSelect, "categoryId:", categoryId);
+}
+
+// DOMContentLoaded 初始化
+document.addEventListener("DOMContentLoaded", initTarotPage);
+
+// pageshow 事件（從 bfcache 回來時也會觸發）
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+        console.log("🟢 Page restored from bfcache, resetting slots...");
+        const slots = document.querySelectorAll(".slot");
+        slots.forEach(slot => slot.innerHTML = "");
+
+        const lockedCards = document.querySelectorAll(".card.locked");
+        lockedCards.forEach(card => card.classList.remove("locked"));
+
+        if (window.selected) window.selected.length = 0;
+    }
 });
