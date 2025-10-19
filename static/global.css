@@ -439,6 +439,7 @@ body::-webkit-scrollbar {
   transform: translateY(0);
   cursor: default; /* 不再是連結 */
   text-decoration: none;
+  z-index: 100;
 }
 
 /* hover 時仍有輕微浮起的效果（可留可不留） */
