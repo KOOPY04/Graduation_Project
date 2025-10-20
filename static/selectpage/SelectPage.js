@@ -34,14 +34,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             card.addEventListener('click', () => {
                 const count = card.dataset.count;
                 const categoryId = document.getElementById("categorySelect").value;
+                const CategoryName = document.getElementById("categorySelect").selectedOptions[0].textContent;
                 const subquestionText = document.getElementById("subquestionInput").value.trim();
                 if (!categoryId || !subquestionText) {
                     showAlert("請先選擇問題類型與子問題！");
                     return;
                 }
                 sessionStorage.setItem("category_id", categoryId);
+                sessionStorage.setItem("category_name", CategoryName);
                 sessionStorage.setItem("subquestion_text", subquestionText);
                 sessionStorage.setItem("count", count);
+                console.log("Selected category:", CategoryName);
                 window.location.href = "/tarot";
             });
         });
