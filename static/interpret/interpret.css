@@ -119,16 +119,6 @@ body {
   gap: 20px;
 }
 
-.modal-content p,.modal-content ul {
-  font-size: 16px;
-  color: #333;
-  margin-bottom: 12px;
-}
-
-.modal-content ul {
-  padding-left: 20px;
-}
-
 #closeSummaryBtn {
   position: absolute;
   top: 10px;
@@ -180,33 +170,6 @@ body {
   animation: fadeIn 1s ease-out;
 }
 
-.music-recommend {
-  margin-top: 30px;
-  padding: 20px 15px;
-  background: rgba(94,51,112,0.6); /* 半透明紫色背景 */
-  border-radius: 16px;
-  text-align: center;
-  animation: fadeIn 1.2s ease-in-out;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  max-height: 50vh; /* 防止單個區塊過高 */
-  /* overflow-y: auto; 內容超出可滾動 */
-  max-height: none; /* ✅ 不要限制高度，讓它自然撐開 */
-}
-
-.music-recommend h3 {
-  color: #fff;
-  text-shadow: 0 0 6px #a678b2;
-  font-weight: bold;
-  margin-bottom: 10px;
-  animation: glow 1.5s infinite alternate;
-}
-
-.music-recommend p {
-  color: #eee;
-  font-style: italic;
-  margin-bottom: 15px;
-}
-
 /* .song-item {
   margin: 10px auto;
   text-align: center;
@@ -218,7 +181,7 @@ body {
 }
 
 .modal-content{
-  overflow-y: auto;
+  overflow-y: visible;
 }
 
 .modal.body {
@@ -245,54 +208,8 @@ body {
   }
 }
 
-/* ===== 新增：可滾動內容包裝器 ===== */
-.modal-scroll-wrapper {
-  max-height: 60vh;
-  overflow-y: auto;
-  padding: 20px 15px;
-  margin-top: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  scroll-behavior: smooth;
-}
-
-/* 美化滾動條 */
-.modal-scroll-wrapper::-webkit-scrollbar {
-  width: 8px;
-}
-
-.modal-scroll-wrapper::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-}
-
-.modal-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(166, 120, 178, 0.5);
-  border-radius: 4px;
-  transition: background 0.3s ease;
-}
-
-.modal-scroll-wrapper::-webkit-scrollbar-thumb:hover {
-  background: rgba(166, 120, 178, 0.8);
-}
-
-/* 調整原有樣式 */
-.modal-content {
-  overflow-y: visible; /* 移除原本的滾動 */
-}
-
 .modal-body {
   max-height: none; /* 移除高度限制 */
   padding-right: 0;
   margin: 0;
-}
-
-.music-recommend {
-  margin-top: 20px;
-  max-height: none; /* 讓它自然撐開 */
-  padding: 20px 15px;
-  background: rgba(94, 51, 112, 0.6);
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }

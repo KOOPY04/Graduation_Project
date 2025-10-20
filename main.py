@@ -10,16 +10,19 @@ import mysql.connector
 import requests
 import base64
 from datetime import datetime, timedelta
-from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie
+from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie, Body
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from authlib.integrations.starlette_client import OAuth
 from pydantic import BaseModel, EmailStr
+from typing import List, Optional
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
+from typing import Any
+import json
 # from OAuth import OAuth2PasswordRequestFormWithCookie
 # from email_config import conf
 
@@ -36,6 +39,7 @@ db_config = {
     "password": "",  # 改成你的密碼
     "database": "tarot_db"
 }
+
 
 # ========= 安全設定 =========
 SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_THIS_SECRET")
@@ -79,10 +83,16 @@ oauth.register(
 
 
 class User(BaseModel):
+    user_id: int
     email: str
     name: str
     picture: str | None = None
-
+    
+class UserOut(BaseModel):
+    user_id: int
+    email: str
+    name: str
+    picture: str | None = None
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
@@ -163,6 +173,11 @@ async def interpret_page(request: Request, count: int = 3, category_id: int = 1,
             "subquestion_text": subquestion  # ✅ 新增傳入模板
         }
     )
+    
+# ===== 塔羅紀錄頁 =====
+@app.get("/records", response_class=HTMLResponse)
+async def records_page(request: Request):
+    return templates.TemplateResponse("RecordPage.html", {"request": request})
 
 # ===== API: 取得 categories =====
 
@@ -267,7 +282,6 @@ async def interpret_api(request: Request):
     cursor.execute("SELECT name FROM categories WHERE id = %s", (category_id,))
     category_row = cursor.fetchone()
     category_name = category_row["name"] if category_row else "未知分類"
-    # print("Category name:", category_name)
 
     cursor.close()
     conn.close()
@@ -281,11 +295,9 @@ async def tarot_summary(request: Request):
     try:
         data = await request.json()
         # print("Request JSON:", data)
-        category_id = data.get("category_id")
+        category_name = data.get("category_name")
         subquestion = data.get("subquestion_text")
         cards = data.get("cards", [])
-
-        # print("Received question,subquestion:", category_id, subquestion)
 
         if not cards:
             return {"status": "error", "msg": "缺少卡牌資料"}
@@ -310,7 +322,7 @@ async def tarot_summary(request: Request):
             7. 最後做一段總結，給予正向鼓勵。
             篇幅約 200~300 字。
 
-            問題：{category_id}
+            問題：{category_name}
             子問題：{subquestion}
             抽到的牌：
             {card_text}
@@ -354,6 +366,7 @@ async def recommend_music(request: Request):
     data = await request.json()
     tarot_summary = data.get("summary", "")
     subquestion = data.get("subquestion_text", "")
+    category_name = data.get("category_name", "")
 
     if not tarot_summary:
         return {"status": "error", "msg": "缺少塔羅總結內容"}
@@ -379,6 +392,8 @@ async def recommend_music(request: Request):
 }}
 塔羅占卜總結：
 {tarot_summary}
+問題類型：
+{category_name}
 子問題：
 {subquestion}
 """
@@ -533,23 +548,48 @@ async def login_google(request: Request):
 # ========= 驗證登入狀態 =========
 
 
+# def get_current_user(token: str | None = Cookie(default=None)) -> User:
+#     if not token:
+#         raise HTTPException(status_code=401, detail="未登入")
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         email = payload.get("sub")
+#         user = get_user_by_email(email)
+#         if not user:
+#             raise HTTPException(status_code=404, detail="使用者不存在")
+#         return User(email=user["email"], name=user["name"], picture=user.get("picture"))
+#     except jwt.ExpiredSignatureError:
+#         raise HTTPException(status_code=401, detail="登入已過期")
+    
 def get_current_user(token: str | None = Cookie(default=None)) -> User:
     if not token:
         raise HTTPException(status_code=401, detail="未登入")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
-        user = get_user_by_email(email)
-        if not user:
+        user_row = get_user_by_email(email)
+        if not user_row:
             raise HTTPException(status_code=404, detail="使用者不存在")
-        return User(email=user["email"], name=user["name"], picture=user.get("picture"))
+        return User(
+            user_id=user_row["id"],   # ⚡ 這裡加上 id
+            email=user_row["email"],
+            name=user_row["name"],
+            picture=user_row.get("picture")
+        )
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="登入已過期")
 
 
 @app.get("/api/me", response_model=User)
 async def me(user: User = Depends(get_current_user)):
-    return user
+    print("目前使用者:", user)
+    # user 物件本身可以帶 id
+    return UserOut(
+        user_id=user.user_id,       # <-- 確認 User model 有 id
+        email=user.email,
+        name=user.name,
+        picture=user.picture
+    )
 
 
 @app.get("/login", response_class=HTMLResponse)
@@ -584,10 +624,103 @@ async def register(request: Request):
 
     return {"message": "註冊成功 🎉"}
 
+class Card(BaseModel):
+    name: str
+    orientation: str  # 正位/逆位
+
+class TarotRecordCreate(BaseModel):
+    user_id: int
+    question: str
+    subquestion: Optional[str] = ""
+    selected_cards: List[Card]
+    summary: Optional[str] = ""
+    music: Optional[Any] = None
+
+class TarotRecord(TarotRecordCreate):
+    id: int
+    created_at: datetime
+
+# ===== API: 取得使用者塔羅紀錄 =====
+@app.get("/api/tarot-records/{user_id}")
+def get_records(user_id: int):
+    try:
+        conn = mysql.connector.connect(**db_config)  # ✅ 正確寫法
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT * FROM tarot_records WHERE user_id=%s ORDER BY created_at DESC",
+            (user_id,)
+        )
+        rows = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        # 將 selected_cards 與 music 由 JSON 字串轉回物件
+        for row in rows:
+            if isinstance(row.get("selected_cards"), str):
+                row["selected_cards"] = json.loads(row["selected_cards"])
+            if isinstance(row.get("music"), str):
+                row["music"] = json.loads(row["music"])
+
+        return rows
+    except Exception as e:
+        print("抓取塔羅紀錄錯誤:", e)
+        raise HTTPException(status_code=500, detail="抓取紀錄失敗")
 
 
+# ===== API: 取得單筆塔羅紀錄 =====
+@app.get("/api/tarot-record/{record_id}")
+def get_record(record_id: int):
+    try:
+        conn = mysql.connector.connect(**db_config)  # ✅ 修正
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM tarot_records WHERE id=%s", (record_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
 
+        if not row:
+            raise HTTPException(status_code=404, detail="Record not found")
 
+        # JSON 字串轉物件
+        if isinstance(row.get("selected_cards"), str):
+            row["selected_cards"] = json.loads(row["selected_cards"])
+        if isinstance(row.get("music"), str):
+            row["music"] = json.loads(row["music"])
 
+        return row
+    except Exception as e:
+        print("抓取單筆紀錄錯誤:", e)
+        raise HTTPException(status_code=500, detail="抓取紀錄失敗")
 
+# ===== 儲存塔羅紀錄 API =====
+@app.post("/api/tarot-records")
+async def save_tarot_record(data: dict = Body(...)):
+    required_fields = ["user_id", "category", "selected_cards"]
+    for field in required_fields:
+        if field not in data:
+            return JSONResponse({"error": f"缺少欄位 {field}"}, status_code=400)
 
+    user_id = data["user_id"]
+    category = data["category"]
+    subquestion = data.get("subquestion", "")
+    selected_cards = json.dumps(data["selected_cards"], ensure_ascii=False)
+    summary = data.get("summary", "")
+    music = json.dumps(data.get("music", {}), ensure_ascii=False)
+    # print("儲存塔羅紀錄資料:", data)
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        sql = """
+            INSERT INTO tarot_records
+            (user_id, category, subquestion, selected_cards, summary, music)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (user_id, category, subquestion, selected_cards, summary, music))
+        conn.commit()
+        record_id = cursor.lastrowid
+        cursor.close()
+        conn.close()
+        return {"status": "ok", "record_id": record_id}
+    except Exception as e:
+        print("儲存塔羅紀錄錯誤:", e)
+        return JSONResponse({"error": "儲存失敗"}, status_code=500)

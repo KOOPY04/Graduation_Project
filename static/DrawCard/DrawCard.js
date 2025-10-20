@@ -58,12 +58,15 @@ function generate_tarot_html(slotTitles) {
 function initTarotPage() {
     console.log("🟢 Tarot JS running...");
 
+
     // 清空舊選牌（回上一頁也會觸發）
     sessionStorage.removeItem("selected_cards");
 
     const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
     const categoryId = sessionStorage.getItem("category_id");
+    const categoryName = sessionStorage.getItem("category_name");
     const subquestionText = sessionStorage.getItem("subquestion_text");
+    console.log("Retrieved from sessionStorage - count:", count, "categoryId:", categoryId, "categoryName:", categoryName, "subquestionText:", subquestionText);
 
     if (!categoryId || !subquestionText) {
         showAlert("缺少必要資料，請重新選擇問題類型！");
