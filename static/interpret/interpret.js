@@ -17,11 +17,65 @@ let summaryLoaded = false;
 let musicLoaded = false;
 let musicDataCache = null;
 
+// === 自動儲存紀錄 ===
+let _autoRecordSaved = false;
+
+function tryAutoSaveRecord() {
+    // console.log(_autoRecordSaved, summaryLoaded, musicLoaded);
+    if (_autoRecordSaved) return;
+
+    const userId = sessionStorage.getItem('user_id');
+    const categoryName = sessionStorage.getItem('category_name');
+    console.log("📦 從 sessionStorage 載入 user_id:", userId);
+    if (!userId) {
+        sessionStorage.setItem('saved_record_sent', 'no-user');
+        _autoRecordSaved = true;
+        return;
+    }
+
+    if (!summaryLoaded || !musicLoaded) return;
+
+    try {
+        const cards = JSON.parse(sessionStorage.getItem('saved_cards') || '[]');
+        if (!cards.length) return;
+
+        const selectedCards = cards.map(c => ({ name: c.name, orientation: c.position }));
+        const savedSummary = sessionStorage.getItem('saved_summary');
+        const summaryHtml = savedSummary ? (JSON.parse(savedSummary).html || savedSummary) : '';
+        const savedMusic = sessionStorage.getItem('saved_music');
+        const musicData = savedMusic ? JSON.parse(savedMusic) : null;
+        const subquestion = sessionStorage.getItem('subquestion_text') || '';
+
+        // console.log(userId, question, subquestion, selectedCards, summaryHtml, musicData);
+        
+
+        saveRecord(userId, categoryName, subquestion, selectedCards, summaryHtml, musicData)
+            .then(() => {
+                sessionStorage.setItem('saved_record_sent', '1');
+                console.log('📌 自動儲存紀錄成功');
+            })
+            .catch((err) => console.error('自動儲存紀錄失敗：', err))
+            .finally(() => { _autoRecordSaved = true; });
+    } catch (e) {
+        console.error('自動儲存紀錄失敗：', e);
+        _autoRecordSaved = true;
+    }
+}
+
+// 每秒檢查一次是否可以自動儲存
+if (!sessionStorage.getItem('saved_record_sent')) {
+    const autoSaveInterval = setInterval(() => {
+        tryAutoSaveRecord();
+        if (_autoRecordSaved) clearInterval(autoSaveInterval);
+    }, 1000);
+}
+
 // DOM 載入
 document.addEventListener("DOMContentLoaded", async () => {
     const spreadContainer = document.getElementById("spreadContainer");
     const count = parseInt(sessionStorage.getItem("count"), 10) || 3;
     const categoryId = sessionStorage.getItem("category_id");
+    // const category = sessionStorage.getItem("category");
     const subquestionText = sessionStorage.getItem("subquestion_text");
 
     if (!categoryId || !subquestionText) {
@@ -45,24 +99,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // ✅ 載入文字總結
         if (savedSummary) {
-        try {
-            const summaryText = document.getElementById("summaryText");
-            const summaryData = JSON.parse(savedSummary);
-         if (summaryData && summaryData.html) {
-                summaryText.innerHTML = summaryData.html;
-                // 直接加上 .show 讓文字顯示
-                const paragraphs = summaryText.querySelectorAll("p");
-                paragraphs.forEach(p => p.classList.add("show"));
-         } else if (typeof summaryData === "string") {
-            summaryText.innerHTML = summaryData;
+            try {
+                const summaryText = document.getElementById("summaryText");
+                const summaryData = JSON.parse(savedSummary);
+                if (summaryData && summaryData.html) {
+                    summaryText.innerHTML = summaryData.html;
+                    const paragraphs = summaryText.querySelectorAll("p");
+                    paragraphs.forEach(p => p.classList.add("show"));
+                } else if (typeof summaryData === "string") {
+                    summaryText.innerHTML = summaryData;
+                }
+                summaryLoaded = true;
+                console.log("📦 從 sessionStorage 載入 summary 成功");
+            } catch (e) {
+                console.error("載入 saved_summary 錯誤：", e);
+                sessionStorage.removeItem("saved_summary");
+            }
         }
-            summaryLoaded = true;
-            console.log("📦 從 sessionStorage 載入 summary 成功");
-         } catch (e) {
-            console.error("載入 saved_summary 錯誤：", e);
-            sessionStorage.removeItem("saved_summary");
-        }
-    }
 
         // ✅ 載入音樂推薦
         if (savedMusic) {
@@ -72,6 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 renderMusicRecommendation(musicData, musicContainer);
                 musicLoaded = true;
                 musicDataCache = musicData;
+                console.log("📦 從 sessionStorage 載入 music 成功");
             } catch (e) {
                 console.error("載入 saved_music 錯誤：", e);
                 sessionStorage.removeItem("saved_music");
@@ -107,6 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error(err);
         showAlert("發生錯誤，請稍後再試！");
     }
+
 });
 
 // 渲染卡牌
@@ -222,7 +277,7 @@ function setupSummaryButton(cards) {
 
 // GPT + Spotify
 async function generateSummary(cards, summaryText) {
-    const categoryId = sessionStorage.getItem("category_id");
+    const categoryName = sessionStorage.getItem("category_name");
     const subquestionText = sessionStorage.getItem("subquestion_text");
 
     summaryText.innerHTML = `<p class="show">🔮 正在生成占卜總結...</p>`;
@@ -233,7 +288,7 @@ async function generateSummary(cards, summaryText) {
         const res = await fetch("/api/summary", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ category_id: categoryId, subquestion_text: subquestionText, cards })
+            body: JSON.stringify({ category_name: categoryName, subquestion_text: subquestionText, cards })
         });
         const data = await res.json();
 
@@ -276,6 +331,8 @@ async function generateSummary(cards, summaryText) {
             }
             musicLoaded = true;
             musicDataCache = musicData;
+            
+            tryAutoSaveRecord();
         } catch (err) {
             console.error("音樂推薦錯誤：", err);
             musicContainer.innerHTML = `<p>⚠️ 無法取得音樂推薦，請稍後再試。</p>`;
@@ -285,6 +342,7 @@ async function generateSummary(cards, summaryText) {
     }
 }
 
+// 渲染音樂推薦
 function renderMusicRecommendation(musicData, container) {
     container.innerHTML = "";
     const title = document.createElement("h3");
@@ -311,4 +369,49 @@ function renderMusicRecommendation(musicData, container) {
         listDiv.appendChild(songDiv);
     });
     container.appendChild(listDiv);
+}
+
+// === 儲存紀錄 API ===
+async function saveRecord(userId, categoryName, subquestion, selectedCards, summary, music) {
+    if (!userId) throw new Error("未登入使用者無法儲存");
+
+    // 🔹 確保 selectedCards 為列表
+    const cardsList = Array.isArray(selectedCards) ? selectedCards : [];
+
+    // 🔹 確保 music 為 JSON 字串
+    let musicJson = null;
+    try {
+        if (music) {
+            musicJson = typeof music === "string" ? music : JSON.stringify(music);
+        }
+    } catch (e) {
+        console.error("music JSON 轉換失敗：", e);
+        musicJson = null;
+    }
+
+    const data = {
+        user_id: userId,
+        category: categoryName || "",
+        subquestion: subquestion || "",
+        selected_cards: cardsList, // 傳列表給後端，後端再 JSON 序列化
+        summary: summary || "",
+        music: musicJson
+    };
+
+    const res = await fetch("/api/tarot-records", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data) // 🔹 這裡把整個物件 JSON.stringify
+    });
+
+    console.log(data);
+
+    if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "儲存失敗");
+    }
+
+    const result = await res.json();
+    console.log("已儲存紀錄:", result);
+    return result;
 }

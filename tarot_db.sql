@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-10-18 19:31:15
+-- 產生時間： 2025-10-20 04:23:41
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -1062,6 +1062,32 @@ INSERT INTO `subquestions` (`id`, `category_id`, `question`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 資料表結構 `tarot_records`
+--
+
+CREATE TABLE `tarot_records` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `category` text NOT NULL,
+  `subquestion` text NOT NULL,
+  `selected_cards` text NOT NULL,
+  `summary` text DEFAULT NULL,
+  `music` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `tarot_records`
+--
+
+INSERT INTO `tarot_records` (`id`, `user_id`, `category`, `subquestion`, `selected_cards`, `summary`, `music`, `created_at`) VALUES
+(7, 13, '學業', '研究所考試會順利嗎?', '[{\"name\": \"權杖三\", \"orientation\": \"正位\"}, {\"name\": \"權杖二\", \"orientation\": \"正位\"}, {\"name\": \"審判\", \"orientation\": \"正位\"}]', '<p>在你的學業旅程中，過去的努力如同<strong>權杖三（正位）</strong>所象徵的般，開始顯現出美好的成果。你所付出的辛勤勞動與時間，逐漸化為你學習的豐碩果實。或許在這段時間裡，你與志同道合的夥伴們共同合作，或參加了一些國際交流的機會，這些經驗無疑為你的人生增添了美好的色彩，也讓你更堅定了繼續前行的動力。</p>\n\n<p>當下的你，正如<strong>權杖二（正位）</strong>所示，強烈地朝著未來規劃著自己的學業方向。這段時間你開始明確自己的學習目標，不論是升學還是研究的具體方向，都在你的心中逐步成形。這是一個充滿希望的時期，適合制定一些精確的計畫，讓你能夠更有效率地朝著自己的夢想邁進。</p>\n\n<p>展望未來，<strong>審判（正位）</strong>的牌意展現出你將進入一個重要的轉折點。這是你對自己過去努力的回顧與反思之時，從中你將學會更多，迎接新的機會。這張牌預示著考試的結果會有好消息，你的努力終將得到肯定，新的篇章也將展開。</p>\n\n<p>親愛的朋友，無論在學業上遇到何種挑戰，記得你已經踏出了堅實的步伐，過去的成就將成為你未來的基石。把握現在，持續建立清晰的計畫，並相信自己會在未來的考試中獲得理想的結果。每一份努力都不會被辜負，祝福你在學業上展翅高飛，開創屬於自己的精彩世界！</p>', '\"{\\\"status\\\":\\\"ok\\\",\\\"theme\\\":\\\"從努力到轉捩：堅定、感謝與希望\\\",\\\"music\\\":[{\\\"name\\\":\\\"倔強\\\",\\\"artist\\\":\\\"五月天\\\",\\\"style\\\":\\\"搖滾 / 勵志流行\\\",\\\"mood\\\":\\\"堅定、振奮、充滿鬥志\\\",\\\"lyrics_hint\\\":\\\"著重不放棄的決心與團隊互助，描述備考過程中的小勝利與磨練；可加入考前焦慮逐步被努力化解、最終迎向成功的轉折。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/1HvAJPhhs2LnNViKxQ7APT\\\"},{\\\"name\\\":\\\"稻香\\\",\\\"artist\\\":\\\"周杰倫\\\",\\\"style\\\":\\\"民謠流行 / 溫暖抒情\\\",\\\"mood\\\":\\\"溫暖、懷舊、安心\\\",\\\"lyrics_hint\\\":\\\"回溯初心與純真動力，安撫因考試與未來規劃而生的焦慮；用簡單生活與童年記憶來鼓勵自己堅持與享受學習過程。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/2tvokfT77lp473228llliz\\\"},{\\\"name\\\":\\\"那些你很冒險的夢\\\",\\\"artist\\\":\\\"林俊傑\\\",\\\"style\\\":\\\"鋼琴流行 / 抒情搖滾\\\",\\\"mood\\\":\\\"夢想感、溫柔且堅定\\\",\\\"lyrics_hint\\\":\\\"描繪追夢路上的冒險與勇氣，回顧過往努力並展望重要轉捩點；歌詞可以把研究所考試或畢業作為象徵性的關鍵一戰，帶出期待與信心。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/2aMN1ky0SzSEcV1QdBYbW9\\\"},{\\\"name\\\":\\\"小幸運\\\",\\\"artist\\\":\\\"田馥甄\\\",\\\"style\\\":\\\"抒情流行\\\",\\\"mood\\\":\\\"感性、感激、釋然\\\",\\\"lyrics_hint\\\":\\\"以柔和的語氣表達對過去付出與支持者的感謝，把考試結果視為努力帶來的『小幸運』；強調接納結果並準備迎接新篇章。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/2zapgrglLRISEUlspPtdep\\\"}]}\"', '2025-10-19 22:56:15'),
+(8, 13, '事業', '他喜歡我嗎?', '[{\"name\": \"力量\", \"orientation\": \"逆位\"}, {\"name\": \"寶劍七\", \"orientation\": \"逆位\"}, {\"name\": \"太陽\", \"orientation\": \"逆位\"}, {\"name\": \"錢幣八\", \"orientation\": \"逆位\"}]', '<p>在這個事業的探索過程中，您抽到了<strong>力量（逆位）</strong>這張牌，這意味著內心深處的恐懼與懷疑正在阻礙您職業的發展。或許，您一直在尋找他對您是否有好感的答案，但在自我懷疑的影響下，您反而忽略了自己真正的價值。這樣的心態讓您無法清晰地看待他對您的情感，也妨礙了您在事業上的雄心。</p>\n\n<p>接著，抽到的<strong>寶劍七（逆位）</strong>揭示了職場中可能存在的不誠實與欺騙。如果您曾經遭受了不公，這張牌暗示著真相即將大白。如果您在某種程度上也參與了這樣的行為，面對自己的內心並做出改變，或許能幫助您獲得寬恕與和解。此時，接受自己和他人的過錯，才能讓未來的路走得更為坦蕩。</p>\n\n<p>而後，您抽到的<strong>太陽（逆位）</strong>提醒您，儘管面對挫折，您依然擁有擁抱幸福的力量。如果您對工作感到沮喪，不妨試著撥開烏雲，看看其實身邊還有許多值得珍惜的東西。即使在逆境中，也要學會欣賞已有的美好，不要讓負面情緒影響了您採取行動的勇氣。</p>\n\n<p>最後，<strong>錢幣八（逆位）</strong>暗示您可能對目前的工作感到厭倦，缺乏熱情和追求進步的動力。這種怠惰的心態可能會影響您的表現，甚至讓您無法獲得應有的回報。反思一下，是否該重新點燃對工作的熱情，或者考慮一些變化來提升自己的技能。</p>\n\n<p>總體來說，這些牌暗示著您在事業上遇到的挑戰需要您面對內心的恐懼，誠實地看待自己和周圍的關係。無論當前的情況多麼困難，請相信自己擁有改變的力量，並勇敢地迎接未來的可能性。每一步小小的進步，最終都會成就更美好的明天。</p>', '\"{\\\"status\\\":\\\"ok\\\",\\\"theme\\\":\\\"從自我懷疑到重燃希望：面對恐懼、誠實與小小的光\\\",\\\"music\\\":[{\\\"name\\\":\\\"勇氣\\\",\\\"artist\\\":\\\"梁靜茹\\\",\\\"style\\\":\\\"抒情流行 / 琴弦民謠感\\\",\\\"mood\\\":\\\"溫柔但帶著顫抖的決心（由猶豫走向肯定）\\\",\\\"lyrics_hint\\\":\\\"描寫內心的不安與自我懷疑，然後一步一步累積小勇氣，最後願意問出口或承認自己的價值；細節可用心跳、手心汗、深呼吸等意象。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/1SNF1IdMuKPDhw9HTrdcvM\\\"},{\\\"name\\\":\\\"倔強\\\",\\\"artist\\\":\\\"五月天\\\",\\\"style\\\":\\\"搖滾 / 勵志流行\\\",\\\"mood\\\":\\\"堅定、有力、重新點燃鬥志\\\",\\\"lyrics_hint\\\":\\\"聚焦抗拒倦怠與厭世感的反擊：從厭倦、逃避到咬牙堅持、為小進步喝彩；工作場景可用重複、灰色、粉碎的比喻轉為光與聲音的覺醒。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/1HvAJPhhs2LnNViKxQ7APT\\\"},{\\\"name\\\":\\\"我願意\\\",\\\"artist\\\":\\\"王菲\\\",\\\"style\\\":\\\"經典情歌 / 抒情流行\\\",\\\"mood\\\":\\\"溫柔的接受與寬恕，帶著一點無奈的釋懷\\\",\\\"lyrics_hint\\\":\\\"以誠實面對過錯與願意放下為主題：承認曾經的錯與不完美，表達尋求和解或自我寬恕的渴望；語氣可平靜且真誠。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/0tlDH6UX4Bq9kG5rPWaiaF\\\"},{\\\"name\\\":\\\"小幸運\\\",\\\"artist\\\":\\\"田馥甄\\\",\\\"style\\\":\\\"獨立流行 / 夢幻抒情\\\",\\\"mood\\\":\\\"淡淡的哀愁中帶有溫柔的感恩與希望\\\",\\\"lyrics_hint\\\":\\\"描繪在逆境中發現微小美好：日常細節（陽光、咖啡、朋友笑聲）作為療癒，鼓勵從小事中找回動力與重新看見生活的價值。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/2zapgrglLRISEUlspPtdep\\\"}]}\"', '2025-10-19 22:58:03'),
+(9, 13, '感情', '他喜歡我嗎?', '[{\"name\": \"權杖四\", \"orientation\": \"逆位\"}, {\"name\": \"聖杯首牌\", \"orientation\": \"正位\"}, {\"name\": \"錢幣四\", \"orientation\": \"正位\"}, {\"name\": \"隱者\", \"orientation\": \"逆位\"}]', '<p>在這次的占卜中，我們首先抽到了<strong>權杖四（逆位）</strong>，這張牌象徵著不穩定和衝突。若你正在尋求愛情，這可能代表你在感情上經歷了一些挫折或延遲，也許你會感覺到對方的心意不明，讓你感到困惑。對於已經有伴侶的人來說，這張牌顯示出你們之間可能出現了爭執，讓你們的關係進入了一種僵局，急需尋找解決辦法，以重建和諧。</p>\n\n<p>然而，隨後我們抽到了<strong>聖杯首牌（正位）</strong>，這似乎為你帶來了新的希望。此牌代表著愛的召喚，若你是一位單身者，這表示你將迎來一段新的情感旅程；而對於有伴侶者來說，這張牌則暗示著關係中的情感更新，讓你們有機會重新點燃彼此的愛火，增進內心的連結。重要的是，這張牌提醒你要以愛去滋養你們的關係，並在其中注入喜悅。</p>\n\n<p>再者，抽到的<strong>錢幣四（正位）</strong>提醒你在感情中尋求穩定和安全感。這張牌意味著你們之間可以建立起非常堅固的依賴關係，無論是考慮同居還是更進一步的承諾，都是值得思考的選擇。對於單身者，它可能暗示你將會遇到一個謹慎且務實的人，能夠與你建立穩定的情感聯繫。</p>\n\n<p>最後，我們看到<strong>隱者（逆位）</strong>，這張牌表明你可能因為過度獨處而錯失了感情的機會，或是因為焦慮而對外界保持距離。無論你是單身還是已有伴侶，這都是一個提醒：是時候放下孤獨的包袱，勇敢地打開心扉，與他人重新建立聯繫。逃避只會讓你錯過更美好的機會。</p>\n\n<p>總結而言，你在感情上的旅程正面臨著挑戰，但同時也充滿了希望。無論是解決已有的爭執還是勇敢追求新戀情，關鍵在於如何建立穩定的基礎以及勇於打開心扉。相信自己，愛的力量總是能引領你找到方向，給予你無盡的勇氣與力量，讓你勇敢追求幸福。</p>', '\"{\\\"status\\\":\\\"ok\\\",\\\"theme\\\":\\\"從孤獨到靠近：願意打開心門，重建穩定的愛\\\",\\\"music\\\":[{\\\"name\\\":\\\"勇氣\\\",\\\"artist\\\":\\\"梁靜茹\\\",\\\"style\\\":\\\"抒情流行 / 國語流行\\\",\\\"mood\\\":\\\"溫柔而堅定的鼓勵，帶有不安但決心的溫度\\\",\\\"lyrics_hint\\\":\\\"以第一人稱描述內心的猶豫與害怕，最後鼓起勇氣跨出那一步；強調坦誠、 vulnerablity（脆弱）與向對方靠近的具體行動。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/1SNF1IdMuKPDhw9HTrdcvM\\\"},{\\\"name\\\":\\\"小幸運\\\",\\\"artist\\\":\\\"田馥甄\\\",\\\"style\\\":\\\"抒情民謠 / 流行\\\",\\\"mood\\\":\\\"淡淡的惆悵中帶著感激與希望，懷念與期待交織\\\",\\\"lyrics_hint\\\":\\\"回顧曾經錯過或迷茫的時刻，表達對相遇的珍惜；在不確定中尋找穩定的依靠與重新連結的可能。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/2zapgrglLRISEUlspPtdep\\\"},{\\\"name\\\":\\\"告白氣球\\\",\\\"artist\\\":\\\"周杰倫\\\",\\\"style\\\":\\\"輕快浪漫流行 / 都市流行\\\",\\\"mood\\\":\\\"甜蜜、輕鬆且充滿儀式感，為關係注入新的喜悅\\\",\\\"lyrics_hint\\\":\\\"以具象的小儀式（送花、約會場景、告白場面）來鋪陳，傳達想要建立安全感與穩定承諾的意圖。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/4ICIjhyIi03aU3e4gIcSlP\\\"},{\\\"name\\\":\\\"那些你很冒險的夢\\\",\\\"artist\\\":\\\"林俊傑\\\",\\\"style\\\":\\\"抒情搖滾 / 流行搖滾\\\",\\\"mood\\\":\\\"鼓舞且帶些憂傷，說服自己與對方一起冒險、共同承擔\\\",\\\"lyrics_hint\\\":\\\"把戀愛比作一場冒險，鼓勵彼此放下過度防備；在歌詞中加入互相扶持、承諾與共同面對不確定性的意象。\\\",\\\"embed_url\\\":\\\"https://open.spotify.com/embed/track/2aMN1ky0SzSEcV1QdBYbW9\\\"}]}\"', '2025-10-20 01:29:34');
+
+-- --------------------------------------------------------
+
+--
 -- 資料表結構 `users`
 --
 
@@ -1072,6 +1098,13 @@ CREATE TABLE `users` (
   `name` varchar(100) DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `users`
+--
+
+INSERT INTO `users` (`id`, `email`, `password_hash`, `name`, `created_at`) VALUES
+(13, 'a0989389486@gmail.com', '', '郭芃儀', '2025-10-20 01:06:53');
 
 --
 -- 已傾印資料表的索引
@@ -1110,6 +1143,13 @@ ALTER TABLE `keywords`
 ALTER TABLE `subquestions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `subquestions_category_id` (`category_id`);
+
+--
+-- 資料表索引 `tarot_records`
+--
+ALTER TABLE `tarot_records`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- 資料表索引 `users`
@@ -1153,10 +1193,16 @@ ALTER TABLE `subquestions`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
+-- 使用資料表自動遞增(AUTO_INCREMENT) `tarot_records`
+--
+ALTER TABLE `tarot_records`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- 使用資料表自動遞增(AUTO_INCREMENT) `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- 已傾印資料表的限制式
@@ -1174,6 +1220,12 @@ ALTER TABLE `card_meanings`
 --
 ALTER TABLE `subquestions`
   ADD CONSTRAINT `	fk_subquestions_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- 資料表的限制式 `tarot_records`
+--
+ALTER TABLE `tarot_records`
+  ADD CONSTRAINT `tarot_records_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
