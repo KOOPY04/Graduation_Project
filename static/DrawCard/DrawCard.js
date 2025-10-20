@@ -60,7 +60,9 @@ function initTarotPage() {
 
     const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
     const categoryId = sessionStorage.getItem("category_id");
+    const categoryName = sessionStorage.getItem("category_name");
     const subquestionText = sessionStorage.getItem("subquestion_text");
+    console.log("Retrieved from sessionStorage - count:", count, "categoryId:", categoryId, "categoryName:", categoryName, "subquestionText:", subquestionText);
 
     if (!categoryId || !subquestionText) {
         showAlert("缺少必要資料，請重新選擇問題類型！");
@@ -76,10 +78,10 @@ function initTarotPage() {
     tarotContainer.innerHTML = generate_tarot_html(slotTitles);
 
     // 按鈕容器
-    let buttonContainer = document.querySelector('.button-container');
+    let buttonContainer = document.querySelector('.button-row');
     if (!buttonContainer) {
         buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
+        buttonContainer.className = 'button-row';
         tarotContainer.appendChild(buttonContainer);
     }
 
