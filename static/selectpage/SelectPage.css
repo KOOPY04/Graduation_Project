@@ -1,11 +1,3 @@
-
-/* ============================= */
-/*     卡片風格選單 & 輸入欄位    */
-/* ============================= */
-
-/* placeholder 文字顏色 */
-
-
 /* -----------------------------
    扇形牌陣卡片風格（置中版）
    ----------------------------- */
@@ -107,3 +99,7 @@
   75%  { transform: translateX(var(--tx)) rotate(calc(var(--rotate) - 2deg)) translateY(-2px); }
   100% { transform: translateX(var(--tx)) rotate(var(--rotate)) translateY(0); }
 }
+/* 
+.scroll-container {
+  overflow-y: hidden;
+} */
