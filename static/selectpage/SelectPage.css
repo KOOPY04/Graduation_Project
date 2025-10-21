@@ -99,7 +99,8 @@
   75%  { transform: translateX(var(--tx)) rotate(calc(var(--rotate) - 2deg)) translateY(-2px); }
   100% { transform: translateX(var(--tx)) rotate(var(--rotate)) translateY(0); }
 }
-/* 
-.scroll-container {
-  overflow-y: hidden;
+
+/* .scroll-container {
+  margin-top: -20px;
+  scrollbar-color: #DCBEDC transparent; /* Firefox: 滑塊 + 透明軌道 */
 } */
