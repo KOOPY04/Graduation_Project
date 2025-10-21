@@ -58,10 +58,6 @@ function generate_tarot_html(slotTitles) {
 function initTarotPage() {
     console.log("🟢 Tarot JS running...");
 
-
-    // 清空舊選牌（回上一頁也會觸發）
-    sessionStorage.removeItem("selected_cards");
-
     const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
     const categoryId = sessionStorage.getItem("category_id");
     const categoryName = sessionStorage.getItem("category_name");
@@ -108,15 +104,18 @@ function initTarotPage() {
         homeBtn.textContent = '回上一頁';
         buttonContainer.appendChild(homeBtn);
     }
-    homeBtn.onclick = () => { window.history.back(); };
+
+    homeBtn.onclick = () => { 
+        sessionStorage.removeItem("selected_cards"); 
+        window.history.back(); 
+    };
 
     // 卡牌選取
     const maxSelect = count;
     let selected = [];
-    window.selected = selected; // 全局保存，用於回上一頁時清空
+    window.selected = selected;
 
     const cards = Array.from(document.querySelectorAll('.card'));
-    // 移除舊事件
     cards.forEach(card => {
         const newCard = card.cloneNode(true);
         card.parentNode.replaceChild(newCard, card);
@@ -165,6 +164,11 @@ function initTarotPage() {
         window.location.href = `/interpret`;
     };
 
+    // ✅ 確保 slot title 即使第一次載入也正確
+    document.querySelectorAll(".slot").forEach((slot, i) => {
+        if (!slot.textContent.trim()) slot.textContent = slotTitles[i] || "";
+    });
+
     console.log("slotTitles:", slotTitles);
     console.log("maxSelect:", maxSelect, "categoryId:", categoryId);
 }
@@ -172,16 +176,27 @@ function initTarotPage() {
 // DOMContentLoaded 初始化
 document.addEventListener("DOMContentLoaded", initTarotPage);
 
-// pageshow 事件（從 bfcache 回來時也會觸發）
+// pageshow 事件（從 bfcache 回來時觸發）
 window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
-        console.log("🟢 Page restored from bfcache, resetting slots...");
-        const slots = document.querySelectorAll(".slot");
-        slots.forEach(slot => slot.innerHTML = "");
+    console.log("🟢 PageShow triggered");
 
-        const lockedCards = document.querySelectorAll(".card.locked");
-        lockedCards.forEach(card => card.classList.remove("locked"));
+    const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
+    const slotTitles = count === 3
+        ? ["過去", "現在", "未來"]
+        : ["問題核心", "障礙或短處", "對策", "資源或長處"];
 
-        if (window.selected) window.selected.length = 0;
-    }
+    document.querySelectorAll(".slot").forEach((slot, i) => {
+        // 移除 slot 中的圖片
+        slot.querySelectorAll("img").forEach(img => img.remove());
+        // ✅ 重新填回 slot title
+        slot.textContent = slotTitles[i] || "";
+    });
+
+    // 移除所有被鎖定的卡牌
+    document.querySelectorAll(".card.locked").forEach(card => card.classList.remove("locked"));
+
+    // 清空已選牌記錄
+    if (window.selected) window.selected.length = 0;
+
+    console.log("🔁 Slots restored, selections cleared.");
 });

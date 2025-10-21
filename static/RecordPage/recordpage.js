@@ -1,22 +1,12 @@
 async function fetchRecords() {
     const userId = sessionStorage.getItem("user_id");
-    if (!userId) {
-        console.error("找不到使用者 ID，請先登入");
-        return;
-    }
+    if (!userId) return console.error("找不到使用者 ID");
+
     try {
         const res = await fetch(`http://127.0.0.1:8000/api/tarot-records/${userId}`);
         const records = await res.json();
-        if (!Array.isArray(records)) {
-            console.error("抓取塔羅紀錄失敗:", records);
-            return;
-        }
-        console.log("📦 抓取塔羅紀錄成功:", records);
+        if (!Array.isArray(records)) return console.error("抓取塔羅紀錄失敗:", records);
 
-        // records.forEach(record => {
-        //     console.log(record.music)
-
-        // });
         displayRecords(records);
     } catch (err) {
         console.error("抓取塔羅紀錄失敗:", err);
@@ -27,60 +17,31 @@ function displayRecords(records) {
     const container = document.getElementById("records");
     container.innerHTML = "";
 
-    // header row
-    const headerDiv = document.createElement("div");
-    headerDiv.style.display = "grid";
-    headerDiv.style.gridTemplateColumns = "150px 150px 150px 1fr 120px";
-    headerDiv.style.fontWeight = "bold";
-    headerDiv.style.backgroundColor = "#f0f0f0";
-    headerDiv.style.alignItems = "center";
-    headerDiv.style.padding = "12px";
-    headerDiv.style.textAlign = "center";
-    headerDiv.style.borderRadius = "8px";
-    headerDiv.style.marginBottom = "12px";
-    headerDiv.style.gap = "6px";
-    ["時間", "問題類型", "子問題", "抽牌", "總結"].forEach(h => {
-        const div = document.createElement("div");
-        div.textContent = h;
-        div.style.color = "#333";
-        headerDiv.appendChild(div);
-    });
-    container.appendChild(headerDiv);
+    if (!records || records.length === 0) {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "no-records";
+        emptyDiv.innerHTML = `
+            <p>你還沒有任何塔羅占卜紀錄喔～</p>
+            <p>快去抽一張牌，探索你的未來吧！</p>
+            <a href="/select" class="btn">開始占卜</a>
+        `;
+        container.appendChild(emptyDiv);
+        return;
+    }
 
-    // 每筆紀錄
     records.forEach(record => {
         const recDiv = document.createElement("div");
         recDiv.className = "record";
-        recDiv.style.display = "grid";
-        recDiv.style.gridTemplateColumns = "150px 150px 150px 1fr 120px";
-        recDiv.style.alignItems = "center";
-        recDiv.style.border = "1px solid #ddd";
-        recDiv.style.padding = "12px";
-        recDiv.style.marginBottom = "16px";
-        recDiv.style.borderRadius = "12px";
-        recDiv.style.boxShadow = "0 1px 6px rgba(0,0,0,0.08)";
-        recDiv.style.backgroundColor = "#fff";
-        recDiv.style.gap = "6px";
 
-        // 資料欄位
         const dateDiv = document.createElement("div");
         dateDiv.textContent = new Date(record.created_at).toLocaleString();
-        dateDiv.style.fontSize = "0.85em";
-        dateDiv.style.color = "#666";
-        dateDiv.style.textAlign = "center";
 
         const qDiv = document.createElement("div");
         qDiv.textContent = record.question_type || record.category;
-        qDiv.style.fontWeight = "bold";
-        qDiv.style.textAlign = "center";
 
         const subDiv = document.createElement("div");
         subDiv.textContent = record.subquestion || "";
-        subDiv.style.fontStyle = "italic";
-        subDiv.style.color = "#333";
-        subDiv.style.textAlign = "center";
 
-        // 卡牌列
         const cardsDiv = document.createElement("div");
         cardsDiv.style.display = "flex";
         cardsDiv.style.flexWrap = "wrap";
@@ -90,80 +51,69 @@ function displayRecords(records) {
 
         record.selected_cards.forEach(card => {
             const cardDiv = document.createElement("div");
-            cardDiv.style.width = "70px";
-            cardDiv.style.cursor = "pointer";
+            cardDiv.className = "card-container";
+            cardDiv.style.position = "relative"; // tooltip 絕對定位參考
 
             const img = document.createElement("img");
             img.src = getCardImagePath(card.name);
-            img.style.width = "100%";
-            img.style.borderRadius = "6px";
-            img.style.boxShadow = "0 1px 4px rgba(0,0,0,0.15)";
             img.style.transform = card.orientation === "逆位" ? "rotate(180deg)" : "rotate(0deg)";
             cardDiv.appendChild(img);
+
+            // tooltip：顯示卡牌名稱 + 正逆位
+            const tooltip = document.createElement("div");
+            tooltip.className = "tooltip";
+            tooltip.innerText = `${card.name} (${card.orientation})`;
+            cardDiv.appendChild(tooltip);
+
+            // 事件
+            cardDiv.addEventListener("mouseenter", () => {
+                tooltip.style.display = "block";
+            });
+            cardDiv.addEventListener("mouseleave", () => {
+                tooltip.style.display = "none";
+            });
 
             cardsDiv.appendChild(cardDiv);
         });
 
-        // 總結按鈕
-        const sumDiv = document.createElement("div");
-        sumDiv.style.display = "flex";
-        sumDiv.style.justifyContent = "center";
-        sumDiv.style.alignItems = "center";
 
-        // 總結按鈕
+        const sumDiv = document.createElement("div");
         if (record.summary || (record.music && record.music.music && record.music.music.length)) {
             const summaryBtn = document.createElement("button");
             summaryBtn.textContent = "查看總結";
-            summaryBtn.className = "summary-btn"; // 可加 CSS
+            summaryBtn.className = "summary-btn";
             sumDiv.appendChild(summaryBtn);
 
-            // modal
             const modal = document.createElement("div");
             modal.className = "modal";
 
             const modalContent = document.createElement("div");
             modalContent.className = "modal-content";
 
-            const title = document.createElement("h2");
-            title.textContent = "塔羅總結與音樂推薦";
-            modalContent.appendChild(title);
-
             const closeBtn = document.createElement("span");
             closeBtn.className = "close-btn";
             closeBtn.innerHTML = "&times;";
 
+            const title = document.createElement("h2");
+            title.textContent = "塔羅總結與音樂推薦";
+
             const scrollWrapper = document.createElement("div");
             scrollWrapper.className = "modal-scroll-wrapper";
 
-            // summary text
             const summaryText = document.createElement("div");
-            summaryText.id = "summaryText";
-            summaryText.className = "modal-body";
             summaryText.innerHTML = record.summary || "<p>無總結內容</p>";
             scrollWrapper.appendChild(summaryText);
 
-            // 音樂推薦
-            const musicContainer = document.createElement("div");
-            musicContainer.id = "musicRecommend";
-            musicContainer.className = "music-recommend";
-            scrollWrapper.appendChild(musicContainer);
+            const musicRecommend = document.createElement("div");
+            musicRecommend.className = "music-recommend";
+            scrollWrapper.appendChild(musicRecommend);
 
-            modalContent.appendChild(closeBtn);
-            modalContent.appendChild(scrollWrapper);
+            modalContent.append(title, closeBtn, scrollWrapper);
             modal.appendChild(modalContent);
             document.body.appendChild(modal);
 
-            // Render music
-            if (record.music) {
-                const musicData = typeof record.music === "string" ? JSON.parse(record.music) : record.music;
-                if (musicData && musicData.music && musicData.music.length > 0) {
-                    renderMusicRecommendation(musicData, musicContainer);
-                } else {
-                    musicContainer.innerHTML = "<p>未找到音樂推薦。</p>";
-                }
-            }
+            if (record.music) renderMusicRecommendation(record.music, musicRecommend);
 
-            // events
             summaryBtn.addEventListener("click", () => {
                 modal.style.display = "flex";
                 document.body.style.overflow = "hidden";
@@ -180,23 +130,31 @@ function displayRecords(records) {
             });
         }
 
-        // append
-        recDiv.appendChild(dateDiv);
-        recDiv.appendChild(qDiv);
-        recDiv.appendChild(subDiv);
-        recDiv.appendChild(cardsDiv);
-        recDiv.appendChild(sumDiv);
-
+        recDiv.append(dateDiv, qDiv, subDiv, cardsDiv, sumDiv);
         container.appendChild(recDiv);
     });
-
-    console.log("✅ 塔羅紀錄顯示完成");
 }
 
 function renderMusicRecommendation(musicData, container) {
     container.innerHTML = "";
+
+    // 如果 musicData 是字串，先解析
+    if (typeof musicData === "string") {
+        try {
+            musicData = JSON.parse(musicData);
+        } catch {
+            container.innerHTML = "<p>音樂資料格式錯誤</p>";
+            return;
+        }
+    }
+
+    // 如果沒有 music 陣列或長度為 0
+    if (!musicData.music || !Array.isArray(musicData.music) || musicData.music.length === 0) {
+        container.innerHTML = "<p>未找到音樂推薦。</p>";
+        return;
+    }
+
     const title = document.createElement("h3");
-    title.style.color = "#fff";
     title.textContent = `🎧 推薦主題：${musicData.theme || ''}`;
     container.appendChild(title);
 
@@ -211,10 +169,7 @@ function renderMusicRecommendation(musicData, container) {
             <p><strong>${m.name}</strong><br><span style="color:#aaa;">${m.artist}</span></p>
             <p style="font-style:italic; color:#ccc;">🎵 歌詞重點：${m.lyrics_hint || ''}</p>
             <iframe style="border-radius:16px; border:none; box-shadow:0 8px 20px rgba(0,0,0,0.3);"
-                src="${m.embed_url}" 
-                width="350" height="80" 
-                allowtransparency="true" 
-                allow="encrypted-media">
+                src="${m.embed_url}" width="350" height="80" allowtransparency="true" allow="encrypted-media">
             </iframe>`;
         listDiv.appendChild(songDiv);
     });
