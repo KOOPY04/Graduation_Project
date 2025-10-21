@@ -896,7 +896,7 @@ body {
 /* ➕ 新增：使用者頭像樣式 */
 .user-avatar {
   width: 35px;
-  height: 32px;
+  height: 35px;
   border-radius: 50%;
   object-fit: cover;
 }

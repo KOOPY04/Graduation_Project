@@ -86,10 +86,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             "審判", "世界"
         ];
         let folder = major.includes(name) ? "大阿爾克" :
-                     name.includes("聖杯") ? "聖杯" :
-                     name.includes("錢幣") ? "錢幣" :
-                     name.includes("寶劍") ? "寶劍" :
-                     name.includes("權杖") ? "權杖" : "其他";
+            name.includes("聖杯") ? "聖杯" :
+                name.includes("錢幣") ? "錢幣" :
+                    name.includes("寶劍") ? "寶劍" :
+                        name.includes("權杖") ? "權杖" : "其他";
         return `/static/images/${folder}/${name}.png`;
     }
 
@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ================= 登入 / 註冊 =================
     async function checkLogin() {
-        const loginBtnOld = document.getElementById("login-btn");
+        const loginBtn = document.getElementById("login-btn");
         const registerBtn = document.getElementById("register-btn");
         const logoutBtn = document.getElementById("logoutBtn");
         const dropdown = document.getElementById("userDropdown");
@@ -236,55 +236,43 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!res.ok) throw new Error();
             const user = await res.json();
 
-            //const loginBtn = loginBtnOld.cloneNode(true);
-            console.log("📦 使用者資料：", user);
-
-            // ✅ 新增：把 user_id 存到 sessionStorage
             sessionStorage.setItem("user_id", user.user_id);
+            sessionStorage.setItem("user_name", user.name || "使用者");
+            sessionStorage.setItem("user_avatar", user.picture || "/static/images/profile_icon.png");
 
-            // ✅ 新增：建立頭像元素
-            const avatarImg = document.createElement("img");
-            avatarImg.src = user.picture || "/static/images/profile_icon.png";
-            avatarImg.alt = "頭像";
-            avatarImg.className = "user-avatar";
+            loginBtn.innerHTML = `
+            <img src="${sessionStorage.getItem("user_avatar")}" class="user-avatar" />
+            <span>嗨，${sessionStorage.getItem("user_name")} 👋</span>
+        `;
 
-            // ✅ 新增：清空登入按鈕並重新建構
-            loginBtnOld.innerHTML = "";
-            loginBtnOld.appendChild(avatarImg);
-
-            const textSpan = document.createElement("span");
-            textSpan.textContent = `嗨，${user.name || "使用者"} 👋`;
-            loginBtnOld.appendChild(textSpan);
-
-            loginBtnOld.style.display = "flex";
-            registerBtn.style.display = "none";  // ← 強制隱藏
+            loginBtn.style.display = "flex";
+            registerBtn.style.display = "none";
             logoutBtn.style.display = "block";
 
-            const newLoginBtn = loginBtnOld;
-
-            // ➕ 新增：移除舊的事件監聽器並加入新的
-            loginBtnOld.onclick = null;  // ➕ 清除可能的舊事件
-
-            // 點擊下拉選單
-            newLoginBtn.addEventListener("click", (e) => {
+            loginBtn.onclick = e => {
                 e.stopPropagation();
                 dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-            });
+            };
+
         } catch {
-            loginBtnOld.textContent = "登入";
-            loginBtnOld.style.display = "flex";
-            registerBtn.style.display = "flex";  // ← 顯示註冊按鈕
+            loginBtn.textContent = "登入";
+            loginBtn.style.display = "flex";
+            registerBtn.style.display = "flex";
             logoutBtn.style.display = "none";
 
-            // ✅ 清除所有舊事件，重新綁定登入 Modal 事件
-            const newLoginBtn = loginBtnOld.cloneNode(true);
-            loginBtnOld.parentNode.replaceChild(newLoginBtn, loginBtnOld);
-
-            newLoginBtn.addEventListener("click", () => {
-                loginModal.style.display = "flex";
-            });
+            loginBtn.onclick = () => { document.getElementById("loginModal").style.display = "flex"; };
         }
     }
+
+
+    // 點擊畫面其他地方關閉下拉選單
+    window.addEventListener("click", (e) => {
+        const dropdown = document.getElementById("userDropdown");
+        if (!e.target.closest("#userDropdown") && !e.target.closest("#login-btn")) {
+            dropdown.style.display = "none";
+        }
+    });
+
 
     checkLogin();
 
@@ -325,6 +313,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 loginModal.style.display = "none";
                 showAlert("登入成功 🌟");
+                clearForm(loginForm);
                 checkLogin();
             } else {
                 loginError.textContent = data.error || "登入失敗";
@@ -335,7 +324,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             loginError.textContent = "登入發生錯誤";
             loginError.style.display = "block";
         }
+        setupModalClear(loginModal, loginForm);
     });
+
+    // 套用
+
 
     // 登出
     document.getElementById("logoutBtn").addEventListener("click", async () => {
@@ -375,21 +368,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (res.ok) {
                 showAlert("註冊成功 ✅，請查看 Email！");
+                clearForm(registerForm);
                 setTimeout(() => { registerModal.style.display = "none"; }, 1500);
             }
         } catch (err) {
             console.error(err);
             registerMessage.textContent = "註冊時發生錯誤";
         }
+        setupModalClear(registerModal, registerForm);
     });
 
-    // 點擊畫面其他地方關閉使用者選單
-    window.addEventListener("click", (e) => {
-        const dropdown = document.getElementById("userDropdown");
-        if (!e.target.closest("#userDropdown") && !e.target.closest("#login-btn")) {
-            dropdown.style.display = "none";
-        }
-    });
+
 
     // 帳號設定 Modal 開關
     const accountSettingsModal = document.getElementById("accountSettingsModal");
@@ -402,6 +391,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     closeAccountSettings.addEventListener("click", () => {
         accountSettingsModal.style.display = "none";
+        clearAccountSettings();
     });
 
     // 手風琴功能
@@ -433,31 +423,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!res.ok) return;
         const user = await res.json();
         nameInput.value = user.name || "";
-        avatarPreview.src = user.avatar || "/static/images/default-avatar.png";
+        avatarPreview.src = user.avatar
+            ? (user.avatar.startsWith("/static/") ? user.avatar : `/static/${user.avatar}`)
+            : "/static/images/default-avatar.png";
     }
     loadProfile();
 
-    // ===== 更新個人資料 =====
     // ===== 更新個人資料 =====
     profileBtn.addEventListener("click", async () => {
         try {
             const res = await fetch("/api/profile", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({
-                    name: nameInput.value
-                })
+                body: JSON.stringify({ name: nameInput.value })
             });
             const data = await res.json();
             if (res.ok) {
                 showAlert(data.message);
-
-                // ✅ 新增：同步更新右上角按鈕名字
-                const loginBtn = document.getElementById("login-btn");
-                if (loginBtn) {
-                    loginBtn.textContent = `嗨，${nameInput.value || "使用者"} 👋`;
-                }
-
+                sessionStorage.setItem("user_name", nameInput.value);
+                checkLogin(); // ← 重新渲染右上角按鈕
             } else {
                 showAlert(data.detail || "更新失敗");
             }
@@ -467,11 +451,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
+
     // ===== 上傳頭像 =====
     avatarBtn.addEventListener("click", async () => {
         if (!avatarInput.files[0]) return showAlert("請選擇圖片");
+
+        const file = avatarInput.files[0];
         const formData = new FormData();
-        formData.append("file", avatarInput.files[0]);
+        formData.append("file", file);
+
         try {
             const res = await fetch("/api/avatar", {
                 method: "POST",
@@ -480,12 +468,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
             const data = await res.json();
             if (res.ok) {
-                avatarPreview.src = data.avatar;
+                // ✅ 更新右上角 & 左側頭像
+                sessionStorage.setItem("user_avatar", data.avatar);
+                checkLogin();
+                avatarPreview.src = data.avatar.startsWith("/static/") ? data.avatar : `/static/${data.avatar}`;
                 showAlert(data.message);
             } else {
                 showAlert(data.detail || "更新失敗");
             }
-        } catch (err) { console.error(err); showAlert("更新發生錯誤"); }
+        } catch (err) {
+            console.error(err);
+            showAlert("更新發生錯誤");
+        }
     });
 
     // ===== 更新密碼 =====
@@ -504,12 +498,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = await res.json();
             if (res.ok) {
                 showAlert(data.message);
-                oldPassword.value = newPassword.value = confirmPassword.value = "";
+
+                // ✅ 清空欄位
+                oldPassword.value = "";
+                newPassword.value = "";
+                confirmPassword.value = "";
+
             } else {
                 showAlert(data.detail || "更新失敗");
             }
-        } catch (err) { console.error(err); showAlert("更新發生錯誤"); }
+        } catch (err) {
+            console.error(err);
+            showAlert("更新發生錯誤");
+        }
     });
+
+
 
     // ===== 頭像即時預覽 =====
     avatarInput.addEventListener("change", () => {
@@ -531,6 +535,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 點外部關閉
     window.addEventListener("click", (e) => {
         if (e.target === contactModal) contactModal.style.display = "none";
+        clearAccountSettings();
     });
 
     // 送出表單
@@ -550,7 +555,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (res.ok) {
                 contactMessage.style.color = "green";
                 contactMessage.textContent = data.message;
-                contactForm.reset();
+                clearForm(contactForm);
             } else {
                 contactMessage.style.color = "red";
                 contactMessage.textContent = data.detail || "送出失敗";
@@ -560,8 +565,40 @@ document.addEventListener("DOMContentLoaded", async () => {
             contactMessage.textContent = "送出失敗，請稍後再試";
             console.error(err);
         }
+        setupModalClear(contactModal, contactForm);
     });
+
+    function clearAccountSettings() {
+        nameInput.value = "";
+        avatarInput.value = "";
+        oldPassword.value = "";
+        newPassword.value = "";
+        confirmPassword.value = "";
+    }
 
     // 使用者選單導向
     document.getElementById("recordBtn").onclick = () => window.location.href = "/records";
 });
+
+function clearForm(form) {
+    if (!form) return;
+    form.reset(); // 清空 input、textarea、select
+}
+
+function setupModalClear(modal, form) {
+    const closeBtns = modal.querySelectorAll(".close-btn");
+    closeBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            modal.style.display = "none";
+            clearForm(form);
+        });
+    });
+
+    window.addEventListener("click", e => {
+        if (e.target === modal) {
+            modal.style.display = "none";
+            clearForm(form);
+        }
+    });
+}
+
