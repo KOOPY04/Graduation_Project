@@ -23,6 +23,10 @@ from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from typing import Any
 import json
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 # from OAuth import OAuth2PasswordRequestFormWithCookie
 # from email_config import conf
 
@@ -45,6 +49,11 @@ db_config = {
 SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_THIS_SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 小時
+SMTP_SERVER = os.getenv("SMTP_SERVER")
+SMTP_PORT = int(os.getenv("SMTP_PORT"))
+SMTP_USER = os.getenv("SMTP_USER")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
 
@@ -87,12 +96,31 @@ class User(BaseModel):
     email: str
     name: str
     picture: str | None = None
-    
+
+
 class UserOut(BaseModel):
     user_id: int
     email: str
     name: str
     picture: str | None = None
+
+
+class ProfileUpdate(BaseModel):
+    name: Optional[str] = None
+
+
+class PasswordUpdate(BaseModel):
+    old_password: str
+    new_password: str
+    confirm_password: str
+
+
+class ContactForm(BaseModel):
+    name: str
+    email: EmailStr
+    type: str = "其他"
+    message: str
+
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
@@ -173,8 +201,10 @@ async def interpret_page(request: Request, count: int = 3, category_id: int = 1,
             "subquestion_text": subquestion  # ✅ 新增傳入模板
         }
     )
-    
+
 # ===== 塔羅紀錄頁 =====
+
+
 @app.get("/records", response_class=HTMLResponse)
 async def records_page(request: Request):
     return templates.TemplateResponse("RecordPage.html", {"request": request})
@@ -373,7 +403,8 @@ async def recommend_music(request: Request):
 
     # 🧠 GPT prompt: 生成總主題 + 3~5 首符合塔羅總結情緒的中文歌曲
     prompt = f"""
-你是一位專業的音樂心理分析師，根據以下塔羅占卜總結挑選3~5首中文歌曲。
+你是一位專業的音樂心理分析師，根據以下塔羅占卜總結、問題類型和子問題挑選歌詞詞意符合的3~5首歌曲。
+歌曲任何語言都可以推薦，推薦多元文化音樂風格。
 請同時給出一個簡短的「總主題」 (theme)，代表整體音樂情緒方向。
 每首歌曲需包含：
 - name: 歌名
@@ -397,18 +428,15 @@ async def recommend_music(request: Request):
 子問題：
 {subquestion}
 """
-
-    import json
     try:
         response = client.chat.completions.create(
             model="gpt-5-mini",
             messages=[
-                {"role": "system", "content": "你是一位能讀懂情緒並推薦韓文歌曲的分析師"},
+                {"role": "system", "content": "你是一位能讀懂情緒並推薦歌曲的分析師"},
                 {"role": "user", "content": prompt}
             ],
         )
         music_data = json.loads(response.choices[0].message.content.strip())
-        # print("GPT 推薦歌曲:", music_data)
     except Exception as e:
         print("GPT 生成錯誤:", e)
         # fallback
@@ -420,6 +448,8 @@ async def recommend_music(request: Request):
             ]
         }
 
+    print("生成的音樂資料:", music_data.get("theme"),
+          "首數:", len(music_data.get("songs", [])))
     # 搜尋 Spotify embed URL
     try:
         spotify_songs = []
@@ -430,7 +460,7 @@ async def recommend_music(request: Request):
             resp = requests.get(
                 "https://api.spotify.com/v1/search",
                 params={"q": query, "type": "track",
-                        "limit": 1, "market": "TW"},
+                        "limit": 1},
                 headers=headers,
                 timeout=5
             )
@@ -496,6 +526,8 @@ async def logout():
     return response
 
 # ========= 註冊 API =========
+
+
 @app.get("/auth/google")
 async def auth_google(request: Request):
     token = await oauth.google.authorize_access_token(request)
@@ -523,7 +555,7 @@ async def auth_google(request: Request):
                 subject="塔羅占卜網站 - 歡迎加入 🌟",
                 recipients=[user_info["email"]],
                 body=f"<h3>嗨 {user_info.get('name', '占卜者')}，</h3>"
-                     f"<p>感謝使用 Google 帳號註冊塔羅占卜網站，歡迎開始你的靈性旅程！</p>",
+                f"<p>感謝使用 Google 帳號註冊塔羅占卜網站，歡迎開始你的靈性旅程！</p>",
                 subtype="html"
             )
             fm = FastMail(conf)
@@ -560,7 +592,7 @@ async def login_google(request: Request):
 #         return User(email=user["email"], name=user["name"], picture=user.get("picture"))
 #     except jwt.ExpiredSignatureError:
 #         raise HTTPException(status_code=401, detail="登入已過期")
-    
+
 def get_current_user(token: str | None = Cookie(default=None)) -> User:
     if not token:
         raise HTTPException(status_code=401, detail="未登入")
@@ -624,9 +656,11 @@ async def register(request: Request):
 
     return {"message": "註冊成功 🎉"}
 
+
 class Card(BaseModel):
     name: str
     orientation: str  # 正位/逆位
+
 
 class TarotRecordCreate(BaseModel):
     user_id: int
@@ -636,11 +670,14 @@ class TarotRecordCreate(BaseModel):
     summary: Optional[str] = ""
     music: Optional[Any] = None
 
+
 class TarotRecord(TarotRecordCreate):
     id: int
     created_at: datetime
 
 # ===== API: 取得使用者塔羅紀錄 =====
+
+
 @app.get("/api/tarot-records/{user_id}")
 def get_records(user_id: int):
     try:
@@ -693,6 +730,8 @@ def get_record(record_id: int):
         raise HTTPException(status_code=500, detail="抓取紀錄失敗")
 
 # ===== 儲存塔羅紀錄 API =====
+
+
 @app.post("/api/tarot-records")
 async def save_tarot_record(data: dict = Body(...)):
     required_fields = ["user_id", "category", "selected_cards"]
@@ -715,7 +754,8 @@ async def save_tarot_record(data: dict = Body(...)):
             (user_id, category, subquestion, selected_cards, summary, music)
             VALUES (%s, %s, %s, %s, %s, %s)
         """
-        cursor.execute(sql, (user_id, category, subquestion, selected_cards, summary, music))
+        cursor.execute(sql, (user_id, category, subquestion,
+                       selected_cards, summary, music))
         conn.commit()
         record_id = cursor.lastrowid
         cursor.close()
@@ -724,3 +764,114 @@ async def save_tarot_record(data: dict = Body(...)):
     except Exception as e:
         print("儲存塔羅紀錄錯誤:", e)
         return JSONResponse({"error": "儲存失敗"}, status_code=500)
+
+
+@app.post("/api/profile")
+async def update_profile(data: ProfileUpdate, user: User = Depends(get_current_user)):
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+
+    updates = []
+    params = []
+    if data.name:
+        updates.append("name=%s")    # 對應資料庫欄位
+        params.append(data.name)
+    if not updates:
+        return JSONResponse({"message": "沒有要更新的資料"}, status_code=400)
+
+    params.append(user.user_id)
+    sql = f"UPDATE users SET {', '.join(updates)} WHERE id=%s"
+    cursor.execute(sql, params)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return {"message": "個人資料已更新"}
+
+# @app.post("/api/avatar")
+# async def upload_avatar(file: UploadFile = File(...), user: User = Depends(get_current_user)):
+#     upload_dir = "static/uploads"
+#     os.makedirs(upload_dir, exist_ok=True)
+#     file_path = os.path.join(upload_dir, f"{user.user_id}_{file.filename}")
+
+#     with open(file_path, "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer)
+
+#     conn = mysql.connector.connect(**db_config)
+#     cursor = conn.cursor()
+#     cursor.execute("UPDATE users SET picture=%s WHERE id=%s", (f"/{file_path.replace(os.sep,'/')}", user.user_id))
+#     conn.commit()
+#     cursor.close()
+#     conn.close()
+
+#     return {"message": "頭像已更新", "avatar": f"/{file_path.replace(os.sep,'/')}"}
+
+
+@app.post("/api/password")
+async def update_password(data: PasswordUpdate, user: User = Depends(get_current_user)):
+    # 先比對舊密碼
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT password_hash FROM users WHERE id=%s", (user.user_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if not row or not bcrypt.checkpw(data.old_password.encode(), row["password_hash"].encode()):
+        raise HTTPException(status_code=400, detail="舊密碼錯誤")
+
+    if data.new_password != data.confirm_password:
+        raise HTTPException(status_code=400, detail="新密碼與確認密碼不一致")
+
+    new_hash = bcrypt.hashpw(data.new_password.encode(),
+                             bcrypt.gensalt()).decode()
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET password_hash=%s WHERE id=%s",
+                   (new_hash, user.user_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return {"message": "密碼已更新成功"}
+
+
+@app.post("/contact")
+async def contact_form(
+    name: str = Form(...),
+    email: str = Form(...),
+    type: str = Form(...),
+    message: str = Form(...)
+):
+    try:
+        # 建立 HTML 郵件
+        msg = MIMEMultipart()
+        msg["From"] = SMTP_USER
+        msg["To"] = SUPPORT_EMAIL
+        msg["Reply-To"] = email  # 使用者填寫的 Email
+        msg["Subject"] = f"客服聯絡表單：{type}問題"
+
+        # HTML 內容
+        body = f"""
+        <html>
+        <body>
+            <p><b>用戶:</b> {name}<br>
+            <b>Email:</b> {email}</p>
+            <p><b>問題類型:</b> {type}<br>
+            <b>訊息內容:</b><br>{message.replace('\n', '<br>')}</p>
+        </body>
+        </html>
+        """
+        msg.attach(MIMEText(body, "html"))
+
+        # 使用 Gmail SMTP 發送
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(SMTP_USER, SUPPORT_EMAIL, msg.as_string())
+
+        return JSONResponse(content={"success": True, "message": "已成功寄送給客服"})
+
+    except Exception as e:
+        return JSONResponse(content={"success": False, "message": str(e)})
