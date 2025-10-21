@@ -35,7 +35,7 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
-.spread-card {
+.startpage .spread-card {
   position: relative;
   width: 100%;
   height: 550px;
@@ -180,6 +180,15 @@
   z-index: 1005; /* 確保比 modal、卡牌名稱高 */
 }
 
+/* ➕ 新增：使用者頭像樣式 */
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
 .nav-btn {
   padding: 6px 12px;
   font-size: 14px;
@@ -190,6 +199,16 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: flex;              /* ➕ 新增 */
+  align-items: center;        /* ➕ 新增 */
+  gap: 8px;
+}
+
+.nav-btn .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: none; /* 預設隱藏 */
 }
 
 .nav-btn:hover {
