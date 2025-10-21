@@ -224,7 +224,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target === cardNameModal) cardNameModal.style.display = "none";
     });
 
-    /*
     // ================= 登入 / 註冊 =================
     async function checkLogin() {
         const loginBtn = document.getElementById("login-btn");
