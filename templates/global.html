@@ -1,0 +1,62 @@
+<!--global.html-->
+
+<!-- 🔹 導覽列（登入 / 註冊按鈕） -->
+<div class="nav-right">
+  <button id="login-btn" class="nav-btn">登入</button>
+  <button id="register-btn" class="nav-btn">註冊</button>
+</div>
+
+<!-- 🔹 登入 Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span id="closeLogin" class="close">&times;</span>
+    <h2>登入帳號</h2>
+    <button id="googleLoginBtn" class="google-btn">以 Google 登入</button>
+    <hr />
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required /><br />
+      <input type="password" id="password" placeholder="密碼" required /><br />
+      <button type="submit">登入</button>
+    </form>
+    <p id="loginError" style="color: red; display: none"></p>
+  </div>
+</div>
+
+<!-- 🔹 註冊 Modal -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeRegister">&times;</span>
+    <h2>📝 註冊帳號</h2>
+    <form id="registerForm">
+      <label>Email:</label>
+      <input type="email" id="registerEmail" name="email" required placeholder="請輸入你的Email..." /><br />
+      <label>密碼:</label>
+      <input type="password" id="registerPassword" name="password" required placeholder="請輸入你的密碼..." /><br />
+      <label>姓名:</label>
+      <input type="text" id="registerName" name="name" placeholder="請輸入你的姓名..." /><br />
+      <button type="submit">註冊</button>
+    </form>
+    <div id="registerMessage"></div>
+  </div>
+</div>
+
+<!-- 🔹 使用者下拉選單 -->
+<div id="userDropdown" class="user-dropdown hidden">
+  <ul>
+    <li id="profileBtn">個人資料</li>
+    <li id="avatarBtn">更換頭像</li>
+    <li id="accountSettingsBtn">帳號設定</li>
+    <li id="recordBtn">占卜紀錄</li>
+    <li id="helpBtn">幫助 / FAQ</li>
+    <li id="contactBtn">聯絡我們</li>
+    <li id="logoutBtn">登出</li>
+  </ul>
+</div>
+
+<!-- 🔹 自訂警示框 -->
+<div id="customAlert" class="custom-alert">
+  <div class="custom-alert-content">
+    <p id="customAlertMsg"></p>
+    <button id="customAlertBtn">確定</button>
+  </div>
+</div>
