@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const introModal = document.getElementById("introModal");
     const closeIntro = document.getElementById("closeIntro");
 
-    const loginBtn = document.getElementById("login-btn");
+    // const loginBtn = document.getElementById("login-btn");
     const registerBtn = document.getElementById("register-btn");
     const loginModal = document.getElementById("loginModal");
     const closeLogin = document.getElementById("closeLogin");
