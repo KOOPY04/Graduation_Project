@@ -16,9 +16,23 @@
       <div class="header">
         <h1>我的塔羅占卜紀錄</h1>
       </div>
-      <div id="records"></div>
+
+      <!-- 紫色透明容器，包含 header 與紀錄 -->
+      <div class="records-container">
+        <div class="record-header">
+          <div>時間</div>
+          <div>問題類型</div>
+          <div>子問題</div>
+          <div>抽牌</div>
+          <div>總結</div>
+        </div>
+
+        <div class="allrecord">
+          <div id="records"></div>
+        </div>
+      </div>
     </div>
 
-    <script src="/static/RecordPage/recordpage.js"></script>
+    <script src="/static/recordpage/recordpage.js" defer></script>
   </body>
 </html>

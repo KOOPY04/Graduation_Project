@@ -45,6 +45,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     const closeRegister = document.getElementById("closeRegister");
     const registerForm = document.getElementById("registerForm");
     const registerMessage = document.getElementById("registerMessage");
+    const contactBtn = document.getElementById("contactBtn");
+    const contactModal = document.getElementById("contactModal");
+    const closeContact = document.getElementById("closeContact");
+    const contactForm = document.getElementById("contactForm");
+    const contactMessage = document.getElementById("contactMessage");
+
+    // const userId = sessionStorage.getItem("user_id");
+    const token = localStorage.getItem("token");
+
+    const nameInput = document.getElementById("name");
+    const profileBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(1) .btn");
+
+    const avatarInput = document.getElementById("avatarInput");
+    const avatarPreview = document.getElementById("avatarPreview");
+    const avatarBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(2) .btn");
+
+    const oldPassword = document.getElementById("oldPassword");
+    const newPassword = document.getElementById("newPassword");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const passwordBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(3) .btn");
+
 
     const tarotCards = [
         "權杖首牌", "權杖二", "權杖三", "權杖四", "權杖五", "權杖六", "權杖七", "權杖八", "權杖九", "權杖十",
@@ -370,12 +391,177 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 使用者選單導向
-    document.getElementById("profileBtn").onclick = () => window.location.href = "/profile";
-    document.getElementById("avatarBtn").onclick = () => window.location.href = "/change-avatar";
-    document.getElementById("accountSettingsBtn").onclick = () => window.location.href = "/account-settings";
-    document.getElementById("recordBtn").onclick = () => window.location.href = "/records";
-    document.getElementById("helpBtn").onclick = () => window.location.href = "/help";
-    document.getElementById("contactBtn").onclick = () => window.location.href = "/contact";
+    // 帳號設定 Modal 開關
+    const accountSettingsModal = document.getElementById("accountSettingsModal");
+    const accountSettingsBtn = document.getElementById("accountSettingsBtn");
+    const closeAccountSettings = document.getElementById("closeAccountSettings");
 
+    accountSettingsBtn.addEventListener("click", () => {
+        accountSettingsModal.style.display = "flex";
+    });
+
+    closeAccountSettings.addEventListener("click", () => {
+        accountSettingsModal.style.display = "none";
+    });
+
+    // 手風琴功能
+    document.querySelectorAll(".accordion-header").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const content = btn.nextElementSibling;
+            const isOpen = content.style.display === "block";
+            document.querySelectorAll(".accordion-content").forEach(c => c.style.display = "none");
+            content.style.display = isOpen ? "none" : "block";
+        });
+    });
+
+    // 頭像預覽
+    if (avatarInput && avatarPreview) {
+        avatarInput.addEventListener("change", () => {
+            const file = avatarInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => avatarPreview.src = e.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    // ===== 讀取個人資料 =====
+    async function loadProfile() {
+        const res = await fetch("/api/me", {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const user = await res.json();
+        nameInput.value = user.name || "";
+        avatarPreview.src = user.avatar || "/static/images/default-avatar.png";
+    }
+    loadProfile();
+
+    // ===== 更新個人資料 =====
+    // ===== 更新個人資料 =====
+    profileBtn.addEventListener("click", async () => {
+        try {
+            const res = await fetch("/api/profile", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    name: nameInput.value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showAlert(data.message);
+
+                // ✅ 新增：同步更新右上角按鈕名字
+                const loginBtn = document.getElementById("login-btn");
+                if (loginBtn) {
+                    loginBtn.textContent = `嗨，${nameInput.value || "使用者"} 👋`;
+                }
+
+            } else {
+                showAlert(data.detail || "更新失敗");
+            }
+        } catch (err) {
+            console.error(err);
+            showAlert("更新發生錯誤");
+        }
+    });
+
+    // ===== 上傳頭像 =====
+    avatarBtn.addEventListener("click", async () => {
+        if (!avatarInput.files[0]) return showAlert("請選擇圖片");
+        const formData = new FormData();
+        formData.append("file", avatarInput.files[0]);
+        try {
+            const res = await fetch("/api/avatar", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok) {
+                avatarPreview.src = data.avatar;
+                showAlert(data.message);
+            } else {
+                showAlert(data.detail || "更新失敗");
+            }
+        } catch (err) { console.error(err); showAlert("更新發生錯誤"); }
+    });
+
+    // ===== 更新密碼 =====
+    passwordBtn.addEventListener("click", async () => {
+        if (newPassword.value !== confirmPassword.value) return showAlert("新密碼與確認密碼不一致");
+        try {
+            const res = await fetch("/api/password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    old_password: oldPassword.value,
+                    new_password: newPassword.value,
+                    confirm_password: confirmPassword.value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showAlert(data.message);
+                oldPassword.value = newPassword.value = confirmPassword.value = "";
+            } else {
+                showAlert(data.detail || "更新失敗");
+            }
+        } catch (err) { console.error(err); showAlert("更新發生錯誤"); }
+    });
+
+    // ===== 頭像即時預覽 =====
+    avatarInput.addEventListener("change", () => {
+        const file = avatarInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => avatarPreview.src = e.target.result;
+        reader.readAsDataURL(file);
+    });
+
+    contactBtn.addEventListener("click", () => {
+        contactModal.style.display = "block";
+    });
+
+    closeContact.addEventListener("click", () => {
+        contactModal.style.display = "none";
+    });
+
+    // 點外部關閉
+    window.addEventListener("click", (e) => {
+        if (e.target === contactModal) contactModal.style.display = "none";
+    });
+
+    // 送出表單
+    contactForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        contactMessage.textContent = "正在送出...";
+
+        const formData = new FormData(contactForm);
+
+        try {
+            const res = await fetch("/contact", {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                contactMessage.style.color = "green";
+                contactMessage.textContent = data.message;
+                contactForm.reset();
+            } else {
+                contactMessage.style.color = "red";
+                contactMessage.textContent = data.detail || "送出失敗";
+            }
+        } catch (err) {
+            contactMessage.style.color = "red";
+            contactMessage.textContent = "送出失敗，請稍後再試";
+            console.error(err);
+        }
+    });
+
+    // 使用者選單導向
+    document.getElementById("recordBtn").onclick = () => window.location.href = "/records";
 });
