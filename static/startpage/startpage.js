@@ -3,15 +3,22 @@ function showAlert(msg) {
     const modal = document.getElementById("customAlert");
     const msgBox = document.getElementById("customAlertMsg");
     const btn = document.getElementById("customAlertBtn");
-    if (!modal || !msgBox || !btn) { alert(msg); return; }
+
+    if (!modal || !msgBox || !btn) {
+        alert(msg);
+        return;
+    }
+
     msgBox.textContent = msg;
     modal.style.display = "flex";
-    btn.onclick = () => { modal.style.display = "none"; };
+    btn.onclick = () => {
+        modal.style.display = "none";
+    };
 }
 
 // ================= DOMContentLoaded =================
 document.addEventListener("DOMContentLoaded", async () => {
-    // await loadUserId();
+
     // 清除上一輪占卜資料
     sessionStorage.removeItem("saved_cards");
     sessionStorage.removeItem("saved_summary");
@@ -21,9 +28,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const fanContainer = document.getElementById("fanContainer");
     const cardNameModal = document.getElementById("cardNameModal");
     const closeCardName = document.getElementById("closeCardName");
+
     const introBtn = document.getElementById("introBtn");
     const introModal = document.getElementById("introModal");
     const closeIntro = document.getElementById("closeIntro");
+
     const loginBtn = document.getElementById("login-btn");
     const registerBtn = document.getElementById("register-btn");
     const loginModal = document.getElementById("loginModal");
@@ -31,26 +40,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     const loginForm = document.getElementById("loginForm");
     const loginError = document.getElementById("loginError");
     const googleLoginBtn = document.getElementById("googleLoginBtn");
+
     const registerModal = document.getElementById("registerModal");
     const closeRegister = document.getElementById("closeRegister");
     const registerForm = document.getElementById("registerForm");
     const registerMessage = document.getElementById("registerMessage");
 
     const tarotCards = [
-        "權杖首牌", "權杖二", "權杖三", "權杖四", "權杖五", "權杖六", "權杖七", "權杖八", "權杖九", "權杖十", "權杖侍從", "權杖騎士", "權杖皇后", "權杖國王",
-        "聖杯首牌", "聖杯二", "聖杯三", "聖杯四", "聖杯五", "聖杯六", "聖杯七", "聖杯八", "聖杯九", "聖杯十", "聖杯侍從", "聖杯騎士", "聖杯皇后", "聖杯國王",
-        "寶劍首牌", "寶劍二", "寶劍三", "寶劍四", "寶劍五", "寶劍六", "寶劍七", "寶劍八", "寶劍九", "寶劍十", "寶劍侍從", "寶劍騎士", "寶劍皇后", "寶劍國王",
-        "錢幣首牌", "錢幣二", "錢幣三", "錢幣四", "錢幣五", "錢幣六", "錢幣七", "錢幣八", "錢幣九", "錢幣十", "錢幣侍從", "錢幣騎士", "錢幣皇后", "錢幣國王",
-        "愚人", "魔術師", "女祭司", "皇后", "皇帝", "教皇", "戀人", "戰車", "力量", "隱者", "命運之輪", "正義", "倒吊人", "死神", "節制", "惡魔", "高塔", "星星", "月亮", "太陽", "審判", "世界"
+        "權杖首牌", "權杖二", "權杖三", "權杖四", "權杖五", "權杖六", "權杖七", "權杖八", "權杖九", "權杖十",
+        "權杖侍從", "權杖騎士", "權杖皇后", "權杖國王",
+        "聖杯首牌", "聖杯二", "聖杯三", "聖杯四", "聖杯五", "聖杯六", "聖杯七", "聖杯八", "聖杯九", "聖杯十",
+        "聖杯侍從", "聖杯騎士", "聖杯皇后", "聖杯國王",
+        "寶劍首牌", "寶劍二", "寶劍三", "寶劍四", "寶劍五", "寶劍六", "寶劍七", "寶劍八", "寶劍九", "寶劍十",
+        "寶劍侍從", "寶劍騎士", "寶劍皇后", "寶劍國王",
+        "錢幣首牌", "錢幣二", "錢幣三", "錢幣四", "錢幣五", "錢幣六", "錢幣七", "錢幣八", "錢幣九", "錢幣十",
+        "錢幣侍從", "錢幣騎士", "錢幣皇后", "錢幣國王",
+        "愚人", "魔術師", "女祭司", "皇后", "皇帝", "教皇", "戀人", "戰車", "力量", "隱者", "命運之輪",
+        "正義", "倒吊人", "死神", "節制", "惡魔", "高塔", "星星", "月亮", "太陽", "審判", "世界"
     ];
 
     function getCardImagePath(name) {
-        const major = ["愚人", "魔術師", "女祭司", "皇后", "皇帝", "教皇", "戀人", "戰車", "力量", "隱者", "命運之輪", "正義", "倒吊人", "死神", "節制", "惡魔", "高塔", "星星", "月亮", "太陽", "審判", "世界"];
+        const major = ["愚人", "魔術師", "女祭司", "皇后", "皇帝", "教皇", "戀人", "戰車", "力量", "隱者",
+            "命運之輪", "正義", "倒吊人", "死神", "節制", "惡魔", "高塔", "星星", "月亮", "太陽",
+            "審判", "世界"
+        ];
         let folder = major.includes(name) ? "大阿爾克" :
-            name.includes("聖杯") ? "聖杯" :
-                name.includes("錢幣") ? "錢幣" :
-                    name.includes("寶劍") ? "寶劍" :
-                        name.includes("權杖") ? "權杖" : "其他";
+                     name.includes("聖杯") ? "聖杯" :
+                     name.includes("錢幣") ? "錢幣" :
+                     name.includes("寶劍") ? "寶劍" :
+                     name.includes("權杖") ? "權杖" : "其他";
         return `/static/images/${folder}/${name}.png`;
     }
 
@@ -76,7 +94,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // =============== 展示塔羅牌扇形 ===============
     cardBack.addEventListener("click", async () => {
-
         document.body.style.overflow = 'auto';
         cardBack.style.display = "none";
         fanContainer.style.display = "block";
@@ -104,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             card.style.opacity = 0;
             card.style.left = `${centerX - cardWidth / 2}px`;
             card.style.top = `${centerYTop}px`;
-            card.style.transform = `rotate(0deg) scale(0)`;
+            card.style.transform = "rotate(0deg) scale(0)";
             card.style.zIndex = i;
             fanContainer.appendChild(card);
 
@@ -131,6 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 card.style.top = `${y}px`;
                 card.style.transform = `rotate(${angleDeg}deg) translateZ(${zOffset}px) scale(1)`;
                 card.style.opacity = 1;
+
             }, i * 10);
 
             // 點擊卡片顯示大圖 Modal
@@ -153,12 +171,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         const modalOverlay = document.getElementById("modalOverlay");
         const modalCard = document.getElementById("modalCard");
         const modalCardName = document.getElementById("modalCardName");
+
         modalOverlay.addEventListener("click", () => {
             modalOverlay.classList.remove("active");
             modalCard.classList.remove("active");
             modalCardName.style.transform = "translateX(-50%) scale(0)";
             modalCardName.style.opacity = "0";
-            setTimeout(() => { modalCardName.style.display = "none"; }, 150);
+            setTimeout(() => {
+                modalCardName.style.display = "none";
+            }, 150);
         });
     });
 
@@ -173,10 +194,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 介紹 Modal
     introBtn.addEventListener("click", () => { introModal.style.display = "flex"; });
     closeIntro.addEventListener("click", () => { introModal.style.display = "none"; });
-    window.addEventListener("click", (e) => { if (e.target === introModal) introModal.style.display = "none"; });
+    window.addEventListener("click", (e) => {
+        if (e.target === introModal) introModal.style.display = "none";
+    });
 
     closeCardName.addEventListener("click", () => cardNameModal.style.display = "none");
-    window.addEventListener("click", e => { if (e.target === cardNameModal) cardNameModal.style.display = "none"; });
+    window.addEventListener("click", e => {
+        if (e.target === cardNameModal) cardNameModal.style.display = "none";
+    });
 
     // ================= 登入 / 註冊 =================
     async function checkLogin() {
@@ -186,43 +211,64 @@ document.addEventListener("DOMContentLoaded", async () => {
         const dropdown = document.getElementById("userDropdown");
 
         try {
-            const res = await fetch("/api/me");
+            const res = await fetch("/api/me", { credentials: "include" });
             if (!res.ok) throw new Error();
             const user = await res.json();
-            const loginBtn = loginBtnOld.cloneNode(true);
+
+            //const loginBtn = loginBtnOld.cloneNode(true);
             console.log("📦 使用者資料：", user);
 
             // ✅ 新增：把 user_id 存到 sessionStorage
             sessionStorage.setItem("user_id", user.user_id);
 
-            loginBtnOld.parentNode.replaceChild(loginBtn, loginBtnOld);
+            // ✅ 新增：建立頭像元素
+            const avatarImg = document.createElement("img");
+            avatarImg.src = user.picture || "/static/images/profile_icon.png";
+            avatarImg.alt = "頭像";
+            avatarImg.className = "user-avatar";
 
-            loginBtn.textContent = `嗨，${user.name || "使用者"} 👋`;
-            loginBtn.style.backgroundImage = user.picture ? `url(${user.picture})` : "";
-            loginBtn.classList.remove("hidden");
-            registerBtn.classList.add("hidden");
-            logoutBtn.classList.remove("hidden");
+            // ✅ 新增：清空登入按鈕並重新建構
+            loginBtnOld.innerHTML = "";
+            loginBtnOld.appendChild(avatarImg);
 
-            loginBtn.addEventListener("click", (e) => {
+            const textSpan = document.createElement("span");
+            textSpan.textContent = `嗨，${user.name || "使用者"} 👋`;
+            loginBtnOld.appendChild(textSpan);
+
+            loginBtnOld.style.display = "flex";
+            registerBtn.style.display = "none";  // ← 強制隱藏
+            logoutBtn.style.display = "block";
+
+            const newLoginBtn = loginBtnOld;
+
+            // ➕ 新增：移除舊的事件監聽器並加入新的
+            loginBtnOld.onclick = null;  // ➕ 清除可能的舊事件
+
+            // 點擊下拉選單
+            newLoginBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
             });
         } catch {
-            const loginBtn = loginBtnOld.cloneNode(true);
-            loginBtnOld.parentNode.replaceChild(loginBtn, loginBtnOld);
-            loginBtn.textContent = "登入";
-            loginBtn.style.backgroundImage = "";
-            loginBtn.classList.remove("hidden");
-            logoutBtn.classList.add("hidden");
-            registerBtn.classList.remove("hidden");
+            loginBtnOld.textContent = "登入";
+            loginBtnOld.style.display = "flex";
+            registerBtn.style.display = "flex";  // ← 顯示註冊按鈕
+            logoutBtn.style.display = "none";
 
-            loginBtn.addEventListener("click", () => { loginModal.style.display = "flex"; });
+            // ✅ 清除所有舊事件，重新綁定登入 Modal 事件
+            const newLoginBtn = loginBtnOld.cloneNode(true);
+            loginBtnOld.parentNode.replaceChild(newLoginBtn, loginBtnOld);
+
+            newLoginBtn.addEventListener("click", () => {
+                loginModal.style.display = "flex";
+            });
         }
     }
+
     checkLogin();
 
     // 登入 Modal
-    loginBtn.addEventListener("click", () => { loginModal.style.display = "flex"; });
+    //loginBtn.addEventListener("click", () => { loginModal.style.display = "flex"; });
     closeLogin.addEventListener("click", () => { loginModal.style.display = "none"; });
     window.addEventListener("click", e => { if (e.target === loginModal) loginModal.style.display = "none"; });
 
@@ -233,6 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         loginError.style.display = "none";
+
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
@@ -242,17 +289,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: new URLSearchParams({ username: email, password: password })
             });
+
             const data = await resp.json();
 
             if (resp.ok) {
                 localStorage.setItem("token", data.access_token);
-                // ✅ 新增：呼叫 /api/me 取得 user_id
+
                 const meRes = await fetch("/api/me");
                 if (meRes.ok) {
                     const meData = await meRes.json();
                     sessionStorage.setItem('user_id', meData.user_id);
                     console.log("📦 已存 user_id:", meData.user_id);
                 }
+
                 loginModal.style.display = "none";
                 showAlert("登入成功 🌟");
                 checkLogin();
@@ -299,8 +348,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
+
             const result = await res.json();
             registerMessage.textContent = result.message || result.error;
+
             if (res.ok) {
                 showAlert("註冊成功 ✅，請查看 Email！");
                 setTimeout(() => { registerModal.style.display = "none"; }, 1500);
@@ -326,19 +377,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("recordBtn").onclick = () => window.location.href = "/records";
     document.getElementById("helpBtn").onclick = () => window.location.href = "/help";
     document.getElementById("contactBtn").onclick = () => window.location.href = "/contact";
+
 });
-
-
-// async function loadUserId() {
-//     try {
-//         const res = await fetch('/api/me');
-//         if (!res.ok) return null;
-//         const data = await res.json();
-//         if (data.user_id) sessionStorage.setItem('user_id', data.user_id);
-//         console.log("📦 使用者資料：", data);
-//         return data.user_id;
-//     } catch (err) {
-//         console.error('載入使用者 ID 失敗', err);
-//         return null;
-//     }
-// }
