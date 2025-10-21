@@ -578,21 +578,6 @@ async def login_google(request: Request):
 
 
 # ========= 驗證登入狀態 =========
-
-
-# def get_current_user(token: str | None = Cookie(default=None)) -> User:
-#     if not token:
-#         raise HTTPException(status_code=401, detail="未登入")
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#         email = payload.get("sub")
-#         user = get_user_by_email(email)
-#         if not user:
-#             raise HTTPException(status_code=404, detail="使用者不存在")
-#         return User(email=user["email"], name=user["name"], picture=user.get("picture"))
-#     except jwt.ExpiredSignatureError:
-#         raise HTTPException(status_code=401, detail="登入已過期")
-
 def get_current_user(token: str | None = Cookie(default=None)) -> User:
     if not token:
         raise HTTPException(status_code=401, detail="未登入")
