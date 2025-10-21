@@ -10,7 +10,7 @@ import mysql.connector
 import requests
 import base64
 from datetime import datetime, timedelta
-from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie, Body
+from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie, Body, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -23,6 +23,7 @@ from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from typing import Any
 import json
+import shutil
 
 import smtplib
 from email.mime.text import MIMEText
@@ -103,6 +104,12 @@ class UserOut(BaseModel):
     email: str
     name: str
     picture: str | None = None
+
+
+class GoogleUser(BaseModel):
+    email: str
+    name: str
+    picture: str | None = None  # Google 頭貼 URL
 
 
 class ProfileUpdate(BaseModel):
@@ -533,22 +540,36 @@ async def auth_google(request: Request):
     token = await oauth.google.authorize_access_token(request)
     resp = await oauth.google.get('https://openidconnect.googleapis.com/v1/userinfo', token=token)
     user_info = resp.json()
-    # {"sub": "...", "email": "...", "name": "...", "picture": "..."}
+    # user_info = {"sub": "...", "email": "...", "name": "...", "picture": "..."}
 
-    first_time = False  # 判斷是否第一次登入
-    if not get_user_by_email(user_info["email"]):
+    first_time = False
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM users WHERE email=%s", (user_info["email"],))
+    user = cursor.fetchone()
+
+    if not user:
         first_time = True
-        conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO users (email, name) VALUES (%s, %s)",
-            (user_info["email"], user_info["name"])
+            "INSERT INTO users (email, name, picture) VALUES (%s, %s, %s)",
+            (user_info["email"], user_info["name"],
+             user_info["picture"])  # ✅ 儲存 Google 頭貼
         )
         conn.commit()
-        cursor.close()
-        conn.close()
+    else:
+        # ✅ 如果使用者已存在但資料庫沒有頭貼，就補上 Google 的
+        if not user.get("picture") and user_info.get("picture"):
+            cursor.execute(
+                "UPDATE users SET picture=%s WHERE email=%s",
+                (user_info["picture"], user_info["email"])
+            )
+            conn.commit()
 
-    # 如果是第一次登入，寄歡迎信
+    cursor.close()
+    conn.close()
+
+    # ✅ 如果是第一次登入寄信
     if first_time:
         try:
             message = MessageSchema(
@@ -629,11 +650,13 @@ async def register(request: Request):
 
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
+    default_avatar = "/static/images/default_avatar.png"  # ✅ 預設頭貼
+
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO users (email, password_hash, name) VALUES (%s, %s, %s)",
-        (email, hashed, name)
+        "INSERT INTO users (email, password_hash, name, picture) VALUES (%s, %s, %s, %s)",
+        (email, hashed, name, default_avatar)
     )
     conn.commit()
     cursor.close()
@@ -773,23 +796,23 @@ async def update_profile(data: ProfileUpdate, user: User = Depends(get_current_u
 
     return {"message": "個人資料已更新"}
 
-# @app.post("/api/avatar")
-# async def upload_avatar(file: UploadFile = File(...), user: User = Depends(get_current_user)):
-#     upload_dir = "static/uploads"
-#     os.makedirs(upload_dir, exist_ok=True)
-#     file_path = os.path.join(upload_dir, f"{user.user_id}_{file.filename}")
+@app.post("/api/avatar")
+async def upload_avatar(file: UploadFile = File(...), user: User = Depends(get_current_user)):
+    upload_dir = "static/uploads"
+    os.makedirs(upload_dir, exist_ok=True)
+    file_path = os.path.join(upload_dir, f"{user.user_id}_{file.filename}")
 
-#     with open(file_path, "wb") as buffer:
-#         shutil.copyfileobj(file.file, buffer)
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
 
-#     conn = mysql.connector.connect(**db_config)
-#     cursor = conn.cursor()
-#     cursor.execute("UPDATE users SET picture=%s WHERE id=%s", (f"/{file_path.replace(os.sep,'/')}", user.user_id))
-#     conn.commit()
-#     cursor.close()
-#     conn.close()
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET picture=%s WHERE id=%s", (f"/{file_path.replace(os.sep,'/')}", user.user_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
-#     return {"message": "頭像已更新", "avatar": f"/{file_path.replace(os.sep,'/')}"}
+    return {"message": "頭像已更新", "avatar": f"/{file_path.replace(os.sep,'/')}"}
 
 
 @app.post("/api/password")
