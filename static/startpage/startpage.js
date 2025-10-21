@@ -203,6 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target === cardNameModal) cardNameModal.style.display = "none";
     });
 
+    /*
     // ================= 登入 / 註冊 =================
     async function checkLogin() {
         const loginBtnOld = document.getElementById("login-btn");
@@ -377,5 +378,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("recordBtn").onclick = () => window.location.href = "/records";
     document.getElementById("helpBtn").onclick = () => window.location.href = "/help";
     document.getElementById("contactBtn").onclick = () => window.location.href = "/contact";
-
+*/
 });
