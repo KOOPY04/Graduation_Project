@@ -188,3 +188,81 @@
   animation: glow 1.5s infinite alternate;
   transition: transform 0.5s ease, opacity 0.5s ease;
 }
+
+/* ==================== 響應式設定 ==================== */
+
+/* 📱 手機 (螢幕寬度小於 600px) */
+@media (max-width: 600px) {
+  .card-back {
+    width: 200px;
+    height: 300px;
+    margin: 10px auto;
+  }
+
+  .spread-card {
+    height: 420px;
+  }
+
+  .spread-card .card {
+    width: 90px;
+    height: 135px;
+  }
+
+  .modal-card {
+    width: 230px;
+    height: 350px;
+  }
+
+  #modalCardName {
+    font-size: 20px;
+    top: 12%;
+  }
+}
+
+/* 💻 平板 (600px ~ 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .card-back {
+    width: 250px;
+    height: 380px;
+  }
+
+  .spread-card {
+    height: 500px;
+  }
+
+  .spread-card .card {
+    width: 110px;
+    height: 165px;
+  }
+
+  .modal-card {
+    width: 270px;
+    height: 400px;
+  }
+
+  #modalCardName {
+    font-size: 24px;
+  }
+}
+
+/* 🖥️ 桌機 (大於 1024px) */
+@media (min-width: 1025px) {
+  .card-back {
+    width: 300px;
+    height: 450px;
+  }
+
+  .spread-card .card {
+    width: 126px;
+    height: 189px;
+  }
+
+  .modal-card {
+    width: 300px;
+    height: 460px;
+  }
+
+  #modalCardName {
+    font-size: 28px;
+  }
+}
