@@ -14,6 +14,9 @@ function showAlert(msg) {
 
 document.addEventListener("DOMContentLoaded", async () => {
     const categorySelect = document.getElementById("categorySelect");
+    const subquestionText = document.getElementById("subquestionInput").value.trim();
+    categorySelect.selectedIndex = 0; // 選回第一個 option
+    subquestionText.value = "";
 
     // 取得問題類型
     const catRes = await fetch("/api/categories");
@@ -49,4 +52,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
+
+    window.addEventListener("pageshow", () => {
+        sessionStorage.removeItem("category_id");
+        sessionStorage.removeItem("category_name");
+        sessionStorage.removeItem("subquestion_text");
+        sessionStorage.removeItem("count");
+
+        const categorySelect = document.getElementById("categorySelect");
+        const subquestionInput = document.getElementById("subquestionInput");
+        if (categorySelect) categorySelect.selectedIndex = 0;
+        if (subquestionInput) subquestionInput.value = "";
+    });
+
 });

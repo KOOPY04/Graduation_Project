@@ -391,7 +391,7 @@ body::-webkit-scrollbar {
   height: 100vh;
   padding-right: 8px;
   box-sizing: border-box;
-  margin-top: -20px;
+  margin-top: -10px;
   /* scroll-margin: 10px 8px; */
   /* margin-top: -20px; */
   scrollbar-color: #dcbedc transparent; /* Firefox: 滑塊 + 透明軌道 */
@@ -728,10 +728,10 @@ label {
   background: #f1f1f1;
 }
 
-html,
+/* html,
 body {
   overflow-y: hidden;
-}
+} */
 
 .user-dropdown {
   position: absolute;
@@ -887,7 +887,7 @@ body {
 .nav-right {
   position: fixed;
   top: 20px;
-  right: 20px;
+  right: 40px;
   display: flex;
   gap: 10px; /* 按鈕間距 */
   z-index: 1005; /* 確保比 modal、卡牌名稱高 */
