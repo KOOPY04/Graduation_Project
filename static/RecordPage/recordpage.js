@@ -90,6 +90,12 @@ function displayRecords(records) {
             const modalContent = document.createElement("div");
             modalContent.className = "modal-content";
 
+            const scrollWrapper = document.createElement("div");
+            scrollWrapper.className = "modal-scroll-wrapper";
+
+            const modalBody = document.createElement("div");
+            modalBody.className = "modal-body";
+
             const closeBtn = document.createElement("span");
             closeBtn.className = "close-btn";
             closeBtn.innerHTML = "&times;";
@@ -97,15 +103,17 @@ function displayRecords(records) {
             const title = document.createElement("h2");
             title.textContent = "塔羅總結與音樂推薦";
 
-            const scrollWrapper = document.createElement("div");
-            scrollWrapper.className = "modal-scroll-wrapper";
 
             const summaryText = document.createElement("div");
             summaryText.innerHTML = record.summary || "<p>無總結內容</p>";
-            scrollWrapper.appendChild(summaryText);
-
+            modalBody.appendChild(summaryText);
+            scrollWrapper.appendChild(modalBody);
+            
             const musicRecommend = document.createElement("div");
             musicRecommend.className = "music-recommend";
+            const musicTitle = document.createElement("h3");
+            musicTitle.textContent = "🎶 音樂推薦";
+            musicRecommend.appendChild(musicTitle);
             scrollWrapper.appendChild(musicRecommend);
 
             modalContent.append(title, closeBtn, scrollWrapper);
