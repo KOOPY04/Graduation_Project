@@ -140,6 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // 點擊卡片顯示大圖 Modal
             card.addEventListener("click", (e) => {
+                closeAllModals();
                 e.stopPropagation();
                 const modalOverlay = document.getElementById("modalOverlay");
                 const modalCard = document.getElementById("modalCard");
@@ -178,8 +179,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "/select";
     });
 
-    // ================= 介紹 Modal =================
-    introBtn.addEventListener("click", () => { introModal.style.display = "flex"; });
+    // 介紹 Modal
+    introBtn.addEventListener("click", () => {
+        closeAllModals();
+        introModal.style.display = "flex";
+    });
     closeIntro.addEventListener("click", () => { introModal.style.display = "none"; });
     window.addEventListener("click", (e) => {
         if (e.target === introModal) introModal.style.display = "none";
