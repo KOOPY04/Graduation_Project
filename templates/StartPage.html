@@ -9,182 +9,18 @@
     <link rel="stylesheet" href="/static/StartPage/startpage.css" />
   </head>
   <body class="startpage">
-    <div class="nav-right">
-      <button id="login-btn" class="btn">登入</button>
-      <button id="register-btn" class="btn">註冊</button>
+
+    {% include "global.html" %}
+
+    
+    <div class="header">
+      <h1>🃏 塔羅占卜</h1>
     </div>
-    <div class="scroll-container">
-      <!-- 登入 Modal -->
-      <div id="loginModal" class="modal">
-        <div class="modal-content">
-          <span id="closeLogin" class="close-btn">&times;</span>
-          <h2>登入帳號</h2>
-          <button id="googleLoginBtn" class="google-btn">以 Google 登入</button>
-          <hr />
-          <form id="loginForm">
-            <input type="email" id="email" placeholder="Email" required /><br />
-            <input
-              type="password"
-              id="password"
-              placeholder="密碼"
-              required
-            /><br />
-            <button type="submit">登入</button>
-          </form>
-          <p id="loginError" style="color: red; display: none"></p>
-        </div>
-      </div>
 
-      <!-- 註冊 Modal -->
-      <div id="registerModal" class="modal">
-        <div class="modal-content">
-          <span class="close-btn" id="closeRegister">&times;</span>
-          <h2>📝 註冊帳號</h2>
-          <form id="registerForm">
-            <label>Email:</label>
-            <input
-              type="email"
-              id="registerEmail"
-              name="email"
-              required
-              placeholder="請輸入你的Email..."
-            /><br />
-            <label>密碼:</label>
-            <input
-              type="password"
-              id="registerPassword"
-              name="password"
-              required
-              placeholder="請輸入你的密碼..."
-            /><br />
-            <label>姓名:</label>
-            <input
-              type="text"
-              id="registerName"
-              name="name"
-              placeholder="請輸入你的姓名..."
-            /><br />
-            <button type="submit">註冊</button>
-          </form>
-          <div id="registerMessage"></div>
-        </div>
-      </div>
-
-      <!-- 帳號設定 Modal -->
-      <div id="accountSettingsModal" class="modal">
-        <div class="modal-content">
-          <span class="close-btn" id="closeAccountSettings">&times;</span>
-          <h2>⚙️ 帳號設定</h2>
-
-          <div class="accordion">
-            <!-- 個人資料 -->
-            <div class="accordion-item">
-              <button class="accordion-header">個人資料設定</button>
-              <div class="accordion-content">
-                <label>暱稱：</label>
-                <input type="text" id="name" placeholder="輸入暱稱" />
-                <button class="btn">儲存變更</button>
-              </div>
-            </div>
-
-            <!-- 更換頭像 -->
-            <div class="accordion-item">
-              <button class="accordion-header">更換頭像</button>
-              <div class="accordion-content">
-                <img
-                  id="avatarPreview"
-                  src="/static/images/default-avatar.png"
-                  alt="目前頭像"
-                  class="avatar"
-                />
-                <input type="file" id="avatarInput" accept="image/*" />
-                <button class="btn">上傳頭像</button>
-              </div>
-            </div>
-
-            <!-- 更改密碼 -->
-            <div class="accordion-item">
-              <button class="accordion-header">更改密碼</button>
-              <div class="accordion-content">
-                <label>舊密碼：</label>
-                <input type="password" id="oldPassword" />
-                <label>新密碼：</label>
-                <input type="password" id="newPassword" />
-                <label>確認新密碼：</label>
-                <input type="password" id="confirmPassword" />
-                <button class="btn">更新密碼</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 聯絡我們 Modal -->
-      <div id="contactModal" class="modal">
-        <div class="modal-content">
-          <span class="close-btn" id="closeContact">&times;</span>
-          <h2>聯絡我們</h2>
-          <form id="contactForm">
-            <label>用戶</label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              required
-              placeholder="請輸入暱稱"
-            />
-
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              required
-              placeholder="請輸入Email"
-            />
-
-            <div class="select-question-type">
-              <label>問題類型</label>
-              <select name="type" id="type">
-                <option value="技術">技術</option>
-                <option value="帳號">帳號</option>
-                <option value="其他">其他</option>
-              </select>
-            </div>
-
-            <label>訊息內容</label>
-            <textarea
-              name="message"
-              id="message"
-              required
-              placeholder="請輸入訊息"
-            ></textarea>
-
-            <button type="submit">送出</button>
-          </form>
-          <p id="contactMessage" style="color: green"></p>
-        </div>
-      </div>
-
-      <div class="header">
-        <h1>🃏 塔羅占卜</h1>
-      </div>
-
-      <!-- 登入後的使用者下拉選單 -->
-      <div id="userDropdown" class="user-dropdown hidden">
-        <ul>
-          <li id="recordBtn">占卜紀錄</li>
-          <li id="accountSettingsBtn">帳號設定</li>
-          <li id="contactBtn">聯絡我們</li>
-          <li id="logoutBtn">登出</li>
-        </ul>
-      </div>
-
-      <!-- 大卡背 -->
-      <div class="tarot-preview">
-        <div class="card-back-container">
-          <div id="cardBack" class="card-back"></div>
-        </div>
+    <!-- 大卡背 -->
+    <div class="tarot-preview">
+      <div class="card-back-container">
+        <div id="cardBack" class="card-back"></div>
       </div>
 
       <!-- 扇形牌陣 -->
@@ -270,6 +106,8 @@
         </div>
       </div>
     </div>
+    
+    <script src="/static/global.js"></script>
     <script src="/static/startpage/startpage.js"></script>
   </body>
 </html>
