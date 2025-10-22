@@ -500,10 +500,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         return JSONResponse({"error": "帳號或密碼錯誤"}, status_code=401)
 
     access_token = create_access_token(data={"sub": user["email"]})
-    response = JSONResponse(
-        {"access_token": access_token, "token_type": "bearer"})
-    response.set_cookie("token", access_token,
-                        httponly=True, max_age=3600 * 24)
+    
+    
+    # 只返回 JSON，不使用 RedirectResponse
+    response = JSONResponse({
+        "access_token": access_token, 
+        "token_type": "bearer"
+    })
+    response.set_cookie("token", access_token, httponly=True, max_age=3600 * 24)
     return response
 
 # ========= 取得使用者資訊 API =========
@@ -533,7 +537,7 @@ async def logout():
     return response
 
 # ========= 註冊 API =========
-
+from fastapi.responses import HTMLResponse
 
 @app.get("/auth/google")
 async def auth_google(request: Request):
@@ -585,9 +589,28 @@ async def auth_google(request: Request):
             print("寄送歡迎信失敗:", e)
 
     jwt_token = create_access_token(data={"sub": user_info["email"]})
-    response = RedirectResponse(url="/")
+
+    response = HTMLResponse("""
+    <!DOCTYPE html>
+    <html>
+    <head><title>登入完成</title></head>
+    <body>
+    <script>
+    const returnPath = sessionStorage.getItem("returnPath");
+    if (returnPath) {
+        sessionStorage.removeItem("returnPath");
+        window.location.href = returnPath;
+    } else {
+        window.location.href = "/";
+    }
+    </script>
+    </body>
+    </html>
+    """)
     response.set_cookie("token", jwt_token, httponly=True, max_age=3600 * 24)
     return response
+
+
 
 # ========= Google OAuth2 登入 =========
 
@@ -596,6 +619,7 @@ async def auth_google(request: Request):
 async def login_google(request: Request):
     redirect_uri = "http://127.0.0.1:8000/auth/google"
     return await oauth.google.authorize_redirect(request, redirect_uri)
+
 
 
 # ========= 驗證登入狀態 =========
@@ -860,6 +884,8 @@ async def contact_form(
         msg["Reply-To"] = email  # 使用者填寫的 Email
         msg["Subject"] = f"客服聯絡表單：{type}問題"
 
+        safe_message = message.replace("\n", "<br>")
+
         # HTML 內容
         body = f"""
         <html>
@@ -867,7 +893,7 @@ async def contact_form(
             <p><b>用戶:</b> {name}<br>
             <b>Email:</b> {email}</p>
             <p><b>問題類型:</b> {type}<br>
-            <b>訊息內容:</b><br>{message.replace('\n', '<br>')}</p>
+            <b>訊息內容:</b><br>{safe_message}</p>
         </body>
         </html>
         """
