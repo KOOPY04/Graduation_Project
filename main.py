@@ -585,7 +585,23 @@ async def auth_google(request: Request):
             print("寄送歡迎信失敗:", e)
 
     jwt_token = create_access_token(data={"sub": user_info["email"]})
-    response = RedirectResponse(url="/")
+    response = HTMLResponse("""
+    <!DOCTYPE html>
+    <html>
+    <head><title>登入完成</title></head>
+    <body>
+    <script>
+    const returnPath = sessionStorage.getItem("returnPath");
+    if (returnPath) {
+        sessionStorage.removeItem("returnPath");
+        window.location.href = returnPath;
+    } else {
+        window.location.href = "/";
+    }
+    </script>
+    </body>
+    </html>
+    """)
     response.set_cookie("token", jwt_token, httponly=True, max_age=3600 * 24)
     return response
 
@@ -773,7 +789,6 @@ async def save_tarot_record(data: dict = Body(...)):
         print("儲存塔羅紀錄錯誤:", e)
         return JSONResponse({"error": "儲存失敗"}, status_code=500)
 
-
 @app.post("/api/profile")
 async def update_profile(data: ProfileUpdate, user: User = Depends(get_current_user)):
     conn = mysql.connector.connect(**db_config)
@@ -813,7 +828,6 @@ async def upload_avatar(file: UploadFile = File(...), user: User = Depends(get_c
     conn.close()
 
     return {"message": "頭像已更新", "avatar": f"/{file_path.replace(os.sep,'/')}"}
-
 
 @app.post("/api/password")
 async def update_password(data: PasswordUpdate, user: User = Depends(get_current_user)):
@@ -860,6 +874,8 @@ async def contact_form(
         msg["Reply-To"] = email  # 使用者填寫的 Email
         msg["Subject"] = f"客服聯絡表單：{type}問題"
 
+
+        safe_message = message.replace("\n", "<br>")
         # HTML 內容
         body = f"""
         <html>
@@ -867,7 +883,7 @@ async def contact_form(
             <p><b>用戶:</b> {name}<br>
             <b>Email:</b> {email}</p>
             <p><b>問題類型:</b> {type}<br>
-            <b>訊息內容:</b><br>{message.replace('\n', '<br>')}</p>
+            <b>訊息內容:</b><br>{safe_message}</p>
         </body>
         </html>
         """
