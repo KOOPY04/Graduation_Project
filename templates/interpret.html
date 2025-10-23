@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/static/interpret/interpret.css" />
   </head>
   <body class="interpret">
-
+    {% include "global.html" %}
     <a href="/" class="home-section">
       <img src="/static/images/home_icon.png" alt="回主頁" class="home-icon" />
       <span class="site-title">塔羅占卜</span>
@@ -63,6 +63,7 @@
       </div>
     </div>
 
+    <script src="/static/global.js"></script>
     <script src="/static/interpret/interpret.js" defer></script>
 
     <!-- 新增：清除 sessionStorage 後返回上一頁 -->
