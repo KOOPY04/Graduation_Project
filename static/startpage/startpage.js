@@ -228,6 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target === cardNameModal) cardNameModal.style.display = "none";
     });
 
+    /*
     // ================= 登入 / 註冊 =================
     async function checkLogin() {
         const loginBtn = document.getElementById("login-btn");
@@ -613,9 +614,10 @@ function clearForm(form) {
     if (!form) return;
     form.reset(); // 清空 input、textarea、select
 }
-
+*/
 function setupModalClear(modal, form) {
     const closeBtns = modal.querySelectorAll(".close-btn");
+
     closeBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             modal.style.display = "none";
@@ -630,4 +632,5 @@ function setupModalClear(modal, form) {
         }
     });
 }
+});
 
