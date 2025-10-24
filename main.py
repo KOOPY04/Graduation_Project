@@ -38,6 +38,32 @@ from passlib.context import CryptContext
 
 from PIL import Image
 
+import os
+
+app = FastAPI()
+
+@app.on_event("startup")
+def generate_favicon():
+    try:
+        img_path = "static/images/favicon.png"
+        ico_path = "static/images/favicon.ico"
+        if os.path.exists(img_path):
+            img = Image.open(img_path)
+            size = max(img.size)
+            new_img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+            x = (size - img.width) // 2
+            y = (size - img.height) // 2
+            new_img.paste(img, (x, y))
+            new_img.save(
+                ico_path,
+                format="ICO",
+                sizes=[(16,16), (32,32), (48,48), (64,64), (128,128), (256,256)]
+            )
+            print("✅ favicon.ico 已自動生成")
+    except Exception as e:
+        print("⚠️ favicon 生成失敗:", e)
+
+'''
 # 讀取原圖
 img = Image.open("static/images/favicon.png")
 
@@ -60,7 +86,7 @@ new_img.save(
     format="ICO",
     sizes=[(16,16), (32,32), (48,48), (64,64), (128,128), (256,256)]
 )
-
+'''
 # ========= 初始化 =========
 load_dotenv()
 app = FastAPI()
