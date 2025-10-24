@@ -391,7 +391,7 @@ body::-webkit-scrollbar {
   height: 100vh;
   padding-right: 8px;
   box-sizing: border-box;
-  margin-top: -20px;
+  margin-top: -10px;
   /* scroll-margin: 10px 8px; */
   /* margin-top: -20px; */
   scrollbar-color: #dcbedc transparent; /* Firefox: 滑塊 + 透明軌道 */
