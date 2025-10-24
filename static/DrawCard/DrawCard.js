@@ -159,7 +159,18 @@ function initTarotPage() {
         sessionStorage.setItem("selected_cards", JSON.stringify(selected));
         sessionStorage.setItem("count", maxSelect);
         sessionStorage.setItem("category_id", categoryId);
+        sessionStorage.setItem("category_name", categoryName); 
         sessionStorage.setItem("subquestion_text", subquestionText);
+
+        // ✅ 新增：保存給 global.js 用的鍵名
+        sessionStorage.setItem("saved_category_name", categoryName);
+        sessionStorage.setItem("saved_subquestion", subquestionText);
+
+        console.log("📦 已保存所有占卜資料:", {
+            categoryName,
+            subquestionText,
+            count: maxSelect
+        });
 
         window.location.href = `/interpret`;
     };
