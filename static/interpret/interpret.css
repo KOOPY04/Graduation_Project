@@ -172,12 +172,14 @@ body {
   overflow-y: visible;
 }
 
-/* .modal.body {
+
+/*.modal.body {
   max-height: 70vh;
-  padding-right: 10px; // 避免滾軸遮住文字 
-  scroll-behavior: smooth; // 滑動平滑 
+  padding-right: 10px; 避免滾軸遮住文字
+  scroll-behavior: smooth; 滑動平滑
   margin: 0 10px;
-} */
+}*/
+
 
 @keyframes glow {
   0%, 100% {
