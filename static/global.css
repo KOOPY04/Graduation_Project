@@ -8,8 +8,27 @@
   overflow-y: hidden;
 } */
 
+@font-face {
+  font-family: "辰宇落雁體 Thin Monospaced";  
+  src: local("辰宇落雁體 Thin Monospaced"),
+       url("/ChenYuluoyan.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'cwTeXFangSong';
+  font-style: normal;
+  font-weight: 500;
+  src: url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.eot);
+  src: url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.eot?#iefix) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.ttf) format('truetype');
+}
+
 body {
-  font-family: "Noto Sans TC", sans-serif;
+  font-family: "cwTeXFangSong", "辰宇落雁體 Thin Monospaced", sans-serif;
   margin: 0;
   padding: 20px;
   background: url("/static/images/background.png") no-repeat center center fixed;
@@ -20,16 +39,33 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   animation: fadeIn 1s ease-out;
+  overflow-y: hidden;
+}
+
+h1{
+  font-family: "辰宇落雁體 Thin Monospaced", sans-serif;
+  font-size: 50px;
+  font-weight: 950;
+  margin-bottom: 10px;
+  color: #5e3370;
 }
 
 /* ---- 主要標題 ---- */
-h1,
 h2,
 h3 {
   color: #5e3370;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
   margin: 20px 0 10px 0;
 }
+
+.logo-icon {
+  height: 1.4em;              /* 跟文字高度一致 */
+  width: auto;                /* 自動依比例縮放，不會被拉伸 */
+  vertical-align: middle;
+  margin-right: 8px;   /* 與文字保持距離 */
+  border-radius: 6px;  /* 可選：讓邊角更柔和 */
+}
+
 
 .form-container {
   margin-top: 30px;
@@ -43,7 +79,10 @@ button,
 .btn {
   padding: 12px 24px;
   margin: 5px;
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: expanded;
+  font-family: "cwTeXFangSong", "辰宇落雁體 Thin Monospaced", sans-serif;
   border: none;
   border-radius: 10px;
   background: linear-gradient(135deg, #5e3370, #a678b2);
@@ -69,7 +108,7 @@ button:hover,
 
 .button-row button {
   padding: 10px 20px;
-  font-size: 16px;
+  /* font-size: 16px; */
   background-color: #5e3370;
   color: white;
   border: none;
@@ -138,8 +177,8 @@ button:hover,
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Cinzel", "Noto Serif TC", serif;
-  font-size: 16px;
+  font-family: "cwTeXFangSong", "Cinzel", "Noto Serif TC", serif;
+  font-size: 20px;
   font-weight: 600;
   color: #ffffffff;
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
@@ -389,9 +428,8 @@ body::-webkit-scrollbar {
   overflow-y: auto;
   position: relative;
   height: 100vh;
-  padding-right: 8px;
   box-sizing: border-box;
-  margin-top: -10px;
+  margin-top: -20px;
   /* scroll-margin: 10px 8px; */
   /* margin-top: -20px; */
   scrollbar-color: #dcbedc transparent; /* Firefox: 滑塊 + 透明軌道 */
@@ -617,8 +655,10 @@ body::-webkit-scrollbar {
 #name,
 #profileEmail,
 #oldPassword,
-#newPassword,
-#confirmPassword,
+#setNewPassword,
+#setConfirmPassword,
+#changeNewPassword,
+#changeConfirmPassword,
 #type,
 #message {
   width: 100%;
@@ -641,8 +681,10 @@ body::-webkit-scrollbar {
 #name:focus,
 #profileEmail:focus,
 #oldPassword:focus,
-#newPassword:focus,
-#confirmPassword:focus,
+#setNewPassword:focus,
+#setConfirmPassword:focus,
+#changeNewPassword:focus,
+#changeConfirmPassword:focus,
 #message:focus {
   outline: none;
   border-color: #5e3370;
@@ -650,6 +692,7 @@ body::-webkit-scrollbar {
 }
 
 ::placeholder,
+#subquestionInput::placeholder,
 #email::placeholder,
 #password::placeholder,
 #registerEmail::placeholder,
@@ -658,8 +701,10 @@ body::-webkit-scrollbar {
 #name::placeholder,
 #profileEmail::placeholder,
 #oldPassword::placeholder,
-#newPassword::placeholder,
-#confirmPassword::placeholder,
+#setNewPassword::placeholder,
+#setConfirmPassword::placeholder,
+#changeNewPassword::placeholder,
+#changeConfirmPassword::placeholder,
 #type::placeholder,
 #message::placeholder {
   color: #a678b2;
@@ -735,6 +780,9 @@ body {
 
 .user-dropdown {
   position: absolute;
+  font-size: 20px;
+  font-weight: 500;
+  font-stretch: expanded;
   top: 60px;
   right: 20px;
   background: white;
@@ -818,7 +866,7 @@ body {
 .account-settings {
   width: 400px;
   margin: 40px auto;
-  font-family: "Noto Sans TC", sans-serif;
+  font-family: "cwTeXFangSong", "Noto Sans TC", sans-serif;
 }
 
 .accordion-item {
@@ -904,8 +952,9 @@ body {
 
 .nav-btn {
   padding: 6px;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: expanded;
   background-color: #a678b2;
   color: white;
   border: none;
