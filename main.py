@@ -24,7 +24,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from typing import Any
 import json
 import shutil
-
+import aiohttp
+import asyncio
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -40,6 +41,7 @@ templates = Jinja2Templates(directory="templates")
 # ========= 資料庫 =========
 db_config = {
     "host": "localhost",
+    "port":3307,
     "user": "root",
     "password": "",  # 改成你的密碼
     "database": "tarot_db"
@@ -324,14 +326,12 @@ async def interpret_api(request: Request):
     conn.close()
     return {"status": "ok", "cards": result, "count": count}
 
-# ===== API: GPT 占卜總結 =====
-
+# ===== API: GPT 占卜總結（加速版） =====
 
 @app.post("/api/summary")
 async def tarot_summary(request: Request):
     try:
         data = await request.json()
-        # print("Request JSON:", data)
         category_name = data.get("category_name")
         subquestion = data.get("subquestion_text")
         cards = data.get("cards", [])
@@ -339,39 +339,36 @@ async def tarot_summary(request: Request):
         if not cards:
             return {"status": "error", "msg": "缺少卡牌資料"}
 
-        # 整理卡牌資訊
+        # ✅ 預先組合卡牌資訊
         card_text = "\n".join([
             f"{c['position_name']}：{c['name']}（{c['position']}）→ {c['meaning']} [關鍵詞: {c.get('keyword', '')}]"
             for c in cards
         ])
 
-        # print("Card Text:", card_text)
-
+        # ✅ 提示語簡化（減少字數以加速回應）
         prompt = f"""
-            你是一位溫柔的塔羅占卜師。請根據以下抽牌結果撰寫完整占卜故事。
-            要求：
-            1. 使用繁體中文。
-            2. 問題類型中的感情有多方面的解釋(例如：愛情、親情、友情、職場關係等)，請根據子問題調整故事內容。
-            3. 以段落形式呈現，每個重點段落用 <p>...</p>。
-            4. 牌位、關鍵詞或重要建議用 <strong>加粗</strong>。
-            5. 依據正逆位關鍵詞加強故事性。
-            6. 給使用者溫暖建議。
-            7. 最後做一段總結，給予正向鼓勵。
-            篇幅約 200~300 字。
+你是一位溫柔的塔羅占卜師。請根據以下抽牌結果，用繁體中文寫一段約200字的占卜故事：
+1. 使用繁體中文。
+2. 以段落形式呈現，每個重點段落用 <p>...</p>。
+3. 關鍵詞與重點用 <strong>加粗</strong>。
+4. 根據子問題的面向（愛情、事業、人際等）調整語氣及故事性。
+5. 結尾給使用者一段溫暖的建議。
 
-            問題：{category_name}
-            子問題：{subquestion}
-            抽到的牌：
-            {card_text}
-        """
+問題：{category_name}
+子問題：{subquestion}
+抽到的牌：
+{card_text}
+"""
 
+        # ✅ 使用 gpt-4o-mini 並加快回應
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "你是一位善於引導的塔羅占卜師"},
+                {"role": "system", "content": "你是一位溫柔又快速的塔羅占卜師"},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.9
+            temperature=0.7,
+            top_p=0.9
         )
 
         story = response.choices[0].message.content.strip()
@@ -386,16 +383,19 @@ SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
 
-def get_spotify_token():
+async def get_spotify_token():
     """取得 Spotify API Token"""
     auth = f"{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}"
     b64_auth = base64.b64encode(auth.encode()).decode()
-    response = requests.post(
-        "https://accounts.spotify.com/api/token",
-        headers={"Authorization": f"Basic {b64_auth}"},
-        data={"grant_type": "client_credentials"}
-    )
-    return response.json().get("access_token")
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            "https://accounts.spotify.com/api/token",
+            headers={"Authorization": f"Basic {b64_auth}"},
+            data={"grant_type": "client_credentials"},
+            timeout=5
+        ) as resp:
+            result = await resp.json()
+            return result.get("access_token")
 
 
 @app.post("/api/recommend_music")
@@ -408,86 +408,102 @@ async def recommend_music(request: Request):
     if not tarot_summary:
         return {"status": "error", "msg": "缺少塔羅總結內容"}
 
-    # 🧠 GPT prompt: 生成總主題 + 3~5 首符合塔羅總結情緒的中文歌曲
+    # === GPT Prompt ===
     prompt = f"""
-你是一位專業的音樂心理分析師，根據以下塔羅占卜總結、問題類型和子問題挑選歌詞詞意符合的3~5首歌曲。
-歌曲任何語言都可以推薦，推薦多元文化音樂風格。
-請同時給出一個簡短的「總主題」 (theme)，代表整體音樂情緒方向。
-每首歌曲需包含：
-- name: 歌名
-- artist: 歌手
-- style: 音樂風格
-- mood: 情緒氛圍
-- lyrics_hint: 歌詞方向建議
-請回傳 JSON 格式如下：
+你是一位音樂心理分析師，根據以下塔羅占卜總結、問題類型和子問題，
+推薦 3~5 首能反映情緒的歌曲，並給出整體音樂主題。
+請輸出純 JSON，不要有多餘文字。
+格式：
 {{
-    "theme": "XXX",
+    "theme": "（請生成這種有故事性的完整句子）",
     "songs": [
-        {{ "name":"...", "artist":"...", "style":"...",
-            "mood":"...", "lyrics_hint":"..." }},
-        ...
+        {{"name":"...", "artist":"...", "style":"...", "mood":"...", "lyrics_hint":"..."}}
     ]
 }}
-塔羅占卜總結：
-{tarot_summary}
-問題類型：
-{category_name}
-子問題：
-{subquestion}
+
+占卜摘要（前500字）：
+{tarot_summary[:500]}
+問題類型：{category_name}
+子問題：{subquestion}
 """
+
+    # === GPT 生成 ===
     try:
         response = client.chat.completions.create(
-            model="gpt-5-mini",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "你是一位能讀懂情緒並推薦歌曲的分析師"},
                 {"role": "user", "content": prompt}
             ],
+            temperature=0.8,
+            max_tokens=500
         )
-        music_data = json.loads(response.choices[0].message.content.strip())
+        gpt_text = response.choices[0].message.content.strip()
+
+        if not gpt_text:
+            raise ValueError("GPT 回傳空字串")
+
+        # 嘗試直接解析 JSON
+        try:
+            music_data = json.loads(gpt_text)
+        except json.JSONDecodeError:
+            # 萬一 GPT 前後有廢話，用正則擷取 JSON 主體
+            match = re.search(r"\{[\s\S]+\}", gpt_text)
+            if match:
+                music_data = json.loads(match.group(0))
+            else:
+                raise ValueError("GPT 回傳非 JSON 格式")
+
     except Exception as e:
         print("GPT 生成錯誤:", e)
-        # fallback
         music_data = {
             "theme": "心靈療癒",
             "songs": [
                 {"name": "心靈療癒", "artist": "未知", "style": "輕音樂",
-                    "mood": "療癒", "lyrics_hint": "正向鼓勵", "embed_url": ""}
+                 "mood": "療癒", "lyrics_hint": "正向鼓勵", "embed_url": ""}
             ]
         }
 
-    print("生成的音樂資料:", music_data.get("theme"),
-          "首數:", len(music_data.get("songs", [])))
-    # 搜尋 Spotify embed URL
+    print("🎵 生成音樂主題:", music_data.get("theme", "未知主題"))
+
+    # === Spotify 查詢 ===
+    spotify_songs = []
     try:
-        spotify_songs = []
-        token = get_spotify_token()
+        token = await get_spotify_token()
         headers = {"Authorization": f"Bearer {token}"}
-        for m in music_data["songs"]:
-            query = f'track:"{m["name"]}" artist:"{m["artist"]}"'
-            resp = requests.get(
-                "https://api.spotify.com/v1/search",
-                params={"q": query, "type": "track",
-                        "limit": 1},
-                headers=headers,
-                timeout=5
-            )
-            tracks = resp.json().get("tracks", {}).get("items", [])
-            if tracks:
-                m["embed_url"] = f"https://open.spotify.com/embed/track/{tracks[0]['id']}"
-                spotify_songs.append(m)  # 只加入有 Spotify 的歌曲
-            else:
-                m["embed_url"] = ""
+
+        async def fetch_song(session, song):
+            query = f'track:"{song["name"]}" artist:"{song["artist"]}"'
+            try:
+                async with session.get(
+                    "https://api.spotify.com/v1/search",
+                    params={"q": query, "type": "track", "limit": 1},
+                    headers=headers,
+                    timeout=5
+                ) as resp:
+                    data = await resp.json()
+                    items = data.get("tracks", {}).get("items", [])
+                    if items:
+                        song["embed_url"] = f"https://open.spotify.com/embed/track/{items[0]['id']}"
+                    else:
+                        song["embed_url"] = ""
+            except Exception:
+                song["embed_url"] = ""
+            return song
+
+        async with aiohttp.ClientSession() as session:
+            tasks = [fetch_song(session, s) for s in music_data["songs"]]
+            spotify_songs = await asyncio.gather(*tasks)
+
     except Exception as e:
         print("Spotify API 錯誤:", e)
-        for m in music_data["songs"]:
-            m["embed_url"] = ""
+        spotify_songs = music_data["songs"]
 
     return {
         "status": "ok",
         "theme": music_data.get("theme", "心靈療癒"),
         "music": spotify_songs
     }
-
 
 # ========= 登入 API =========
 @app.post("/api/login")
@@ -859,7 +875,7 @@ async def contact_form(
         msg["To"] = SUPPORT_EMAIL
         msg["Reply-To"] = email  # 使用者填寫的 Email
         msg["Subject"] = f"客服聯絡表單：{type}問題"
-
+        message.replace('\n', '<br>')
         # HTML 內容
         body = f"""
         <html>
@@ -867,7 +883,7 @@ async def contact_form(
             <p><b>用戶:</b> {name}<br>
             <b>Email:</b> {email}</p>
             <p><b>問題類型:</b> {type}<br>
-            <b>訊息內容:</b><br>{message.replace('\n', '<br>')}</p>
+            <b>訊息內容:</b><br>{message_html}</p>
         </body>
         </html>
         """
