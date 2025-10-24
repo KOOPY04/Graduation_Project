@@ -1,20 +1,20 @@
 // ================= 自訂警示框 =================
-function showAlert(msg) {
-    const modal = document.getElementById("customAlert");
-    const msgBox = document.getElementById("customAlertMsg");
-    const btn = document.getElementById("customAlertBtn");
+// function showAlert(msg) {
+//     const modal = document.getElementById("customAlert");
+//     const msgBox = document.getElementById("customAlertMsg");
+//     const btn = document.getElementById("customAlertBtn");
 
-    if (!modal || !msgBox || !btn) {
-        alert(msg);
-        return;
-    }
+//     if (!modal || !msgBox || !btn) {
+//         alert(msg);
+//         return;
+//     }
 
-    msgBox.textContent = msg;
-    modal.style.display = "flex";
-    btn.onclick = () => {
-        modal.style.display = "none";
-    };
-}
+//     msgBox.textContent = msg;
+//     modal.style.display = "flex";
+//     btn.onclick = () => {
+//         modal.style.display = "none";
+//     };
+// }
 
 // ================= DOMContentLoaded =================
 document.addEventListener("DOMContentLoaded", async () => {
@@ -34,37 +34,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     const closeIntro = document.getElementById("closeIntro");
 
     // const loginBtn = document.getElementById("login-btn");
-    const registerBtn = document.getElementById("register-btn");
-    const loginModal = document.getElementById("loginModal");
-    const closeLogin = document.getElementById("closeLogin");
-    const loginForm = document.getElementById("loginForm");
-    const loginError = document.getElementById("loginError");
-    const googleLoginBtn = document.getElementById("googleLoginBtn");
+    // const registerBtn = document.getElementById("register-btn");
+    // const loginModal = document.getElementById("loginModal");
+    // const closeLogin = document.getElementById("closeLogin");
+    // const loginForm = document.getElementById("loginForm");
+    // const loginError = document.getElementById("loginError");
+    // const googleLoginBtn = document.getElementById("googleLoginBtn");
 
-    const registerModal = document.getElementById("registerModal");
-    const closeRegister = document.getElementById("closeRegister");
-    const registerForm = document.getElementById("registerForm");
-    const registerMessage = document.getElementById("registerMessage");
-    const contactBtn = document.getElementById("contactBtn");
-    const contactModal = document.getElementById("contactModal");
-    const closeContact = document.getElementById("closeContact");
-    const contactForm = document.getElementById("contactForm");
-    const contactMessage = document.getElementById("contactMessage");
+    // const registerModal = document.getElementById("registerModal");
+    // const closeRegister = document.getElementById("closeRegister");
+    // const registerForm = document.getElementById("registerForm");
+    // const registerMessage = document.getElementById("registerMessage");
+    // const contactBtn = document.getElementById("contactBtn");
+    // const contactModal = document.getElementById("contactModal");
+    // const closeContact = document.getElementById("closeContact");
+    // const contactForm = document.getElementById("contactForm");
+    // const contactMessage = document.getElementById("contactMessage");
 
-    // const userId = sessionStorage.getItem("user_id");
-    const token = localStorage.getItem("token");
+    // // const userId = sessionStorage.getItem("user_id");
+    // const token = localStorage.getItem("token");
 
-    const nameInput = document.getElementById("name");
-    const profileBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(1) .btn");
+    // const nameInput = document.getElementById("name");
+    // const profileBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(1) .btn");
 
-    const avatarInput = document.getElementById("avatarInput");
-    const avatarPreview = document.getElementById("avatarPreview");
-    const avatarBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(2) .btn");
+    // const avatarInput = document.getElementById("avatarInput");
+    // const avatarPreview = document.getElementById("avatarPreview");
+    // const avatarBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(2) .btn");
 
-    const oldPassword = document.getElementById("oldPassword");
-    const newPassword = document.getElementById("newPassword");
-    const confirmPassword = document.getElementById("confirmPassword");
-    const passwordBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(3) .btn");
+    // const oldPassword = document.getElementById("oldPassword");
+    // const newPassword = document.getElementById("newPassword");
+    // const confirmPassword = document.getElementById("confirmPassword");
+    // const passwordBtn = document.querySelector("#accountSettingsModal .accordion-item:nth-child(3) .btn");
 
 
     const tarotCards = [
@@ -213,7 +213,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 介紹 Modal
-    introBtn.addEventListener("click", () => { introModal.style.display = "flex"; });
+    introBtn.addEventListener("click", () => {
+        introModal.style.display = "flex";
+    });
     closeIntro.addEventListener("click", () => { introModal.style.display = "none"; });
     window.addEventListener("click", (e) => {
         if (e.target === introModal) introModal.style.display = "none";
@@ -224,6 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target === cardNameModal) cardNameModal.style.display = "none";
     });
 
+    /*
     // ================= 登入 / 註冊 =================
     async function checkLogin() {
         const loginBtn = document.getElementById("login-btn");
@@ -260,7 +263,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             registerBtn.style.display = "flex";
             logoutBtn.style.display = "none";
 
-            loginBtn.onclick = () => { document.getElementById("loginModal").style.display = "flex"; };
+            loginBtn.onclick = () => {
+                closeAllModals(); // 🔹 開新 modal 前先關掉其他 modal
+                loginModal.style.display = "flex";
+            };
+
+            // loginBtn.onclick = () => { document.getElementById("loginModal").style.display = "flex"; };
         }
     }
 
@@ -277,9 +285,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     checkLogin();
 
     // 登入 Modal
-    //loginBtn.addEventListener("click", () => { loginModal.style.display = "flex"; });
-    closeLogin.addEventListener("click", () => { loginModal.style.display = "none"; });
-    window.addEventListener("click", e => { if (e.target === loginModal) loginModal.style.display = "none"; });
+    // loginBtn.addEventListener("click", () => { loginModal.style.display = "flex"; });
+    closeLogin.addEventListener("click", () => { loginModal.style.display = "none"; clearForm(loginForm); });
+    // window.addEventListener("click", e => { if (e.target === loginModal) loginModal.style.display = "none"; });
 
     // Google 登入
     googleLoginBtn.addEventListener("click", () => { window.location.href = "/login/google"; });
@@ -346,9 +354,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // 註冊 Modal
-    registerBtn.addEventListener("click", () => { registerModal.style.display = "flex"; });
-    closeRegister.addEventListener("click", () => { registerModal.style.display = "none"; });
-    window.addEventListener("click", (e) => { if (e.target === registerModal) registerModal.style.display = "none"; });
+    registerBtn.addEventListener("click", () => {
+        closeAllModals();
+        registerModal.style.display = "flex";
+    });
+    closeRegister.addEventListener("click", () => { registerModal.style.display = "none"; clearForm(registerForm); });
+    // window.addEventListener("click", (e) => { if (e.target === registerModal) registerModal.style.display = "none"; });
 
     // 註冊表單
     registerForm.addEventListener("submit", async (e) => {
@@ -386,6 +397,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const closeAccountSettings = document.getElementById("closeAccountSettings");
 
     accountSettingsBtn.addEventListener("click", () => {
+        closeAllModals();
         accountSettingsModal.style.display = "flex";
     });
 
@@ -425,7 +437,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         nameInput.value = user.name || "";
         avatarPreview.src = user.avatar
             ? (user.avatar.startsWith("/static/") ? user.avatar : `/static/${user.avatar}`)
-            : "/static/images/default-avatar.png";
+            : "/static/images/default_avatar.png";
     }
     loadProfile();
 
@@ -525,7 +537,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     contactBtn.addEventListener("click", () => {
-        contactModal.style.display = "block";
+        closeAllModals();
+        contactModal.style.display = "flex";
     });
 
     closeContact.addEventListener("click", () => {
@@ -535,7 +548,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 點外部關閉
     window.addEventListener("click", (e) => {
         if (e.target === contactModal) contactModal.style.display = "none";
-        clearAccountSettings();
+        // clearAccountSettings();
     });
 
     // 送出表單
@@ -576,6 +589,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         confirmPassword.value = "";
     }
 
+    // ================= 關閉所有已開啟的 modal =================
+    function closeAllModals() {
+        const modals = document.querySelectorAll(".modal");
+        modals.forEach(modal => {
+            modal.style.display = "none";
+        });
+
+        // 若有自訂 alert 或其他特殊 modal，也可一併關閉
+        const customAlert = document.getElementById("customAlert");
+        if (customAlert) customAlert.style.display = "none";
+
+        const dropdown = document.getElementById("userDropdown");
+        if (dropdown) dropdown.style.display = "none";
+    }
+
     // 使用者選單導向
     document.getElementById("recordBtn").onclick = () => window.location.href = "/records";
 });
@@ -584,21 +612,26 @@ function clearForm(form) {
     if (!form) return;
     form.reset(); // 清空 input、textarea、select
 }
+*/
+// 正確關閉 DOMContentLoaded 監聽器
+});
 
-function setupModalClear(modal, form) {
-    const closeBtns = modal.querySelectorAll(".close-btn");
-    closeBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            modal.style.display = "none";
-            clearForm(form);
-        });
-    });
+// function setupModalClear(modal, form) {
+//     const closeBtns = modal.querySelectorAll(".close-btn");
 
-    window.addEventListener("click", e => {
-        if (e.target === modal) {
-            modal.style.display = "none";
-            clearForm(form);
-        }
-    });
-}
+//     closeBtns.forEach(btn => {
+//         btn.addEventListener("click", () => {
+//             modal.style.display = "none";
+//             clearForm(form);
+//         });
+//     });
+
+//     window.addEventListener("click", e => {
+//         if (e.target === modal) {
+//             modal.style.display = "none";
+//             clearForm(form);
+//         }
+//     });
+// }
+// });
 
