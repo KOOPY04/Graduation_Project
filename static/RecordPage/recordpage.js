@@ -21,9 +21,28 @@ function displayRecords(records) {
         const emptyDiv = document.createElement("div");
         emptyDiv.className = "no-records";
         emptyDiv.innerHTML = `
-            <p>你還沒有任何塔羅占卜紀錄喔～</p>
-            <p>快去抽一張牌，探索你的未來吧！</p>
-            <a href="/select" class="btn">開始占卜</a>
+            <div style="
+                background: linear-gradient(135deg, #f9f2ff, #e6e0ff);
+                border: 2px solid #b19cd9;
+                border-radius: 12px;
+                padding: 30px;
+                text-align: center;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+                font-family: 'Arial', sans-serif;
+                color: #4b0082;
+                max-width: 400px;
+                margin: 50px auto;
+                justify-content: center; /* 水平置中 */
+                align-items: center;     /* 垂直置中 */
+            ">
+                <p style="font-size: 1.3em; margin-bottom: 15px;">
+                    🌟 你還沒有任何塔羅占卜紀錄喔～
+                </p>
+                <p style="font-size: 1.1em; margin-bottom: 25px;">
+                    🔮 快去抽一張牌，探索你的未來吧！
+                </p>
+                <a href="/select" class="btn">開始占卜</a>
+            </div>
         `;
         container.appendChild(emptyDiv);
         return;
@@ -52,7 +71,7 @@ function displayRecords(records) {
         record.selected_cards.forEach(card => {
             const cardDiv = document.createElement("div");
             cardDiv.className = "card-container";
-            cardDiv.style.position = "relative"; // tooltip 絕對定位參考
+            cardDiv.style.position = "relative"; // 仍保留相對定位作為參考
 
             const img = document.createElement("img");
             img.src = getCardImagePath(card.name);
@@ -62,11 +81,16 @@ function displayRecords(records) {
             // tooltip：顯示卡牌名稱 + 正逆位
             const tooltip = document.createElement("div");
             tooltip.className = "tooltip";
+            tooltip.style.position = "fixed"; // 改成 fixed
+            tooltip.style.display = "none";
             tooltip.innerText = `${card.name} (${card.orientation})`;
-            cardDiv.appendChild(tooltip);
+            document.body.appendChild(tooltip); // 放到 body
 
-            // 事件
+            // 事件：計算 fixed 位置
             cardDiv.addEventListener("mouseenter", () => {
+                const rect = cardDiv.getBoundingClientRect();
+                tooltip.style.top = `${rect.top - tooltip.offsetHeight - 20}px`; // 卡牌上方 20px
+                tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
                 tooltip.style.display = "block";
             });
             cardDiv.addEventListener("mouseleave", () => {
@@ -75,6 +99,7 @@ function displayRecords(records) {
 
             cardsDiv.appendChild(cardDiv);
         });
+
 
 
         const sumDiv = document.createElement("div");
@@ -108,7 +133,7 @@ function displayRecords(records) {
             summaryText.innerHTML = record.summary || "<p>無總結內容</p>";
             modalBody.appendChild(summaryText);
             scrollWrapper.appendChild(modalBody);
-            
+
             const musicRecommend = document.createElement("div");
             musicRecommend.className = "music-recommend";
             const musicTitle = document.createElement("h3");
