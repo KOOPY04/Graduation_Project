@@ -23,17 +23,19 @@
           塔羅解牌
         </h1>
       </div>
+      <!-- 牌面與按鈕垂直置中區 -->
+      <div class="interpret-page">
 
-      <!-- 牌面容器 -->
-      <div id="spreadContainer" class="spread" data-count="{{ count }}"></div>
+        <!-- 牌面容器 -->
+        <div id="spreadContainer" class="spread" data-count="{{ count }}"></div>
 
-      <!-- 按鈕列 -->
-      <div class="button-row">
-        <button id="toggleSummaryBtn">🌟 查看整體解讀</button>
-        <!-- 修改：清除舊結果後返回上一頁 -->
-        <button id="backBtn">回上一頁</button>
+        <!-- 按鈕列 -->
+        <div class="button-row">
+          <button id="toggleSummaryBtn">🌟 查看整體解讀</button>
+          <!-- 修改：清除舊結果後返回上一頁 -->
+          <button id="backBtn">回上一頁</button>
+        </div>
       </div>
-
       <!-- 整體解讀 modal -->
       <div id="summaryModal" class="modal">
         <div class="modal-content">

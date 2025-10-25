@@ -203,3 +203,20 @@ body {
   padding-right: 0;
   margin: 0;
 }
+
+/* === 讓解牌頁的卡牌與按鈕整體垂直置中 === */
+.interpret-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 垂直置中 */
+  align-items: center;     /* 水平置中 */
+  min-height: calc(100vh - 100px);       /* 撐滿整個螢幕高度 */
+  box-sizing: border-box;
+  margin-top: 10px;  /* 視覺微調，避免太貼上 */
+}
+
+/* 保證牌面與按鈕區塊置中 */
+.spread,
+.button-row {
+  margin: 40px auto;
+}
