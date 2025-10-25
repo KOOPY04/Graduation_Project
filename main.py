@@ -90,7 +90,7 @@ new_img.save(
 '''
 # ========= 初始化 =========
 load_dotenv()
-app = FastAPI()
+#app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -98,7 +98,7 @@ templates = Jinja2Templates(directory="templates")
 # ========= 資料庫 =========
 db_config = {
     "host": "localhost",
-    # "port":3307,
+    "port":3306,
     "user": "root",
     "password": "",  # 改成你的密碼
     "database": "tarot_db"
