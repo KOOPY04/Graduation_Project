@@ -3,6 +3,7 @@ import os
 import jwt
 import json
 import base64
+import re
 import bcrypt
 import shutil
 import random
@@ -442,18 +443,22 @@ async def tarot_summary(request: Request):
 
         # ✅ 提示語簡化（減少字數以加速回應）
         prompt = f"""
-你是一位溫柔的塔羅占卜師。請根據以下抽牌結果，用繁體中文寫一段約200字的占卜故事：
-1. 使用繁體中文。
-2. 以段落形式呈現，每個重點段落用 <p>...</p>。
-3. 關鍵詞與重點用 <strong>加粗</strong>。
-4. 根據子問題的面向（愛情、事業、人際等）調整語氣及故事性。
-5. 結尾給使用者一段溫暖的建議。
+            你是一位溫柔的塔羅占卜師。請根據以下抽牌結果撰寫完整占卜故事。
+            要求：
+            1. 使用繁體中文。
+            2. 問題類型中的感情有多方面的解釋(例如：愛情、親情、友情、職場關係等)，請根據子問題調整故事內容。
+            3. 以段落形式呈現，每個重點段落用 <p>...</p>。
+            4. 牌位、關鍵詞或重要建議用 <strong>加粗</strong>。
+            5. 依據正逆位關鍵詞加強故事性。
+            6. 給使用者溫暖建議。
+            7. 最後做一段總結，給予正向鼓勵。
+            篇幅約 200~300 字。
 
-問題：{category_name}
-子問題：{subquestion}
-抽到的牌：
-{card_text}
-"""
+            問題：{category_name}
+            子問題：{subquestion}
+            抽到的牌：
+            {card_text}
+        """
 
         # ✅ 使用 gpt-4o-mini 並加快回應
         response = client.chat.completions.create(
@@ -506,8 +511,15 @@ async def recommend_music(request: Request):
 
     # === GPT Prompt ===
     prompt = f"""
-你是一位音樂心理分析師，根據以下塔羅占卜總結、問題類型和子問題，
-推薦 3~5 首能反映情緒的歌曲，並給出整體音樂主題。
+你是一位專業的音樂心理分析師，根據以下塔羅占卜總結、問題類型和子問題挑選歌詞詞意符合的3~5首歌曲。
+歌曲任何語言都可以推薦，推薦多元文化音樂風格。
+請同時給出一個簡短的「總主題」 (theme)，代表整體音樂情緒方向。
+每首歌曲需包含：
+- name: 歌名
+- artist: 歌手
+- style: 音樂風格
+- mood: 情緒氛圍
+- lyrics_hint: 歌詞方向建議
 請輸出純 JSON，不要有多餘文字。
 格式：
 {{
@@ -968,7 +980,7 @@ async def update_password(data: PasswordUpdate, user: User = Depends(get_current
 
 
 # ===== API: 聯絡客服表單 =====
-@app.post("/api/contact")
+@app.post("/contact")
 async def contact_form(
     name: str = Form(...),
     email: str = Form(...),
@@ -982,7 +994,7 @@ async def contact_form(
         msg["To"] = SUPPORT_EMAIL
         msg["Reply-To"] = email  # 使用者填寫的 Email
         msg["Subject"] = f"客服聯絡表單：{type}問題"
-        message.replace('\n', '<br>')
+
         # HTML 內容
         body = f"""
         <html>
@@ -990,7 +1002,7 @@ async def contact_form(
             <p><b>用戶:</b> {name}<br>
             <b>Email:</b> {email}</p>
             <p><b>問題類型:</b> {type}<br>
-            <b>訊息內容:</b><br>{message_html}</p>
+            <b>訊息內容:</b><br>{message.replace('\n', '<br>')}</p>
         </body>
         </html>
         """
