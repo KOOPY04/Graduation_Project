@@ -10,12 +10,15 @@
   </head>
   <body class="startpage">
     {% include "global.html" %}
-    
-    <div class="scroll-container">
 
+    <div class="scroll-container">
       <div class="header">
         <h1>
-          <img src="/static/images/favicon.png" alt="塔羅Logo" class="logo-icon">
+          <img
+            src="/static/images/favicon.png"
+            alt="塔羅Logo"
+            class="logo-icon"
+          />
           塔羅占卜
         </h1>
       </div>
@@ -26,9 +29,6 @@
           <div id="cardBack" class="card-back"></div>
         </div>
       </div>
-
-      <!-- 扇形牌陣 -->
-      <div id="fanContainer" class="spread-card"></div>
 
       <!-- 卡名 Modal -->
       <div id="cardNameModal" class="modal">
@@ -50,37 +50,69 @@
           <h2>🔮 塔羅占卜介紹</h2>
           <div id="summaryText" class="modal-body">
             <p>
-              <strong>歡迎來到塔羅的世界</strong><br />
-              塔羅牌自中世紀以來，承載著人類對未知的探索與對心靈的洞察。
-              每一張牌，都蘊藏著象徵與隱喻，像是一面映照內心與未來的鏡子。
-              占卜並非單純的「預測」，而是一場自我對話──
-              透過牌面的啟示，幫助你看清當下處境，理解內心的糾結，並找到前進的方向。
+              <strong>✨ 歡迎進入塔羅的世界 ✨</strong><br />
+              塔羅牌誕生於中世紀的歐洲，融合了神祕學、象徵學與心理學的智慧。<br />
+              每一張牌都是一個宇宙符號，訴說著生命的循環、靈魂的轉折與命運的對話。<br />
+              當你抽出一張牌的瞬間，你並非「預測未來」，而是揭開潛意識的面紗，<br />
+              聆聽那個內在、最真實的自己在說什麼。<br /><br />
+              塔羅的美，來自它的鏡像效應——<br />
+              它不給你絕對的答案，而是讓你看見「答案早已在你心中」。
             </p>
-            <h3>✨ 占卜方式</h3>
+
+            <h3>🌌 占卜牌陣介紹</h3>
             <p>
               <strong>三張牌陣（時間之流）</strong><br />
-              呈現事件的時間脈絡：<br />
-              ① 過去的影響 → ② 當下的狀態 → ③ 未來的可能<br />
-              適合事件推演、感情或事業發展。
-            </p>
-            <p>
+              呈現事情的發展脈絡與階段性變化：<br />
+              ① <em>過去的影響</em> — 事情的起源與背景。<br />
+              ② <em>當下的狀態</em> — 目前的挑戰或轉折點。<br />
+              ③ <em>未來的可能</em> — 潛在的方向與結局。<br />
+              適合想了解「事件發展」、「感情變化」、「工作前景」等問題。<br /><br />
+
               <strong>四張牌陣（直指核心）</strong><br />
-              聚焦於問題的深層結構：<br />
-              ① 問題核心 → ② 障礙或短處 → ③ 對策 → ④ 資源或長處<br />
-              適合決策、釐清狀態、尋找解方。
+              聚焦於問題的本質與深層解答：<br />
+              ① <em>問題核心</em> — 此刻的主題與真正困境。<br />
+              ② <em>障礙或短處</em> — 阻礙你前進的因素。<br />
+              ③ <em>對策</em> — 建議採取的態度或行動。<br />
+              ④ <em>資源或長處</em> — 你可以依靠的力量與優勢。<br />
+              適合釐清決策、了解人際關係、或尋求方向。
             </p>
-            <h3>✨ 使用方式</h3>
+
+            <h3>🪄 使用方式</h3>
             <ol>
-              <li>點擊「開始占卜」，選擇問題類型與子問題。</li>
-              <li>選擇想使用的牌陣（三張 / 四張）。</li>
-              <li>靜心誠心，帶著問題，隨機抽牌。</li>
-              <li>依牌面揭示，進行解讀與反思。</li>
+              <li>
+                點擊「開始占卜」，選擇你想探問的主題與問題。可以是感情、事業、生活或內心困惑。
+              </li>
+              <li>
+                選擇適合的牌陣（三張 /
+                四張）。三張牌陣帶你看事情的時間脈絡，四張牌陣則直指核心，幫助釐清深層問題。
+              </li>
+              <li>
+                靜心片刻，閉上眼睛，專注於你的問題或心中疑惑。深呼吸，讓意念與宇宙能量對齊，感受內心的聲音。
+              </li>
+              <li>
+                依直覺抽牌。你可以隨意點擊你被吸引的牌，觀察牌面圖像、顏色、人物與符號。感受你的第一直覺，它是你潛意識的回應。
+              </li>
+              <li>
+                抽牌後，解牌頁面將顯示 AI
+                生成的分析，提供牌面象徵、象徵意義與可能的建議。建議你將 AI
+                解讀與個人直覺結合，思考適合自己的行動方案。
+              </li>
+              <li>
+                同時，我們會為你推薦與牌意契合的音樂或背景旋律，幫助你更沉浸於占卜氛圍，放鬆心情，提升內在連結。
+              </li>
+              <li>
+                最後，將抽牌結果與 AI
+                解讀、音樂體驗結合，書寫或默想你對問題的感悟，讓塔羅占卜成為一場完整的自我探索儀式。
+              </li>
             </ol>
-            <h3>🌙 小提醒</h3>
+
+            <h3>🌙 心靈提醒</h3>
             <p>
-              塔羅是一種指引工具，而非絕對的命運判決。<br />
-              它啟發我們看見不同的可能性，並幫助你更有智慧地做出選擇。<br />
-              <strong>最終的答案，仍掌握在你自己手中。</strong>
+              塔羅不是命運的審判，而是一面心靈的鏡子。<br />
+              它不告訴你「會發生什麼」，而是幫助你理解「為何如此」。<br />
+              有時，一張逆位的牌，反而是新的契機；一張光明的牌，也可能藏著挑戰。<br /><br />
+              <strong>讓每一次占卜，都成為與自己的對話。</strong><br />
+              你所尋找的答案，或許就在此刻的寧靜之中。
             </p>
           </div>
         </div>
@@ -89,18 +121,7 @@
       <!-- 卡牌懸浮顯示 -->
       <div id="modalOverlay" class="modal-overlay"></div>
       <img id="modalCard" class="modal-card" />
-      <h3
-        id="modalCardName"
-        style="
-          display: none;
-          position: fixed;
-          top: calc(50% + 250px);
-          left: 50%;
-          transform: translateX(-50%);
-          color: white;
-          z-index: 1002;
-        "
-      ></h3>
+      <h3 id="modalCardName"></h3>
 
       <!-- 自訂警示框 -->
       <div id="customAlert" class="custom-alert">
@@ -110,7 +131,6 @@
         </div>
       </div>
     </div>
-    
     <script src="/static/global.js"></script>
     <script src="/static/startpage/startpage.js"></script>
   </body>
