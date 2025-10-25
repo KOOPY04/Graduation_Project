@@ -90,7 +90,6 @@ new_img.save(
 '''
 # ========= 初始化 =========
 load_dotenv()
-#app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -994,7 +993,6 @@ async def contact_form(
         msg["To"] = SUPPORT_EMAIL
         msg["Reply-To"] = email  # 使用者填寫的 Email
         msg["Subject"] = f"客服聯絡表單：{type}問題"
-
         # HTML 內容
         body = f"""
         <html>
