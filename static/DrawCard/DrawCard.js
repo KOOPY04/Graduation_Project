@@ -188,7 +188,7 @@ function initTarotPage() {
 document.addEventListener("DOMContentLoaded", initTarotPage);
 
 // pageshow 事件（從 bfcache 回來時觸發）
-window.addEventListener("pageshow", (event) => {
+window.addEventListener("pageshow", () => {
     console.log("🟢 PageShow triggered");
 
     const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
