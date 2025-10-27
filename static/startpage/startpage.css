@@ -11,15 +11,16 @@ h1{
 
 /* 底部按鈕列 - 改為相對定位，避免與卡牌重疊 */
 .button-row {
-  position: relative;           /* ✅ 不固定，跟隨頁面內容 */
-  margin: 40px auto 60px auto; /* 上下間距，左右置中 */
+  position: relative;           /* 跟隨頁面內容 */
+  margin: 40px auto 60px auto;  /* 上下間距，左右置中 */
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 40px;
-  flex-wrap: wrap;              /* 手機小螢幕自動換行 */
-  z-index: 10;                  /* 確保不被卡牌覆蓋 */
+  flex-wrap: wrap;
+  z-index: 10;
 }
+
 
 /* 手機響應式微調 */
 @media (max-width: 768px) {
@@ -429,5 +430,61 @@ h1{
 
   #modalCardName {
     font-size: 28px;
+  }
+}
+/* ===== Modal 專用底部按鈕 ===== */
+.modal-button-row {
+  position: fixed;           
+  bottom: 20px;               
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  z-index: 9999;
+  pointer-events: auto; /* ✅ 確保能點擊 */
+}
+
+/* 按鈕大小響應式 */
+.button-row button,
+.modal-button-row button {
+  padding: clamp(10px, 2vw, 18px) clamp(16px, 4vw, 32px);
+  font-size: clamp(16px, 2vw, 24px);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* 手機響應式 */
+@media (max-width: 600px) {
+  .button-row, .modal-button-row {
+    gap: 20px;
+  }
+  .button-row button, .modal-button-row button {
+    padding: clamp(8px, 3vw, 14px) clamp(12px, 6vw, 26px);
+    font-size: clamp(14px, 3vw, 20px);
+  }
+}
+
+/* 平板響應式 */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .button-row, .modal-button-row {
+    gap: 30px;
+  }
+  .button-row button, .modal-button-row button {
+    padding: clamp(10px, 2.5vw, 18px) clamp(16px, 5vw, 32px);
+    font-size: clamp(16px, 2.5vw, 24px);
+  }
+}
+
+/* 桌機響應式 */
+@media (min-width: 1025px) {
+  .button-row, .modal-button-row {
+    gap: 40px;
+  }
+  .button-row button, .modal-button-row button {
+    padding: 18px 32px;
+    font-size: 24px;
   }
 }

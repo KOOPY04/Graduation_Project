@@ -32,10 +32,8 @@
 /* ==================== 卡牌樣式 ==================== */
 .card {
   position: absolute;
-  width: 10vw;        /* 寬度隨螢幕縮放 */
-  max-width: 100px;
-  height: 16vw;       /* 高度保持比例 */
-  max-height: 160px;
+  width: clamp(100px, 10vw, 130px);   /* ✅ 在桌機上會稍微放大 */
+  height: calc(1.6 * clamp(100px, 10vw, 130px));  /* ✅ 保持比例一致 */
   border-radius: 8px;
   transform-origin: bottom center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -46,7 +44,6 @@
     opacity 0.35s ease,
     filter 0.35s ease;
 }
-
 /* hover 放大效果 */
 .card:hover {
   transform: scale(1.2) translateY(-1vw) translateZ(2vw) rotateX(-10deg);
