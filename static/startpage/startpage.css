@@ -7,14 +7,29 @@ h1{
     z-index: 100;
 }
 
-/* 底部按鈕列 */
+/* 底部按鈕列 - 改為相對定位，避免與卡牌重疊 */
 .button-row {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;           /* ✅ 不固定，跟隨頁面內容 */
+  margin: 40px auto 60px auto; /* 上下間距，左右置中 */
   display: flex;
-  z-index: 100;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;              /* 手機小螢幕自動換行 */
+  z-index: 10;                  /* 確保不被卡牌覆蓋 */
+}
+
+/* 手機響應式微調 */
+@media (max-width: 768px) {
+  .button-row {
+    gap: 20px;
+    margin: 30px auto 40px auto;
+  }
+
+  .button-row button {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
 }
 
 
@@ -225,7 +240,7 @@ h1{
   }
 }
 
-/* 卡牌名稱文字
+/* 卡牌名稱文字*/
 #modalCardName {
   display: none;
   position: fixed;

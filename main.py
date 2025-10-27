@@ -97,7 +97,7 @@ templates = Jinja2Templates(directory="templates")
 # ========= 資料庫 =========
 db_config = {
     "host": "localhost",
-    "port":3306,
+    "port":3307,
     "user": "root",
     "password": "",  # 改成你的密碼
     "database": "tarot_db"
@@ -994,13 +994,14 @@ async def contact_form(
         msg["Reply-To"] = email  # 使用者填寫的 Email
         msg["Subject"] = f"客服聯絡表單：{type}問題"
         # HTML 內容
+        message.replace('\n', '<br>')
         body = f"""
         <html>
         <body>
             <p><b>用戶:</b> {name}<br>
             <b>Email:</b> {email}</p>
             <p><b>問題類型:</b> {type}<br>
-            <b>訊息內容:</b><br>{message.replace('\n', '<br>')}</p>
+            <b>訊息內容:</b><br>{message}</p>
         </body>
         </html>
         """
