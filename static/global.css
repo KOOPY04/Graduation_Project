@@ -164,29 +164,36 @@ button:hover,
 }
 
 /* slot 排版 */
+/* ==============================
+ 🎴 選擇卡牌區（Spread + Slot）響應式等比例縮放版
+ ============================== */
+
 .spread {
   text-align: center;
   margin-top: 10px;
   margin-bottom: 80px;
 }
+
 .spread .slot-row {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  flex-wrap: wrap; /* 保留自動換行避免極小螢幕爆版 */
+  gap: clamp(20px, 4vw, 40px);
   margin-top: 20px;
 }
+
 /* slot 本身 */
 .slot,
 .slot-top {
-  width: 126px;
-  height: 189px;
+  width: clamp(90px, 10vw, 126px);   /* 隨螢幕等比例縮小 */
+  height: clamp(135px, 15vw, 189px); /* 與寬度保持比例 */
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: "cwTeXFangSong", "Cinzel", "Noto Serif TC", serif;
-  font-size: 20px;
+  font-size: clamp(14px, 1.8vw, 20px);
   font-weight: 600;
-  color: #ffffffff;
+  color: #fff;
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
   border-radius: 12px;
   background: linear-gradient(135deg, #c2a1c6, #4a305d);
@@ -201,7 +208,7 @@ button:hover,
   overflow: hidden;
 }
 
-/* 卡牌覆蓋 */
+/* 卡牌覆蓋圖 */
 .slot img,
 .slot-top img {
   position: absolute;
@@ -211,10 +218,10 @@ button:hover,
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
-  z-index: 2; /* 確保卡牌在 slot 上層 */
+  z-index: 2;
 }
 
-/* slot hover 光暈仍保留 */
+/* 光暈效果 */
 .slot::before {
   content: "";
   position: absolute;
@@ -229,7 +236,7 @@ button:hover,
   );
   transform: rotate(45deg);
   transition: all 0.5s ease;
-  z-index: 1; /* 在卡牌下方 */
+  z-index: 1;
 }
 
 .slot:hover::before {
@@ -238,13 +245,14 @@ button:hover,
   transform: rotate(0deg);
 }
 
-/* slot 文字保持在卡牌下層 */
+/* slot 文字 */
 .slot span {
   position: relative;
   z-index: 0;
   pointer-events: none;
 }
 
+/* slot 內的卡 */
 .slot .card,
 .slot-top .card {
   width: 100% !important;
@@ -254,15 +262,30 @@ button:hover,
   margin: 0 !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.slot img,
-.slot-top img {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  object-fit: cover;
-}
+
 .slot-top {
   margin: 0 auto 10px;
+}
+
+/* 響應式：縮小時卡片等比例縮放（保持橫排） */
+@media (max-width: 1010px) {
+  .spread .slot-row {
+    gap: clamp(10px, 3vw, 20px);
+  }
+
+  .slot,
+  .slot-top {
+    width: clamp(70px, 12vw, 110px);
+    height: clamp(110px, 17vw, 165px);
+  }
+}
+
+@media (max-width: 600px) {
+  .slot,
+  .slot-top {
+    width: clamp(60px, 18vw, 90px);
+    height: clamp(90px, 27vw, 135px);
+  }
 }
 
 /* ==============================
