@@ -322,16 +322,25 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
     padding-top: 25px; /* ✅ 讓整個 header 往下移 */
   }
 
-h1{
-    font-size: 30px;
-    text-align: center;
-    margin-top: 40px; 
 
-}
+
 @media (max-width: 600px) {
+  h1{
+      font-size: 30px;
+      text-align: center;
+      margin-top: 40px; 
+
+    }
+
+    .button-row button {
+    font-size: 20px;
+    padding: 12px 22px;
+    border-radius: 10px;
+  }
+
   .card-back {
-    width: 200px;
-    height: 300px;
+    width: 250px;
+    height: 375px;
     margin: 10px auto;
   }
 
@@ -359,14 +368,21 @@ h1{
 @media (min-width: 601px) and (max-width: 1024px) {
   
   h1{
-    font-size: 50px;
+    font-size: 60px;
     text-align: center;
     margin-top: 40px;
 
-}
+  }
+
+  .button-row button {
+    font-size: 24px;
+    padding: 18px 32px;
+    border-radius: 10px;
+  }
+
   .card-back {
-    width: 250px;
-    height: 380px;
+    width: 360px;
+    height: 540px;
   }
 
   .spread-card {
@@ -392,11 +408,18 @@ h1{
 @media (min-width: 1025px) {
   
   h1{
-    font-size: 50px;
+    font-size: 60px;
     text-align: center;
     margin-top: 40px;
 
-}
+  }
+
+.button-row button {
+    font-size: 24px;         /* 文字更大 */
+    padding: 18px 32px;      /* 按鈕更寬更高 */
+    border-radius: 12px;     /* 圓角稍大 */
+  }
+
   .card-back {
     width: 300px;
     height: 450px;
