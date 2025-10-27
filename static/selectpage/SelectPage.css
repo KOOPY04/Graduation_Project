@@ -100,7 +100,167 @@
   100% { transform: translateX(var(--tx)) rotate(var(--rotate)) translateY(0); }
 }
 
-/* .scroll-container {
-  margin-top: -20px;
-  scrollbar-color: #DCBEDC transparent; // Firefox: 滑塊 + 透明軌道 
-} */
+/* ==================== 響應式設定 ==================== */
+
+/* 📱 手機 (螢幕寬度小於 600px) */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 30px;
+    margin-bottom: 30px;
+    margin-top: 90px;
+  }
+  
+  .spread-card {
+    width: 95%;
+    min-height: 240px;
+    padding: 20px 15px 25px 15px;
+    margin: 10px;
+  }
+
+  .spread-card h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .spread-card .fan-container {
+    height: 150px;
+    margin: 15px 0;
+  }
+
+  .spread-card .fan-container .card {
+    top: 15%;
+    width: 75px;
+    height: 112px;
+    margin-left: -37.5px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transform: translateX(var(--tx)) rotate(var(--rotate)) translateY(-50%);
+}
+  
+
+  .form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+
+  /* 三張牌 - 手機版 */
+  .spread-card[data-count="3"] .card:nth-child(1) { --rotate: -8deg; --tx: -70px; }
+  .spread-card[data-count="3"] .card:nth-child(2) { --rotate: 0deg; --tx: 0; }
+  .spread-card[data-count="3"] .card:nth-child(3) { --rotate: 8deg; --tx: 70px; }
+
+  /* 四張牌 - 手機版 */
+  .spread-card[data-count="4"] .card:nth-child(1) { --rotate: -10deg; --tx: -85px; }
+  .spread-card[data-count="4"] .card:nth-child(2) { --rotate: -3deg; --tx: -30px; }
+  .spread-card[data-count="4"] .card:nth-child(3) { --rotate: 3deg; --tx: 30px; }
+  .spread-card[data-count="4"] .card:nth-child(4) { --rotate: 10deg; --tx: 85px; }
+
+  /* 懸浮展開 - 手機版 */
+  .spread-card:hover[data-count="3"] .card:nth-child(1) { --rotate: -12deg; --tx: -80px; }
+  .spread-card:hover[data-count="3"] .card:nth-child(3) { --rotate: 12deg; --tx: 80px; }
+
+  .spread-card:hover[data-count="4"] .card:nth-child(1) { --rotate: -14deg; --tx: -95px; }
+  .spread-card:hover[data-count="4"] .card:nth-child(2) { --rotate: -5deg; --tx: -35px; }
+  .spread-card:hover[data-count="4"] .card:nth-child(3) { --rotate: 5deg; --tx: 35px; }
+  .spread-card:hover[data-count="4"] .card:nth-child(4) { --rotate: 14deg; --tx: 95px; }
+
+  .spread-card:hover .fan-container .card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+} 
+
+
+/* 💻 平板 (600px ~ 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  h1 {
+    font-size: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .spread-card {
+    width: 450px;
+    min-height: 260px;
+    padding: 25px 18px 30px 18px;
+    margin: 15px;
+  }
+
+  .spread-card h3 {
+    font-size: 17px;
+    margin-bottom: 18px;
+  }
+
+  .spread-card .fan-container {
+    height: 180px;
+    margin: 18px;
+  }
+
+  .spread-card .fan-container .card {
+    width: 100px;
+    height: 150px;
+    margin-left: -50px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  /* 三張牌 - 平板版 */
+  .spread-card[data-count="3"] .card:nth-child(1) { --rotate: -8deg; --tx: -100px; }
+  .spread-card[data-count="3"] .card:nth-child(2) { --rotate: 0deg; --tx: 0; }
+  .spread-card[data-count="3"] .card:nth-child(3) { --rotate: 8deg; --tx: 100px; }
+
+  /* 四張牌 - 平板版 */
+  .spread-card[data-count="4"] .card:nth-child(1) { --rotate: -10deg; --tx: -125px; }
+  .spread-card[data-count="4"] .card:nth-child(2) { --rotate: -3deg; --tx: -42px; }
+  .spread-card[data-count="4"] .card:nth-child(3) { --rotate: 3deg; --tx: 42px; }
+  .spread-card[data-count="4"] .card:nth-child(4) { --rotate: 10deg; --tx: 125px; }
+
+  /* 懸浮展開 - 平板版 */
+  .spread-card:hover[data-count="3"] .card:nth-child(1) { --rotate: -16deg; --tx: -120px; }
+  .spread-card:hover[data-count="3"] .card:nth-child(3) { --rotate: 16deg; --tx: 120px; }
+
+  .spread-card:hover[data-count="4"] .card:nth-child(1) { --rotate: -20deg; --tx: -145px; }
+  .spread-card:hover[data-count="4"] .card:nth-child(2) { --rotate: -6deg; --tx: -50px; }
+  .spread-card:hover[data-count="4"] .card:nth-child(3) { --rotate: 6deg; --tx: 50px; }
+  .spread-card:hover[data-count="4"] .card:nth-child(4) { --rotate: 20deg; --tx: 145px; }
+
+  .spread-card:hover .fan-container .card {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* 🖥️ 桌機 (大於 1024px) */
+@media (min-width: 1025px) {
+  
+  h1 {
+    font-size: 60px;
+    margin-bottom: 10px;
+  }
+
+  .spread-card {
+    width: 530px;
+    min-height: 280px;
+    padding: 30px 20px 35px 20px;
+    margin: 20px;
+  }
+
+  .spread-card h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .spread-card .fan-container {
+    height: 200px;
+    margin: 20px;
+  }
+
+  .spread-card .fan-container .card {
+    width: 126px;
+    height: 189px;
+    margin-left: -63px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  .spread-card:hover .fan-container .card {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+}
