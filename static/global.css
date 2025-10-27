@@ -41,15 +41,19 @@ body {
   animation: fadeIn 1s ease-out;
   overflow-y: hidden;
 }
-
-h1{
+h1 {
   font-family: "辰宇落雁體 Thin Monospaced", sans-serif;
-  font-size: 50px;
+  font-size: clamp(28px, 4vw, 50px); /* 改成自動縮放：手機小、桌機大 */
   font-weight: 950;
-  margin-bottom: 10px;
+  margin-bottom: clamp(6px, 1vw, 10px);
   color: #5e3370;
+  display: flex;             /* 讓 logo 與文字能並排置中 */
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1vw, 12px);
+  text-align: center;
+  flex-wrap: wrap;           /* 小螢幕時允許換行 */
 }
-
 /* ---- 主要標題 ---- */
 h2,
 h3 {
@@ -59,11 +63,12 @@ h3 {
 }
 
 .logo-icon {
-  height: 1.4em;              /* 跟文字高度一致 */
-  width: auto;                /* 自動依比例縮放，不會被拉伸 */
+  height: clamp(1em, 4vw, 1.8em); /* 隨字體自動變化 */
+  width: auto;
   vertical-align: middle;
-  margin-right: 8px;   /* 與文字保持距離 */
-  border-radius: 6px;  /* 可選：讓邊角更柔和 */
+  margin-right: 8px;
+  border-radius: 6px;
+  transition: transform 0.3s ease;
 }
 
 
@@ -162,6 +167,7 @@ button:hover,
 .spread {
   text-align: center;
   margin-top: 10px;
+  margin-bottom: 80px;
 }
 .spread .slot-row {
   display: flex;
@@ -975,4 +981,101 @@ body {
 
 .nav-btn:hover {
   background-color: #8b4fae;
+}
+@media (max-width: 1200px) {
+  /* 左上角主頁區塊 */
+  .home-section {
+    top: 2vw;
+    left: 2vw;
+    padding: clamp(6px, 1.5vw, 12px) clamp(10px, 2vw, 20px);
+    gap: clamp(4px, 1vw, 10px);
+  }
+
+  .home-section .home-icon {
+    width: clamp(24px, 2vw, 36px);
+    height: auto;
+  }
+
+  .site-title {
+    font-size: clamp(18px, 3vw, 26px);
+  }
+
+  /* 右上角按鈕群 */
+  .nav-right {
+    top: 2vw;
+    right: 2vw;
+    gap: clamp(6px, 1.5vw, 12px);
+  }
+
+  .nav-btn {
+    padding: clamp(4px, 1vw, 10px) clamp(8px, 1.5vw, 16px);
+    font-size: clamp(14px, 2vw, 20px);
+  }
+
+  .nav-btn .avatar {
+    width: clamp(24px, 2vw, 35px);
+    height: clamp(24px, 2vw, 35px);
+  }
+}
+
+/* 進一步在手機更小尺寸下微調 */
+@media (max-width: 768px) {
+  .home-section {
+    padding: 6px 12px;
+    gap: 6px;
+  }
+
+  .home-section .home-icon {
+    width: 28px;
+  }
+
+  .site-title {
+    font-size: 20px;
+  }
+
+  .nav-right .nav-btn {
+    padding: 5px 12px;
+    font-size: 14px;
+  }
+
+  .nav-right .nav-btn .avatar {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* ==== 標題與 Logo 響應式縮放 ==== */
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-top: clamp(40px, 6vh, 80px); /* 頂部距離，手機約 40px，桌機約 80px */
+  padding-bottom: clamp(10px, 2vh, 20px);
+  position: relative;
+  z-index: 10;
+}
+
+.header h1 {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1vw, 20px);
+  font-size: clamp(28px, 4vw, 50px); /* 標題隨螢幕縮放 */
+  font-weight: 950;
+  color: #5e3370;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.logo-icon {
+  width: clamp(32px, 5vw, 80px);
+  height: auto;
+  object-fit: contain;
+  vertical-align: middle;
+  transition: transform 0.3s ease;
+}
+
+/* hover 小動畫效果（可選） */
+.header h1:hover .logo-icon {
+  transform: scale(1.1) rotate(-5deg);
 }
