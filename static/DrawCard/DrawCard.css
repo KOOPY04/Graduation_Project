@@ -2,13 +2,14 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;       /* 水平置中 */
+  align-items: center;
   justify-content: flex-start;
   margin-top: 0;
-  perspective: 2000px;       /* 3D 視角 */
+  perspective: 2000px;
   transform-style: preserve-3d;
   width: 100%;
   overflow: visible;
+  overflow-x: hidden;
 }
 
 /* ==================== 牌陣容器 ==================== */
@@ -16,12 +17,12 @@
   position: relative;
   width: 90%;
   max-width: 1000px;
-  height: 320px;              /* 稍微高一點給陰影空間 */
+  height: 40vw; /* 高度跟隨螢幕寬度調整 */
+  max-height: 400px;
   margin: 0 auto;
   transform-style: preserve-3d;
   cursor: grab;
-  transform: translateX(-5%) translateY(-40px); /* 向上移動讓它靠近標題 */
-  
+  transform: translateX(-5%) translateY(-5%);
 }
 
 .fan-container:active {
@@ -31,8 +32,10 @@
 /* ==================== 卡牌樣式 ==================== */
 .card {
   position: absolute;
-  width: 100px;
-  height: 160px;
+  width: 10vw;        /* 寬度隨螢幕縮放 */
+  max-width: 100px;
+  height: 16vw;       /* 高度保持比例 */
+  max-height: 160px;
   border-radius: 8px;
   transform-origin: bottom center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -44,24 +47,68 @@
     filter 0.35s ease;
 }
 
-/* 中間卡牌 front class */
+/* hover 放大效果 */
 .card:hover {
-  transform: scale(1.3) translateY(-10px) translateZ(20px) rotateX(-10deg);
-  box-shadow: 0 16px 32px rgba(0,0,0,0.4);
+  transform: scale(1.2) translateY(-1vw) translateZ(2vw) rotateX(-10deg);
+  box-shadow: 0 1.5vw 3vw rgba(0,0,0,0.4);
 }
 
-/* 中間那張卡牌（front）hover 時不偏移，只放大 */
+/* front 卡牌 hover */
 .card.front:hover {
-  transform: scale(1.3) rotateX(-8deg) translateZ(30px) !important;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+  transform: scale(1.2) rotateX(-8deg) translateZ(3vw) !important;
+  box-shadow: 0 2vw 4vw rgba(0,0,0,0.45);
 }
 
+/* ==================== 提示文字 ==================== */
 #dragTip {
   text-align: center;
   margin-top: 10px;
-  font-size: 250px;
+  font-size: clamp(12px, 1.5vw, 16px);
   font-weight: 700;
-  line-height: 1.5;
   color: #666;
   user-select: none;
+}
+
+.slot{
+  .slot {
+    position: relative;  /* ← 這個必須有 */
+    overflow: hidden;    /* 避免卡牌跑出框外 */
+}
+}
+
+/* ==================== 響應式調整 ==================== */
+@media (max-width: 1200px) {
+  .card {
+    width: 12vw;
+    height: 19vw;
+  }
+  .fan-container {
+    height: 45vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 15vw;
+    height: 24vw;
+  }
+  .fan-container {
+    height: 50vw;
+  }
+  #dragTip {
+    font-size: 5vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    width: 18vw;
+    height: 29vw;
+  }
+  .fan-container {
+    height: 55vw;
+  }
+  #dragTip {
+    font-size: 6vw;
+  }
 }
