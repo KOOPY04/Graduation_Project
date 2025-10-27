@@ -10,6 +10,8 @@
   </head>
   <body class="drawcard">
     {% include "global.html" %}
+
+    <!-- 回主頁 -->
     <a href="/" class="home-section">
       <img src="/static/images/home_icon.png" alt="回主頁" class="home-icon" />
       <span class="site-title">塔羅占卜</span>
@@ -26,6 +28,9 @@
       <div class="draw-container" id="tarotContainer">
         {{ tarot_html | safe }}
       </div>
+
+      <!-- 按鈕 -->
+      <div class="button-row"></div>
 
       <!-- 自訂警示框 -->
       <div id="customAlert" class="custom-alert">

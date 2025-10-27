@@ -153,10 +153,11 @@ button:hover,
 }
 
 .card:hover {
-  transform: scale(1) translateY(-10px) !important;
+  /* transform: scale(1.5) !important; */
   z-index: 999 !important;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
 }
+
 .card.locked {
   opacity: 0.4;
   cursor: not-allowed;
@@ -1091,7 +1092,7 @@ body {
 }
 
 .logo-icon {
-  width: clamp(32px, 5vw, 80px);
+  width: clamp(32px, 4vw, 80px); 
   height: auto;
   object-fit: contain;
   vertical-align: middle;
