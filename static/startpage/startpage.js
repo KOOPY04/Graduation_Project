@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.body.style.overflow = 'auto';
         cardBack.style.display = "none";
 
+
         const scatterContainer = document.createElement("div");
         scatterContainer.classList.add("tarot-scatter");
         document.querySelector(".scroll-container").appendChild(scatterContainer);

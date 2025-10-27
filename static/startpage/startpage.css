@@ -3,8 +3,10 @@
 } */
 
 h1{
-    position: relative; /* 必須有 position 才能用 z-index */
+    position: sticky; /* 必須有 position 才能用 z-index */
     z-index: 100;
+    margin-bottom: 20px;
+    
 }
 
 /* 底部按鈕列 - 改為相對定位，避免與卡牌重疊 */
@@ -59,14 +61,15 @@ h1{
     transition: all 0.8s ease-out;
 }
 
+/*
 .card-back-container {
   display: flex;
-  justify-content: center;   /* 水平置中 */
-  align-items: center;       /* 垂直置中 */
+  justify-content: center;   /* 水平置中 *
+  align-items: center;       /* 垂直置中 *
   width: 100%;
   position: relative;
-  z-index: 2;                /* 確保不被下層扇形遮住 */
-  background: transparent;   /* 不影響背景 */
+  z-index: 2;                /* 確保不被下層扇形遮住 *
+  background: transparent;   /* 不影響背景 *
 }
 .card-back {
   width: 300px;
@@ -87,6 +90,54 @@ h1{
   transform: scale(1.05) rotateY(5deg);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
+*/
+
+.card-back-container {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  width: 100%;
+  /*height: 70vh;*/
+  position: relative;
+  justify-content: center; /* 垂直置中 */
+  align-items: center;     /* 水平置中 */
+  z-index: 2;
+  background: transparent;
+  margin: 0 auto;  /* 加這行：水平置中 */
+}
+
+
+.card-back {
+  width: 300px;
+  height: 450px;
+  /* 拿掉 margin */
+  background: url("/static/images/card_back.png") no-repeat center/cover;
+  cursor: pointer;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  margin-top: auto; 
+  margin-bottom: auto;
+
+}
+
+.card-back:hover {
+  transform: scale(1.05) rotateY(5deg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.tarot-preview {
+  min-height: 80svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .startpage .spread-card {
   position: relative;
@@ -106,7 +157,7 @@ h1{
   height: 189px;
   border-radius: 14px;
   cursor: pointer;
-  pointer-events: auto;
+  pointer-events: auto !important; 
   transform-origin: bottom center;
   transition:
     transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55),
@@ -244,28 +295,44 @@ h1{
 #modalCardName {
   display: none;
   position: fixed;
-  top: 10%; /* 從上方 10% */
+  bottom: 30px;
   left: 50%;
-  transform: translateX(-50%) scale(0);
-  color: #a678b2;
-  font-size: 28px;
-  font-weight: bold;
-  z-index: 1002;
-  text-align: center;
-  pointer-events: none;
-
-  /* 動畫 */
-  animation: glow 1.5s infinite alternate;
-  transition: transform 0.5s ease, opacity 0.5s ease;
-} */
+  transform: translateX(-50%);
+  display: inline-flex;
+  gap: 10px;
+  width: fit-content;
+  justify-content: center;
+  background: transparent; 
+  z-index: 1005;
+  white-space: nowrap; 
+}
 
 /* ==================== 響應式設定 ==================== */
 
 /* 📱 手機 (螢幕寬度小於 600px) */
+.scroll-container .header {
+    padding-top: 25px; /* ✅ 讓整個 header 往下移 */
+  }
+
+
+
 @media (max-width: 600px) {
+  h1{
+      font-size: 30px;
+      text-align: center;
+      margin-top: 40px; 
+
+    }
+
+    .button-row button {
+    font-size: 20px;
+    padding: 12px 22px;
+    border-radius: 10px;
+  }
+
   .card-back {
-    width: 200px;
-    height: 300px;
+    width: 250px;
+    height: 375px;
     margin: 10px auto;
   }
 
@@ -291,9 +358,23 @@ h1{
 
 /* 💻 平板 (600px ~ 1024px) */
 @media (min-width: 601px) and (max-width: 1024px) {
+  
+  h1{
+    font-size: 60px;
+    text-align: center;
+    margin-top: 40px;
+
+  }
+
+  .button-row button {
+    font-size: 24px;
+    padding: 18px 32px;
+    border-radius: 10px;
+  }
+
   .card-back {
-    width: 250px;
-    height: 380px;
+    width: 360px;
+    height: 540px;
   }
 
   .spread-card {
@@ -317,6 +398,20 @@ h1{
 
 /* 🖥️ 桌機 (大於 1024px) */
 @media (min-width: 1025px) {
+  
+  h1{
+    font-size: 60px;
+    text-align: center;
+    margin-top: 40px;
+
+  }
+
+.button-row button {
+    font-size: 24px;         /* 文字更大 */
+    padding: 18px 32px;      /* 按鈕更寬更高 */
+    border-radius: 12px;     /* 圓角稍大 */
+  }
+
   .card-back {
     width: 300px;
     height: 450px;

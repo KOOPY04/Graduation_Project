@@ -11,6 +11,7 @@
   <body class="startpage">
     {% include "global.html" %}
 
+
     <div class="scroll-container">
       <div class="header">
         <h1>
@@ -27,6 +28,10 @@
       <div class="tarot-preview">
         <div class="card-back-container">
           <div id="cardBack" class="card-back"></div>
+          <div class="button-row">
+            <button id="startBtn">開始占卜</button>
+              <button id="introBtn">說明介紹</button>
+          </div>
         </div>
       </div>
 
@@ -38,10 +43,7 @@
         </div>
       </div>
 
-      <div class="button-row">
-        <button id="startBtn">開始占卜</button>
-        <button id="introBtn">說明介紹</button>
-      </div>
+      
 
       <!-- 說明介紹 Modal -->
       <div id="introModal" class="modal">
@@ -118,10 +120,6 @@
         </div>
       </div>
 
-      <!-- 卡牌懸浮顯示 -->
-      <div id="modalOverlay" class="modal-overlay"></div>
-      <img id="modalCard" class="modal-card" />
-      <h3 id="modalCardName"></h3>
 
       <!-- 自訂警示框 -->
       <div id="customAlert" class="custom-alert">
@@ -131,6 +129,14 @@
         </div>
       </div>
     </div>
+
+    <!-- 卡牌懸浮顯示 -->
+      <div id="modalOverlay" class="modal-overlay"></div>
+      <div class="tarot-center-container">
+        <img id="modalCard" class="modal-card" />
+        <h3 id="modalCardName"></h3>
+      </div>
+
     <script src="/static/global.js"></script>
     <script src="/static/startpage/startpage.js"></script>
   </body>
