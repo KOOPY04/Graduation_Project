@@ -20,8 +20,6 @@ from authlib.integrations.starlette_client import OAuth
 from starlette.requests import Request
 from starlette.middleware.sessions import SessionMiddleware
 from typing import Any
-import json
-import shutil
 import aiohttp
 import asyncio
 import smtplib
@@ -38,8 +36,6 @@ from passlib.context import CryptContext
 # from email_config import conf
 
 from PIL import Image
-
-import os
 
 app = FastAPI()
 
@@ -993,6 +989,8 @@ async def contact_form(
         msg["To"] = SUPPORT_EMAIL
         msg["Reply-To"] = email  # 使用者填寫的 Email
         msg["Subject"] = f"客服聯絡表單：{type}問題"
+        
+        safe_message = message.replace('\n','<br>')
         # HTML 內容
         body = f"""
         <html>
@@ -1000,7 +998,7 @@ async def contact_form(
             <p><b>用戶:</b> {name}<br>
             <b>Email:</b> {email}</p>
             <p><b>問題類型:</b> {type}<br>
-            <b>訊息內容:</b><br>{message.replace('\n', '<br>')}</p>
+            <b>訊息內容:</b><br>{safe_message}</p>
         </body>
         </html>
         """
