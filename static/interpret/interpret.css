@@ -6,7 +6,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  backdrop-filter: blur(5px);
+
 }
 
 /* 牌陣容器 */
@@ -219,4 +219,134 @@ body {
 .spread,
 .button-row {
   margin: 40px auto;
+}
+/* === 卡牌與牌義響應式整合版 === */
+
+/* 卡牌圖像：隨螢幕大小縮放 */
+.interpret-card img {
+  width: clamp(80px, 12vw, 140px); /* 手機80px，中型螢幕約120px，桌機140px */
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  object-fit: cover;
+}
+
+.interpret-card img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* 卡牌標題與牌義：隨螢幕縮放字體大小 */
+.card-position,
+.card-name,
+.card-meaning {
+  font-size: clamp(14px, 2vw, 18px); /* 手機14px，桌機18px */
+  line-height: 1.4;
+  text-align: center;
+  color: #5e3370;
+}
+
+/* === 三張牌與四張牌陣容器：響應式排版 === */
+.spread {
+  display: flex;
+  flex-wrap: wrap;           /* 螢幕太窄時自動換行 */
+  justify-content: center;
+  gap: clamp(12px, 3vw, 30px); /* 卡與卡間距隨螢幕變化 */
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* === 三張牌陣（預設橫排） === */
+.spread[data-count="3"] {
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(12px, 3vw, 30px);
+}
+
+/* 手機：三張改為直排 */
+@media (max-width: 768px) {
+  .spread[data-count="3"] {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+}
+
+/* === 四張牌陣 === */
+/* 桌機：上1張 + 右文字，下3張橫排 */
+.spread[data-count="4"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px auto;
+  gap: 30px;
+}
+
+/* 上方第一張 */
+.spread[data-count="4"] .first-card {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* 第一張右側的說明文字 */
+.spread[data-count="4"] .first-card > div:last-child {
+  position: absolute;
+  right: clamp(4%, 6vw, 8%);   /* 隨螢幕寬度動態調整 */
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: clamp(220px, 30vw, 300px);
+  font-size: clamp(14px, 1.8vw, 18px);
+  color: #333;
+}
+
+/* 下方三張卡：橫向排列，允許換行 */
+.spread[data-count="4"] > .bottom-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(12px, 3vw, 30px);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* 手機與平板：改為四張直排（上到下） */
+@media (max-width: 1008px) {
+  .spread[data-count="4"] {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .spread[data-count="4"] .first-card {
+    flex-direction: column;
+    position: static;
+    margin-bottom: 10px;
+  }
+
+  .spread[data-count="4"] .first-card > div:last-child {
+    position: static;
+    transform: none;
+    max-width: 100%;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .spread[data-count="4"] > .bottom-row {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+  }
+}
+
+/* 文字區塊（解牌文字）響應式內距 */
+.interpret-section {
+  padding: clamp(16px, 4vw, 30px);
+  font-size: clamp(14px, 1.8vw, 18px);
 }
