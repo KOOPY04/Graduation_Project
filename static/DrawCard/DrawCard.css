@@ -75,20 +75,12 @@
 
 /* ==================== 響應式調整 ==================== */
 @media (max-width: 1200px) {
-  .card {
-    width: 12vw;
-    height: 19vw;
-  }
   .fan-container {
     height: 45vw;
   }
 }
 
 @media (max-width: 768px) {
-  .card {
-    width: 15vw;
-    height: 24vw;
-  }
   .fan-container {
     height: 50vw;
   }
@@ -98,10 +90,6 @@
 }
 
 @media (max-width: 480px) {
-  .card {
-    width: 18vw;
-    height: 29vw;
-  }
   .fan-container {
     height: 55vw;
   }
@@ -109,3 +97,21 @@
     font-size: 6vw;
   }
 }
+
+@media (max-width: 1200px) {
+  .card { width: 12vw; height: 19vw; }
+  .fan-container { height: 45vw; }
+}
+
+@media (max-width: 768px) {
+  .card { width: 15vw; height: 24vw; }
+  .fan-container { height: 50vw; }
+  #dragTip { font-size: 5vw; }
+}
+
+@media (max-width: 480px) {
+  .card { width: 18vw; height: 29vw; }
+  .fan-container { height: 55vw; }
+  #dragTip { font-size: 6vw; }
+}
+

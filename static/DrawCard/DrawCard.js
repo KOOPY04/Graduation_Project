@@ -81,10 +81,9 @@ function initTarotPage() {
 
     // 更新卡牌位置
     function positionCards() {
-        
         const tiltX = -15;
 
-        // 找出最靠前卡牌
+        // 找出 front card（最接近中間的卡）
         let frontCard = null, minDiff = 360;
         cards.forEach(c => {
             let a = parseFloat(c.dataset.angle) % 360;
@@ -95,35 +94,22 @@ function initTarotPage() {
             }
         });
 
-        // 根據角度排序 zIndex
-        const sortedCards = [...cards].sort((a, b) => {
-            const angleA = parseFloat(a.dataset.angle) % 360;
-            const angleB = parseFloat(b.dataset.angle) % 360;
-            // 越靠前越大
-            const zA = Math.cos(angleA * Math.PI / 180);
-            const zB = Math.cos(angleB * Math.PI / 180);
-            return zA - zB;
-        });
+        // 計算 zIndex 根據角度（靠前越大）
+        cards.forEach(c => {
+            const a = parseFloat(c.dataset.angle) % 360;
+            const rad = a * Math.PI / 180;
+            const zPos = Math.cos(rad); // -1 ~ 1
+            const cScale = c.classList.contains("locked") ? scale : (c === frontCard ? scale * 1.3 : scale);
+            const opacity = c.classList.contains("locked") ? 0.3 : 1;
 
-        sortedCards.forEach((c, i) => {
-            const a = parseFloat(c.dataset.angle) || 0;
-            let zIndex = i + 1; // 基本 z-index
+            c.style.transform = `rotateY(${a}deg) rotateX(${tiltX}deg) translateZ(${radius}px) scale(${cScale})`;
+            c.style.opacity = opacity;
 
-            if (c.classList.contains("locked")) {
-                c.style.transform = `rotateY(${a}deg) rotateX(${tiltX}deg) translateZ(${radius}px) scale(${scale})`;
-                c.style.opacity = 0.3;
-                c.style.zIndex = 0;
-            } else if (c === frontCard) {
-                c.style.transform = `rotateY(${a}deg) rotateX(${tiltX}deg) translateZ(${radius}px) scale(${scale * 1.3})`;
-                c.style.opacity = 1;
-                c.style.zIndex = 1000;
-            } else {
-                c.style.transform = `rotateY(${a}deg) rotateX(${tiltX}deg) translateZ(${radius}px) scale(${scale})`;
-                c.style.opacity = 1;
-                c.style.zIndex = zIndex;
-            }
+            // z-index 根據角度
+            c.style.zIndex = Math.floor((zPos + 1) * 500);
         });
     }
+
 
     positionCards();
 
