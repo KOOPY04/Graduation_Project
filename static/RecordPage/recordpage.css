@@ -48,17 +48,18 @@
     flex-direction: column;
     background-color: rgba(128, 0, 128, 0.2); /* 紫色透明 */
     /* padding: 8px; */
-    margin: 10px 20px 20px 20px;
+    margin: 10px 20px 10px 20px;
     border-radius: 12px;
-    height: 85vh; /* 高度等於視窗高度 */
+    height: calc(100vh - 120px); /* 扣除上方標題和間距 */
     box-sizing: border-box; /* 包含 padding */
-    max-height: 100vh;
+    /*max-height: 100vh;*/
     gap: 10px;
     flex: 1; /* 撐滿剩餘高度 */
     /* overflow-y: auto;  */
     padding: 10px 20px;
     position: sticky;
     top: 100px;
+    
 }
 
 .allrecord {
@@ -214,4 +215,452 @@
   max-height: none; /* 移除高度限制 */
   padding-right: 0;
   margin: 0;
+}
+
+
+/* ==================== 響應式設計 ==================== */
+
+/* 📱 手機 (小於 600px) - */
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 100px;
+  }
+
+  .records-container {
+    margin: 5px;
+    padding: 8px;
+    height: auto;
+    min-height: 70vh;
+    top: 80px;
+    overflow-y: auto;
+    max-height: none;   /* ✅ 不限制最大高度 */
+    height: calc(100vh - 200px)
+  }
+
+  
+  .record-header {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 8px 5px;
+    padding: 10px 8px;
+    font-size: 0.75rem;
+    position: static;
+    gap: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .record-header div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 4px 0;             /* ✅ 每格內部上下留白 */
+    line-height: 1.4;
+  }
+
+  .record {
+    display: grid;
+    grid-template-columns: 60px 60px 100px minmax(200px, auto) 70px;
+    padding: 14px 12px;
+    margin-bottom: 12px;
+    gap: 5px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .record .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 4px;
+    justify-items: center;
+  }
+
+  .record div {
+    text-align: center;
+    white-space: normal;
+    overflow: hidden;
+    /*text-overflow: ellipsis;*/
+  }
+
+  .record img {
+    width: 50px;
+    margin: 0 auto;
+  }
+
+  .allrecord {
+    
+    overflow-x: auto !important;  /* 有水平滾輪 */
+    overflow-y: visible !important; /* 去除垂直滾輪 */
+    position: relative;
+    overflow-x: auto;
+    
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cards {
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .tooltip {
+    width: 150px;
+    font-size: 11px;
+  }
+
+  .summary {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  .summary-btn {
+    font-size: 16px;
+    white-space: nowrap;
+    padding: 10px 15px;
+    border-radius: 8px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+  }
+
+  .toggle-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .no-records {
+    padding: 30px 15px;
+    font-size: 1rem;
+  }
+
+  .button-row button {
+    font-size: 16px;          /* ✅ 字體縮小，更精緻 */
+    padding: 8px 10px;        /* ✅ 內距減少，不再臃腫 */
+    border-radius: 8px;       /* ✅ 邊角柔和但不過胖 */
+}
+
+  /* 如果橫向太擠，可以調整總結按鈕位置 */
+  .record-header h2 {
+    font-size: 0.85rem;
+  }
+
+  .record-header span {
+    font-size: 0.7rem;
+  }
+}
+
+/* 📱 小平板 / 大手機 (600px ~ 750px) */
+@media (min-width: 601px) and (max-width: 750px) {
+  .header h1 {
+    font-size: 35px;
+    text-align: center;
+    margin-top: 70px;
+  }
+
+  .records-container {
+    margin: 5px;
+    padding: 8px;
+    height: auto;
+    min-height: 70vh;
+    top: 80px;
+    overflow-y: auto;
+    max-height: none;
+    overflow-x: hidden;
+    height: calc(100vh - 200px)
+  }
+
+  .record-header {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 8px 5px;
+    padding: 10px 8px;
+    font-size: 0.8rem;
+    position: static;
+    gap: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .record-header div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 4px 0;
+    line-height: 1.4;
+  }
+
+  .record {
+    display: grid;
+    grid-template-columns: 70px 70px 110px minmax(220px, auto) 80px;
+    padding: 12px 10px;
+    margin-bottom: 12px;
+    gap: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow-x: auto
+  }
+
+  .record .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 4px;
+    justify-items: center;
+  }
+
+  .record div {
+    text-align: center;
+    white-space: normal;
+    overflow: hidden;
+  }
+
+  .record img {
+    width: 55px;
+    margin: 0 auto;
+  }
+
+  .allrecord {
+    overflow-x: auto;
+    overflow-y: visible;
+    position: relative;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px
+  }
+
+  .tooltip {
+    width: 150px;
+    font-size: 11px;
+  }
+
+  .summary {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  .summary-btn {
+    font-size: 16px;
+    white-space: nowrap;
+    padding: 10px 15px;
+    border-radius: 8px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+  }
+
+  .toggle-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .no-records {
+    padding: 30px 15px;
+    font-size: 1rem;
+  }
+
+  .button-row button {
+    font-size: 16px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .record-header h2 {
+    font-size: 0.9rem;
+  }
+
+  .record-header span {
+    font-size: 0.75rem;
+  }
+}
+
+
+/* 💻 平板 (751px ~ 1024px) */
+@media (min-width: 751px) and (max-width: 1024px) {
+  .header h1 {
+    font-size: 45px;
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  .records-container {
+    margin: 10px 15px;
+    padding: 18px 16px;
+    height: auto;
+    min-height: 75vh;
+    top: 120px;
+    overflow: visible;
+    overflow-y: auto;
+    height: calc(100vh - 200px)
+  }
+
+  .record-header {
+    grid-template-columns: repeat(5, 1fr);
+    margin: 12px 15px;
+    padding: 16px 12px;
+    font-size: 0.9rem;
+    position: static;
+    gap: 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .record-header div {
+    display: flex;               /* ✅ 讓內容可以用 flex 排版 */
+    justify-content: center;     /* ✅ 水平置中 */
+    align-items: center;         /* ✅ 垂直置中 */
+    padding: 4px 0;              /* ✅ 適度上下留白 */
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+  .record {
+    grid-template-columns: 110px 110px 110px 1fr 100px;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .record img {
+    width: 65px;
+  }
+
+  .allrecord {
+    overflow-x: auto !important;  /* 有水平滾輪 */
+    overflow-y: visible !important; /* 去除垂直滾輪 */
+    position: relative;
+    overflow-x: auto;
+    
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+  }
+
+  .cards {
+    gap: 10px;
+  }
+
+  .summary {
+    padding: 14px;
+  }
+
+  .summary-btn {
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  .toggle-btn {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    white-space: nowrap
+  }
+
+  .record-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .no-records {
+    padding: 35px;
+    font-size: 1.05rem;
+  }
+
+  .button-row button {
+    font-size: 16px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+}
+
+/* 🖥️ 桌機 (大於 1024px) */
+@media (min-width: 1025px) {
+  .header h1 {
+    font-size: 60px;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .records-container {
+    margin: 10px 20px 20px 20px;
+    padding: 10px 20px;
+    height: 85vh;
+    top: 100px;
+    overflow: visible;
+  }
+
+  .record-header {
+    grid-template-columns: repeat(5, 1fr);
+    margin: 16px 33px 16px 10px;
+    padding: 12px;
+    font-size: 1rem;
+    position: static;
+    gap: 6px;
+    overflow: visible;
+    white-space: nowrap
+  }
+
+  .record {
+    grid-template-columns: 150px 150px 150px 1fr 120px;
+    padding: 12px;
+    gap: 6px;
+    overflow: visible;
+  }
+
+  .record img {
+    width: 70px;
+  }
+
+  .allrecord {
+    padding: 10px 15px;
+    overflow: visible;
+  }
+
+  .cards {
+    gap: 12px;
+  }
+
+  .summary {
+    padding: 15px;
+  }
+
+  .toggle-btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+
+  .record-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .no-records {
+    padding: 40px;
+    font-size: 1.1rem;
+  }
+
+  .button-row button {
+    font-size: 24px;
+    padding: 18px 32px;
+    border-radius: 12px;
+  }
 }
