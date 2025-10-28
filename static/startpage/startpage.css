@@ -1,6 +1,9 @@
 /* .modal-body {
   overflow-y: auto;
 } */
+body {
+    overflow: hidden; /* 防止雙重卷軸出現 */
+}
 
 h1{
     position: sticky; /* 必須有 position 才能用 z-index */
@@ -11,40 +14,52 @@ h1{
 
 /* 底部按鈕列 - 改為相對定位，避免與卡牌重疊 */
 .button-row {
-  position: relative;           /* ✅ 不固定，跟隨頁面內容 */
-  margin: 40px auto 60px auto; /* 上下間距，左右置中 */
+  position: relative;           
+  margin: 40px auto 60px auto; 
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 40px;
-  flex-wrap: wrap;              /* 手機小螢幕自動換行 */
-  z-index: 10;                  /* 確保不被卡牌覆蓋 */
+  flex-wrap: wrap;
+  z-index: 10;
+  transition: transform 0.8s ease; /* 平滑動畫 */
 }
 
-/* 手機響應式微調 */
-@media (max-width: 768px) {
-  .button-row {
-    gap: 20px;
-    margin: 30px auto 40px auto;
-  }
-
-  .button-row button {
-    padding: 10px 16px;
-    font-size: 16px;
-  }
+/* 點擊卡背後，button-row 移到頁面底部 */
+.button-row.move-down {
+  transform: translateY(calc(100vh - 100% - 20px)); /* 調整為距離底部 20px */
 }
 
+/* 保留卡背高度，淡出效果 */
+.card-back-container {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  width: 100%;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  margin: 0 auto;
+  transition: opacity 0.5s ease;
+}
+
+.card-back-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+  height: 450px; /* 保留原本高度，避免 button-row 上移 */
+}
 
 .modal-content{
   overflow: hidden;
 }
 
 .tarot-scatter {
-  position: fixed;
+  position: absolute;  /* 改 absolute，跟隨頁面高度 */
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;   /* 至少滿螢幕高度 */
   overflow: hidden;
   z-index: 1;
 }
@@ -60,37 +75,6 @@ h1{
     pointer-events: auto; /* 卡牌可點擊 */
     transition: all 0.8s ease-out;
 }
-
-/*
-.card-back-container {
-  display: flex;
-  justify-content: center;   /* 水平置中 *
-  align-items: center;       /* 垂直置中 *
-  width: 100%;
-  position: relative;
-  z-index: 2;                /* 確保不被下層扇形遮住 *
-  background: transparent;   /* 不影響背景 *
-}
-.card-back {
-  width: 300px;
-  height: 450px;
-  margin: 20px auto;
-  background: url("/static/images/card_back.png") no-repeat center/cover;
-  cursor: pointer;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  transition:
-    transform 0.15s ease-out,
-    box-shadow 0.15s ease-out;
-  transform-style: preserve-3d;
-  perspective: 1000px;
-}
-
-.card-back:hover {
-  transform: scale(1.05) rotateY(5deg);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-}
-*/
 
 .card-back-container {
   display: grid;
@@ -311,25 +295,28 @@ h1{
     padding-top: 25px; /* ✅ 讓整個 header 往下移 */
   }
   
+
+
+.tarot-scatter.active ~ .button-row,
+body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  gap: 10px;
+  width: fit-content;
+  justify-content: center;
+  background: transparent; 
+  z-index: 1005;
+  white-space: nowrap; 
+}
 /* ==================== 響應式設定 ==================== */
 
 /* 📱 手機 (螢幕寬度小於 600px) */
 
 
 @media (max-width: 600px) {
-  /* h1{
-      font-size: 30px;
-      text-align: center;
-      margin-top: 40px; 
-
-    } */
-
-    /* .button-row button {
-    font-size: 20px;
-    padding: 12px 22px;
-    border-radius: 10px;
-  } */
-
   .card-back {
     width: 250px;
     height: 375px;
@@ -358,19 +345,6 @@ h1{
 
 /* 💻 平板 (600px ~ 1024px) */
 @media (min-width: 601px) and (max-width: 1024px) {
-  
-  /* h1{
-    font-size: 60px;
-    text-align: center;
-    margin-top: 40px;
-
-  }
-
-  .button-row button {
-    font-size: 24px;
-    padding: 18px 32px;
-    border-radius: 10px;
-  } */
 
   .card-back {
     width: 360px;
@@ -398,19 +372,6 @@ h1{
 
 /* 🖥️ 桌機 (大於 1024px) */
 @media (min-width: 1025px) {
-  
-  /* h1{
-    font-size: 60px;
-    text-align: center;
-    margin-top: 40px;
-
-  }
-
-.button-row button {
-    font-size: 24px;         /* 文字更大 */
-    padding: 18px 32px;      /* 按鈕更寬更高 */
-    border-radius: 12px;     /* 圓角稍大 */
-  } */
 
   .card-back {
     width: 300px;

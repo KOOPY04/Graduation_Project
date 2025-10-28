@@ -57,13 +57,14 @@ h1 {
 /* ---- 主要標題 ---- */
 h2,
 h3 {
+  font-size: clamp(22px, 3vw, 20px); /* 自動縮放 */
   color: #5e3370;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
   margin: 20px 0 10px 0;
 }
 
 .logo-icon {
-  height: clamp(1em, 4vw, 1.8em); /* 隨字體自動變化 */
+  height: clamp(1em, 4vw, 1.4em); /* 隨字體自動變化 */
   width: auto;
   vertical-align: middle;
   margin-right: 8px;
@@ -331,7 +332,7 @@ button:hover,
   top: 10px;
   right: 15px;
   color: #5e3370;
-  font-size: 24px;
+  font-size: clamp(25px, 5vw, 50px);
   font-weight: bold;
   cursor: pointer;
 }
@@ -421,14 +422,15 @@ button:hover,
 }
 
 .custom-alert-content p {
-  font-size: 16px;
+  font-size: clamp(16px, 2vw, 18px);
+  font-weight: 600;
   color: #5e3370;
   margin-bottom: 20px;
 }
 
 #customAlertBtn {
   padding: 10px 24px;
-  font-size: 14px;
+  font-size: clamp(16px, 2vw, 16px);
   border: none;
   border-radius: 8px;
   background: linear-gradient(135deg, #5e3370, #a678b2);
@@ -446,6 +448,7 @@ html,
 body {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE、Edge */
+  overflow: hidden;
 }
 
 html::-webkit-scrollbar,
@@ -540,8 +543,10 @@ body::-webkit-scrollbar {
 }
 
 .modal-content p,
-.modal-content ul {
-  font-size: 16px;
+.modal-content ul,
+.modal-content li,
+.modal-content li ::marker {
+  font-size: clamp(14px, 2vw, 18px);
   color: #333;
   margin-bottom: 12px;
 }
@@ -673,7 +678,7 @@ body::-webkit-scrollbar {
 
 .select-group label {
   font-weight: 600;
-  font-size: 16px;
+  font-size: clamp(16px, 2vw, 18px);
   color: #5e3370;
 }
 
@@ -789,6 +794,8 @@ body::-webkit-scrollbar {
 }
 
 label {
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: 600;
   display: block;
   margin-top: 10px;
 }
@@ -909,7 +916,7 @@ body {
   background-color: #f6f6f6;
   width: 100%;
   padding: 14px;
-  font-size: 16px;
+  font-size: clamp(16px, 2vw, 18px);
   font-weight: 600;
   border: none;
   text-align: left;
@@ -1008,6 +1015,8 @@ body {
 .nav-btn:hover {
   background-color: #8b4fae;
 }
+
+
 @media (max-width: 1200px) {
   /* 左上角主頁區塊 */
   .home-section {
@@ -1070,7 +1079,6 @@ body {
   }
 }
 /* ==== 標題與 Logo 響應式縮放 ==== */
-
 .header {
   display: flex;
   justify-content: center;
