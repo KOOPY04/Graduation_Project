@@ -457,9 +457,10 @@ body::-webkit-scrollbar {
 .scroll-container {
   overflow-y: auto;
   position: relative;
-  height: 100vh;
+  height: calc(100vh - 20px);
   box-sizing: border-box;
-  margin-top: -10px;
+  margin-top: -5px;
+  margin-bottom: 10px;
   /* scroll-margin: 10px 8px; */
   /* margin-top: -20px; */
   scrollbar-color: #dcbedc transparent; /* Firefox: 滑塊 + 透明軌道 */
@@ -479,6 +480,7 @@ body::-webkit-scrollbar {
   background: transparent;
   border-radius: 10px;
   box-shadow: inset 0 0 6px rgba(220, 190, 220, 0.15);
+  margin: 10px 0;
 }
 
 /* 滑塊：淡紫 #DCBEDC + 柔光 */
