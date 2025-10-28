@@ -11,7 +11,6 @@
   <body class="startpage">
     {% include "global.html" %}
 
-
     <div class="scroll-container">
       <div class="header">
         <h1>
@@ -28,10 +27,10 @@
       <div class="tarot-preview">
         <div class="card-back-container">
           <div id="cardBack" class="card-back"></div>
-          <div class="button-row">
-            <button id="startBtn">開始占卜</button>
-              <button id="introBtn">說明介紹</button>
-          </div>
+        </div>
+        <div class="button-row">
+          <button id="startBtn">開始占卜</button>
+          <button id="introBtn">說明介紹</button>
         </div>
       </div>
 
@@ -43,16 +42,14 @@
         </div>
       </div>
 
-      
-
       <!-- 說明介紹 Modal -->
       <div id="introModal" class="modal">
         <div class="modal-content">
           <span class="close-btn" id="closeIntro">&times;</span>
           <h2>🔮 塔羅占卜介紹</h2>
           <div id="summaryText" class="modal-body">
+            <h3>✨ 歡迎進入塔羅的世界 ✨</h3>
             <p>
-              <strong>✨ 歡迎進入塔羅的世界 ✨</strong><br />
               塔羅牌誕生於中世紀的歐洲，融合了神祕學、象徵學與心理學的智慧。<br />
               每一張牌都是一個宇宙符號，訴說著生命的循環、靈魂的轉折與命運的對話。<br />
               當你抽出一張牌的瞬間，你並非「預測未來」，而是揭開潛意識的面紗，<br />
@@ -120,7 +117,6 @@
         </div>
       </div>
 
-
       <!-- 自訂警示框 -->
       <div id="customAlert" class="custom-alert">
         <div class="custom-alert-content">
@@ -131,11 +127,11 @@
     </div>
 
     <!-- 卡牌懸浮顯示 -->
-      <div id="modalOverlay" class="modal-overlay"></div>
-      <div class="tarot-center-container">
-        <img id="modalCard" class="modal-card" />
-        <h3 id="modalCardName"></h3>
-      </div>
+    <div id="modalOverlay" class="modal-overlay"></div>
+    <div class="tarot-center-container">
+      <img id="modalCard" class="modal-card" />
+      <h3 id="modalCardName"></h3>
+    </div>
 
     <script src="/static/global.js"></script>
     <script src="/static/startpage/startpage.js"></script>

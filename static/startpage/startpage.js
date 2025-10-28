@@ -75,11 +75,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         cardBack.style.boxShadow = "0 10px 25px rgba(0,0,0,0.4)";
     });
 
-    // ===== 點擊卡背生成散落牌 =====
+    // 點擊大卡背生成散落牌
     cardBack.addEventListener("click", () => {
-        document.body.style.overflow = 'auto';
-        cardBack.style.display = "none";
-
+        // 淡出卡背，保留高度
+        const backContainer = document.querySelector(".card-back-container");
+        backContainer.classList.add("hidden");
 
         const scatterContainer = document.createElement("div");
         scatterContainer.classList.add("tarot-scatter");
@@ -88,14 +88,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
 
-        // 分批生成卡牌（每批約 10 張）
+
         let index = 0;
         const batchSize = 10;
         const cardsElements = [];
 
         function spawnBatch() {
             const slice = tarotCards.slice(index, index + batchSize);
-            slice.forEach((name,) => {
+            slice.forEach((name) => {
                 const card = document.createElement("img");
                 card.src = getCardImagePath(name);
                 card.className = "card";
@@ -125,24 +125,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
             index += batchSize;
             if (index < tarotCards.length) {
-                setTimeout(spawnBatch, 120); // 每 0.12 秒產生一批，動畫更平滑
+                setTimeout(spawnBatch, 120);
             }
         }
         spawnBatch();
 
-        // ===== 點擊卡片放大檢視 =====
+        // 點擊卡牌放大檢視
         scatterContainer.addEventListener("click", (e) => {
             if (e.target.tagName === "IMG") {
                 const card = e.target;
-                const name = card.dataset.name; // 直接取名
+                const name = card.dataset.name;
                 modalCard.src = card.src;
-                modalCardName.textContent = name; // 這樣就會正確顯示
+                modalCardName.textContent = name;
                 modalOverlay.classList.add("active");
                 modalCard.classList.add("active");
                 modalCardName.style.display = "block";
             }
         });
-
 
         // Modal 關閉邏輯
         modalOverlay.addEventListener("click", () => {
@@ -150,14 +149,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             modalCard.classList.remove("active");
             modalCardName.style.display = "none";
 
-            cardsElements.forEach(({ card, x, y, rot, z }) => {
+            cardsElements.forEach(({ card, x, y, rot }) => {
                 card.style.left = `${x}px`;
                 card.style.top = `${y}px`;
                 card.style.transform = `rotate(${rot}deg)`;
-                card.style.zIndex = z;
             });
         });
     });
+
 
 
     // ===== 其他按鈕 =====
