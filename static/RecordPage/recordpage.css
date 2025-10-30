@@ -161,7 +161,7 @@
 }
 
 .summary-btn {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .modal-content {
@@ -589,77 +589,5 @@
     font-size: 16px;
     padding: 8px 10px;
     border-radius: 10px;
-  }
-}
-
-/* 🖥️ 桌機 (大於 1024px) */
-@media (min-width: 1025px) {
-  .header h1 {
-    font-size: 60px;
-    text-align: center;
-    margin-top: 40px;
-  }
-
-  .records-container {
-    margin: 10px 20px 20px 20px;
-    padding: 10px 20px;
-    height: 85vh;
-    top: 100px;
-    overflow: visible;
-  }
-
-  .record-header {
-    grid-template-columns: repeat(5, 1fr);
-    margin: 16px 33px 16px 10px;
-    padding: 12px;
-    font-size: 1rem;
-    position: static;
-    gap: 6px;
-    overflow: visible;
-    white-space: nowrap
-  }
-
-  .record {
-    grid-template-columns: 150px 150px 150px 1fr 120px;
-    padding: 12px;
-    gap: 6px;
-    overflow: visible;
-  }
-
-  .record img {
-    width: 70px;
-  }
-
-  .allrecord {
-    padding: 10px 15px;
-    overflow: visible;
-  }
-
-  .cards {
-    gap: 12px;
-  }
-
-  .summary {
-    padding: 15px;
-  }
-
-  .toggle-btn {
-    padding: 4px 8px;
-    font-size: 0.85rem;
-  }
-
-  .record-header h2 {
-    font-size: 1.2rem;
-  }
-
-  .no-records {
-    padding: 40px;
-    font-size: 1.1rem;
-  }
-
-  .button-row button {
-    font-size: 24px;
-    padding: 18px 32px;
-    border-radius: 12px;
   }
 }
