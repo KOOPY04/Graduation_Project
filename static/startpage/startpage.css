@@ -308,7 +308,7 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
   width: fit-content;
   justify-content: center;
   background: transparent; 
-  z-index: 1005;
+  z-index: 1000;
   white-space: nowrap; 
 }
 /* ==================== 響應式設定 ==================== */
@@ -336,11 +336,6 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
     width: 230px;
     height: 350px;
   }
-
-  #modalCardName {
-    font-size: 20px;
-    top: 12%;
-  }
 }
 
 /* 💻 平板 (600px ~ 1024px) */
@@ -364,10 +359,6 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
     width: 270px;
     height: 400px;
   }
-
-  #modalCardName {
-    font-size: 24px;
-  }
 }
 
 /* 🖥️ 桌機 (大於 1024px) */
@@ -386,9 +377,5 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
   .modal-card {
     width: 300px;
     height: 460px;
-  }
-
-  #modalCardName {
-    font-size: 28px;
   }
 }

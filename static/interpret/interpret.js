@@ -358,7 +358,7 @@ function renderMusicRecommendation(musicData, container) {
         const songDiv = document.createElement("div");
         songDiv.style.marginBottom = "20px";
         songDiv.innerHTML = `
-            <p><strong>${m.name}</strong><br><span style="color:#aaa;">${m.artist}</span></p>
+            <p><strong style="font-size: clamp(16px, 3vw, 25px); color: #151515;">${m.name}</strong><br><span style="color:#e6e2e2; font-size: clamp(16px, 3vw, 25px);">${m.artist}</span></p>
             <p style="font-style:italic; color:#ccc;">🎵 歌詞重點：${m.lyrics_hint}</p>
             <iframe style="border-radius:16px; border:none; box-shadow:0 8px 20px rgba(0,0,0,0.3);"
                 src="${m.embed_url}" 

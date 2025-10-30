@@ -64,7 +64,7 @@ h3 {
 }
 
 .logo-icon {
-  height: clamp(1em, 4vw, 1.4em); /* 隨字體自動變化 */
+  height: clamp(1em, 3vw, 1.4em); /* 隨字體自動變化 */
   width: auto;
   vertical-align: middle;
   margin-right: 8px;
