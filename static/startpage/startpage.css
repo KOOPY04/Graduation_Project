@@ -2,20 +2,19 @@
   overflow-y: auto;
 } */
 body {
-    overflow: hidden; /* 防止雙重卷軸出現 */
+  overflow: hidden; /* 防止雙重卷軸出現 */
 }
 
-h1{
-    position: sticky; /* 必須有 position 才能用 z-index */
-    z-index: 100;
-    margin-bottom: 20px;
-    
+h1 {
+  position: sticky; /* 必須有 position 才能用 z-index */
+  z-index: 100;
+  margin-bottom: 20px;
 }
 
 /* 底部按鈕列 - 改為相對定位，避免與卡牌重疊 */
 .button-row {
-  position: relative;           
-  margin: 40px auto 60px auto; 
+  position: relative;
+  margin: 40px auto 60px auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,30 +49,30 @@ h1{
   height: 450px; /* 保留原本高度，避免 button-row 上移 */
 }
 
-.modal-content{
+.modal-content {
   overflow: hidden;
 }
 
 .tarot-scatter {
-  position: absolute;  /* 改 absolute，跟隨頁面高度 */
+  position: absolute; /* 改 absolute，跟隨頁面高度 */
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100vh;   /* 至少滿螢幕高度 */
+  min-height: 100vh; /* 至少滿螢幕高度 */
   overflow: hidden;
   z-index: 1;
 }
 
-.btn{
+.btn {
   cursor: pointer;
 }
 
 .tarot-scatter .card {
-    width: 120px;
-    height: 180px;
-    cursor: pointer;
-    pointer-events: auto; /* 卡牌可點擊 */
-    transition: all 0.8s ease-out;
+  width: 120px;
+  height: 180px;
+  cursor: pointer;
+  pointer-events: auto; /* 卡牌可點擊 */
+  transition: all 0.8s ease-out;
 }
 
 .card-back-container {
@@ -84,12 +83,11 @@ h1{
   /*height: 70vh;*/
   position: relative;
   justify-content: center; /* 垂直置中 */
-  align-items: center;     /* 水平置中 */
+  align-items: center; /* 水平置中 */
   z-index: 2;
   background: transparent;
-  margin: 0 auto;  /* 加這行：水平置中 */
+  margin: 0 auto; /* 加這行：水平置中 */
 }
-
 
 .card-back {
   width: 300px;
@@ -104,9 +102,8 @@ h1{
     box-shadow 0.15s ease-out;
   transform-style: preserve-3d;
   perspective: 1000px;
-  margin-top: auto; 
+  margin-top: auto;
   margin-bottom: auto;
-
 }
 
 .card-back:hover {
@@ -121,7 +118,6 @@ h1{
   justify-content: center;
   align-items: center;
 }
-
 
 .startpage .spread-card {
   position: relative;
@@ -141,7 +137,7 @@ h1{
   height: 189px;
   border-radius: 14px;
   cursor: pointer;
-  pointer-events: auto !important; 
+  pointer-events: auto !important;
   transform-origin: bottom center;
   transition:
     transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55),
@@ -200,9 +196,13 @@ h1{
   height: clamp(120px, 18vw, 180px);
   border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.3s ease, top 0.3s ease, left 0.3s ease, z-index 0.1s;
+  transition:
+    transform 0.3s ease,
+    top 0.3s ease,
+    left 0.3s ease,
+    z-index 0.1s;
   user-select: none;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 /* hover 輕微動畫 */
@@ -214,11 +214,11 @@ h1{
 /* ===== Modal ===== */
 .modal-overlay {
   position: fixed;
-  top:0;
-  left:0;
-  width:100vw;
-  height:100vh;
-  background: rgba(0,0,0,0.6);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
   display: none;
   z-index: 1000;
 }
@@ -229,15 +229,18 @@ h1{
 
 .modal-card {
   position: fixed;
-  top:50%;
-  left:50%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%) scale(1);
   max-width: 60vw;
   max-height: 80vh;
+  width: clamp(200px, 40vw, 360px);
+  height: clamp(300px, 60vh, 480px);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-  z-index: 1001;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  z-index: 1005;
   display: none;
+  transition: all 0.3s ease-in-out;
 }
 
 .modal-card.active {
@@ -246,20 +249,22 @@ h1{
 
 #modalCardName {
   position: fixed;
-  top: calc(50% + 250px);
+  top: calc(clamp(10%, 50%, 60%) + clamp(120px, 40vh, 240px));
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 3vw, 1.8rem);
   text-align: center;
-  z-index: 1002;
   display: none;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  animation: glow 2s infinite;
+  transition: top 0.3s ease-in-out;
 }
-
 
 /* 螢光閃爍動畫 */
 @keyframes glow {
-  0%, 100% {
+  0%,
+  100% {
     text-shadow:
       0 0 5px #a678b2,
       0 0 10px #a678b2,
@@ -277,25 +282,19 @@ h1{
 
 /* 卡牌名稱文字*/
 #modalCardName {
-  display: none;
-  position: fixed;
   bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
   display: inline-flex;
   gap: 10px;
   width: fit-content;
   justify-content: center;
-  background: transparent; 
+  background: transparent;
   z-index: 1005;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 .scroll-container .header {
-    padding-top: 25px; /* ✅ 讓整個 header 往下移 */
-  }
-  
-
+  padding-top: 25px; /* ✅ 讓整個 header 往下移 */
+}
 
 .tarot-scatter.active ~ .button-row,
 body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
@@ -307,15 +306,13 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
   gap: 10px;
   width: fit-content;
   justify-content: center;
-  background: transparent; 
+  background: transparent;
   z-index: 1000;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 /* ==================== 響應式設定 ==================== */
 
 /* 📱 手機 (螢幕寬度小於 600px) */
-
-
 @media (max-width: 600px) {
   .card-back {
     width: 250px;
@@ -336,11 +333,14 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
     width: 230px;
     height: 350px;
   }
+
+  /* #modalCardName {
+    top: calc(50% + 18vh);
+  } */
 }
 
 /* 💻 平板 (600px ~ 1024px) */
 @media (min-width: 601px) and (max-width: 1024px) {
-
   .card-back {
     width: 360px;
     height: 540px;
@@ -359,11 +359,14 @@ body:has(.tarot-scatter:not([style*="display: none"])) .button-row {
     width: 270px;
     height: 400px;
   }
+
+  /* #modalCardName {
+    top: calc(50% + clamp(80px, 20vh, 150px));
+  } */
 }
 
 /* 🖥️ 桌機 (大於 1024px) */
 @media (min-width: 1025px) {
-
   .card-back {
     width: 300px;
     height: 450px;

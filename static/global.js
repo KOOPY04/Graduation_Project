@@ -25,6 +25,11 @@ class GlobalAuth {
             sessionStorage.setItem("user_avatar", user.picture || "/static/images/default_avatar.png");
             sessionStorage.setItem("auth_provider", user.auth_provider || "local");
 
+            if (sessionStorage.getItem("justLoggedInByGoogle") === "true") {
+                sessionStorage.removeItem("justLoggedInByGoogle");
+                location.reload();
+            }
+
             const avatar = sessionStorage.getItem("user_avatar");
             const name = sessionStorage.getItem("user_name");
 
@@ -58,104 +63,6 @@ class GlobalAuth {
             return false;
         }
     }
-
-    /**
-     * 登入成功後上傳占卜紀錄
-     */
-    // async uploadTarotRecord(token, userId) {
-    //     try {
-    //         const savedCards = sessionStorage.getItem("saved_cards");
-    //         const savedSummary = sessionStorage.getItem("saved_summary");
-    //         const savedMusic = sessionStorage.getItem("saved_music");
-    //         const categoryName = sessionStorage.getItem("category_name") || "未分類";
-    //         const subquestionText = sessionStorage.getItem("subquestion_text") || "";
-
-    //         // 如果有占卜紀錄，就上傳
-    //         if (savedCards || savedSummary || savedMusic) {
-    //             console.log("📤 上傳占卜紀錄...");
-
-    //             // 處理 saved_cards：可能是數字陣列或卡牌物件陣列
-    //             let cardsList = [];
-    //             if (savedCards) {
-    //                 try {
-    //                     const parsed = JSON.parse(savedCards);
-    //                     // 如果是卡牌物件陣列（有 name 和 position）
-    //                     if (Array.isArray(parsed) && parsed[0]?.name) {
-    //                         cardsList = parsed.map(c => ({
-    //                             name: c.name || c.cards_name || "",
-    //                             orientation: c.position || "正位"
-    //                         }));
-    //                     } else {
-    //                         // 如果是數字陣列，保持原樣
-    //                         cardsList = parsed;
-    //                     }
-    //                 } catch (e) {
-    //                     cardsList = [];
-    //                 }
-    //             }
-
-    //             // 處理 saved_summary：可能是 JSON { html: "..." } 或純字串
-    //             let summaryText = "";
-    //             if (savedSummary) {
-    //                 try {
-    //                     const parsed = JSON.parse(savedSummary);
-    //                     summaryText = parsed.html || parsed || "";
-    //                 } catch (e) {
-    //                     summaryText = savedSummary;
-    //                 }
-    //             }
-
-    //             // 處理 saved_music：可能是完整的 musicData 物件
-    //             let musicData = null;
-    //             if (savedMusic) {
-    //                 try {
-    //                     musicData = JSON.parse(savedMusic);
-    //                 } catch (e) {
-    //                     musicData = null;
-    //                 }
-    //             }
-
-    //             const uploadData = {
-    //                 user_id: userId,
-    //                 category: categoryName,
-    //                 subquestion: subquestionText,
-    //                 selected_cards: cardsList,
-    //                 summary: summaryText,
-    //                 music: musicData
-    //             };
-
-    //             console.log("📦 上傳資料:", uploadData);
-
-    //             const res = await fetch("/api/tarot-records", {
-    //                 method: "POST",
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                     "Authorization": `Bearer ${token}`
-    //                 },
-    //                 body: JSON.stringify(uploadData)
-    //             });
-
-    //             if (res.ok) {
-    //                 const result = await res.json();
-    //                 console.log("✅ 占卜紀錄已上傳，ID:", result.record_id);
-    //                 // 上傳成功後清除 sessionStorage
-    //                 sessionStorage.removeItem("saved_cards");
-    //                 sessionStorage.removeItem("saved_summary");
-    //                 sessionStorage.removeItem("saved_music");
-    //                 sessionStorage.removeItem("saved_record_sent");
-    //                 return true;
-    //             } else {
-    //                 const errData = await res.json();
-    //                 console.warn("⚠️ 上傳占卜紀錄失敗:", errData.error);
-    //                 return false;
-    //             }
-    //         } else {
-    //             console.log("📭 沒有占卜紀錄需要上傳");
-    //         }
-    //     } catch (err) {
-    //         console.error("❌ 上傳占卜紀錄出錯:", err);
-    //     }
-    // }
 
     // 登入
     async login(email, password) {
@@ -296,6 +203,7 @@ class GlobalAuth {
                 // ✅ 保存當前頁面路徑
                 const currentPath = window.location.pathname + window.location.search;
                 sessionStorage.setItem("returnPath", currentPath);
+                sessionStorage.setItem("justLoggedInByGoogle", "true");
                 window.location.href = "/login/google";
             });
         }
@@ -317,6 +225,7 @@ class GlobalAuth {
 
                     // ✅ 重新整理頁面UI，不跳轉
                     this.checkLogin();
+                    setTimeout(() => window.location.reload(), 500);
                 } else if (loginError) {
                     loginError.textContent = result.error;
                     loginError.style.display = "block";
@@ -387,6 +296,7 @@ class GlobalAuth {
                         if (registerModal) registerModal.style.display = "none";
                         // ✅ 重新整理頁面UI，不跳轉
                         this.checkLogin();
+                        window.location.reload();
                     }, 800);
                 }
             } catch (err) {
@@ -407,6 +317,7 @@ class GlobalAuth {
             await this.logout();
             showAlert("您已成功登出 🌙");
             this.checkLogin();
+            setTimeout(() => window.location.reload(), 500);
             const dropdown = document.getElementById("userDropdown");
             if (dropdown) dropdown.style.display = "none";
         });

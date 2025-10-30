@@ -32,6 +32,7 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie, Body, UploadFile, File, status
 from passlib.context import CryptContext
+import urllib.parse
 # from OAuth import OAuth2PasswordRequestFormWithCookie
 # from email_config import conf
 
@@ -91,14 +92,24 @@ templates = Jinja2Templates(directory="templates")
 
 
 # ========= 資料庫 =========
-db_config = {
-    "host": "localhost",
-    "port":3307,
-    "user": "root",
-    "password": "",  # 改成你的密碼
-    "database": "tarot_db"
-}
+# db_config = {
+#     "host": "localhost",
+#     # "port":3307,
+#     "user": "root",
+#     "password": "",  # 改成你的密碼
+#     "database": "tarot_db"
+# }
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+url = urllib.parse.urlparse(DATABASE_URL)
+
+db_config = {
+    "host": url.hostname,
+    "port": url.port or 3306,
+    "user": url.username,
+    "password": url.password,
+    "database": url.path[1:]  # 去掉開頭 /
+}
 
 # ========= 安全設定 =========
 SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_THIS_SECRET")
