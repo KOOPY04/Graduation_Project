@@ -42,6 +42,10 @@
   z-index: 9;
 }
 
+.record-header div {
+    font-size: clamp(16px, 3vw, 18px);
+}
+
 /* 紫色透明容器 */
 .records-container {
     display: flex;
@@ -77,6 +81,7 @@
 
 .record div {
   text-align: center;
+  font-size: clamp(16px, 3vw, 18px);
 }
 
 .record img {
@@ -85,12 +90,6 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-.record-header h2 {
-  margin: 0;
-  
-  font-size: 1.2rem;
-  color: #5a3e36;
-}
 .record-header span {
   font-size: 0.9rem;
   color: #999;
@@ -126,7 +125,7 @@
   padding: 8px 0 24px 0;
   border-radius: 6px;
   white-space: pre-wrap;
-  font-size: 12px;
+  font-size: clamp(12px, 2.5vw, 14px);
   display: none;
   width: 180px;
   z-index: 9999;
@@ -171,7 +170,7 @@
 
 .modal-content p,
 .modal-content ul {
-  font-size: 16px;
+  font-size: clamp(16px, 3vw, 18px);
   color: #333;
   margin-bottom: 12px;
 }

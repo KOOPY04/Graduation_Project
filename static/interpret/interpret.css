@@ -202,6 +202,7 @@ body {
   max-height: none; /* 移除高度限制 */
   padding-right: 0;
   margin: 0;
+  font-size: clamp(14px, 2vw, 18px);
 }
 
 /* === 讓解牌頁的卡牌與按鈕整體垂直置中 === */
@@ -244,7 +245,11 @@ body {
   font-size: clamp(14px, 2vw, 18px); /* 手機14px，桌機18px */
   line-height: 1.4;
   text-align: center;
-  color: #5e3370;
+  color: #5e3370ff;
+}
+
+.card-meaning {
+  color: #333;
 }
 
 /* === 三張牌與四張牌陣容器：響應式排版 === */
