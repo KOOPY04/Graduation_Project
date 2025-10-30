@@ -1035,27 +1035,35 @@ body {
     font-size: clamp(18px, 3vw, 26px);
   }
 
-  /* 右上角按鈕群 */
   .nav-right {
     top: 2vw;
     right: 2vw;
+    display: flex;
+    align-items: center;
     gap: clamp(6px, 1.5vw, 12px);
   }
 
-  .nav-btn {
+  /* 針對所有右上角按鈕，包括登入後的 */
+  .nav-right .nav-btn,
+  .nav-right button,
+  .nav-right .user-menu,
+  #login-btn.nav-btn {
     padding: clamp(4px, 1vw, 10px) clamp(8px, 1.5vw, 16px);
-    font-size: clamp(14px, 2vw, 20px);
+    font-size: clamp(13px, 2vw, 18px);
+    border-radius: 8px;
+    transition: all 0.3s ease;
   }
 
-  .nav-btn .avatar {
-    width: clamp(24px, 2vw, 35px);
-    height: clamp(24px, 2vw, 35px);
+  .nav-right .avatar {
+    width: clamp(24px, 2vw, 32px);
+    height: clamp(24px, 2vw, 32px);
   }
 }
-
 /* 進一步在手機更小尺寸下微調 */
 @media (max-width: 768px) {
   .home-section {
+    top: 3vw;
+    left: 3vw;
     padding: 6px 12px;
     gap: 6px;
   }
@@ -1066,14 +1074,26 @@ body {
 
   .site-title {
     font-size: 20px;
+    text-align: center;
   }
 
-  .nav-right .nav-btn {
-    padding: 5px 12px;
-    font-size: 14px;
+  /* 小螢幕時右上角按鈕往內縮 */
+  .nav-right {
+    top: 8px;
+    right: 8px;
+    gap: 6px;
   }
 
-  .nav-right .nav-btn .avatar {
+  .nav-right .nav-btn,
+  .nav-right button,
+  .nav-right .user-menu,
+  #login-btn.nav-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  .nav-right .avatar {
     width: 20px;
     height: 20px;
   }
@@ -1112,4 +1132,140 @@ body {
 /* hover 小動畫效果（可選） */
 .header h1:hover .logo-icon {
   transform: scale(1.1) rotate(-5deg);
+}
+/* === 修正登入按鈕響應式 === */
+#login-btn.nav-btn {
+  background-color: #a678b2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+#login-btn.nav-btn:hover {
+  background-color: #8b4fae;
+  transform: translateY(-2px);
+}
+
+/* 響應式縮放登入按鈕 */
+@media (max-width: 1200px) {
+  #login-btn.nav-btn {
+    padding: clamp(4px, 1vw, 10px) clamp(8px, 1.5vw, 16px);
+    font-size: clamp(14px, 2vw, 18px);
+  }
+}
+
+@media (max-width: 768px) {
+  #login-btn.nav-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+/* === 修正「登入後」按鈕的響應式 === */
+
+/* * 1. 登入後頭像 (user-avatar) 的基礎樣式
+ * (這是您可能缺少的)
+/* --- 1. 基礎樣式 (所有按鈕) --- */
+#login-btn.nav-btn,
+#register-btn.nav-btn {
+  background-color: #a678b2;
+  color: white;
+  border: none;
+  border-radius: 8px; /* 基礎圓角 */
+  padding: 8px 16px;  /* 桌機版 padding */
+  font-size: 18px;    /* 桌機版字體 */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0; /* 防止按鈕被佈局壓縮 */
+  white-space: nowrap; /* 防止文字換行 */
+}
+
+#login-btn.nav-btn:hover,
+#register-btn.nav-btn:hover {
+  background-color: #8b4fae;
+  transform: translateY(-2px);
+}
+
+/* --- 2. 登入後 "內部" 元素的基礎樣式 --- */
+#login-btn.nav-btn .user-avatar {
+  width: 30px; 
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px; 
+  object-fit: cover;
+  transition: all 0.3s ease; 
+  flex-shrink: 0;
+}
+
+#login-btn.nav-btn span {
+  display: inline-block; 
+  transition: all 0.3s ease;
+}
+
+/* * --- 3. 響應式：平板 (1200px ~ 769px) ---
+ * * 解決「橢圓形」問題：
+ * 我們移除了 clamp()，改用固定的 padding 和 font-size。
+ * 這樣它就會是一個穩定的「長方形」，直到 768px。
+ */
+@media (max-width: 1200px) {
+  /* 套用到所有按鈕 */
+  #login-btn.nav-btn,
+  #register-btn.nav-btn {
+    padding: 6px 12px;  /* 固定的平板 padding */
+    font-size: 16px;    /* 固定的平板字體 */
+  }
+
+  /* "登入後" 的頭像也一起縮小 */
+  #login-btn.nav-btn .user-avatar {
+    width: 26px;
+    height: 26px;
+    margin-right: 6px;
+  }
+}
+
+/* * --- 4. 響應式：手機 (768px 以下) ---
+ */
+@media (max-width: 600px) {
+  
+  /* A. 「登入前」的按鈕 (登入、註冊) */
+  /* :not(:has(...)) -> 選取 "不包含" .user-avatar 的按鈕 */
+  #login-btn.nav-btn:not(:has(.user-avatar)),
+  #register-btn.nav-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  /* B. 「登入後」的按鈕 (嗨, XXX) */
+  /* :has(...) -> 選取 "包含" .user-avatar 的按鈕 */
+  #login-btn.nav-btn:has(.user-avatar) {
+    /* * 關鍵：
+     * 1. 左右 padding 設為 6px
+     * 2. 上下 padding 設為 6px
+     * 這樣按鈕的 (寬) = 28px(頭像) + 6px + 6px = 40px
+     * 這樣按鈕的 (高) = 28px(頭像) + 6px + 6px = 40px
+     * 40x40px 的方塊加上 border-radius: 50% 就會是「正圓形」
+     */
+    padding: 6px;         
+    border-radius: 50%; /* 變成正圓形 */
+  }
+
+  /* C. 「登入後」的內部元素 (在 768px 以下) */
+  #login-btn.nav-btn:has(.user-avatar) .user-avatar {
+    width: 28px;  
+    height: 28px;
+    margin-right: 0; /* 移除間距，因為沒有文字了 */
+  }
+  
+  #login-btn.nav-btn:has(.user-avatar) span {
+    display: none; /* 隱藏 "嗨, XXX" 文字 */
+  }
 }
