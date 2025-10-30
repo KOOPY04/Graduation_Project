@@ -3,7 +3,7 @@ async function fetchRecords() {
     if (!userId) return console.error("找不到使用者 ID");
 
     try {
-        const res = await fetch(`http://127.0.0.1:8000/api/tarot-records/${userId}`);
+        const res = await fetch(`https://tarot-arcana.onrender.com/api/tarot-records/${userId}`);
         const records = await res.json();
         if (!Array.isArray(records)) return console.error("抓取塔羅紀錄失敗:", records);
 
