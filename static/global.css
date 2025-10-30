@@ -894,7 +894,7 @@ body {
   right: 15px;
   border: none;
   background: transparent;
-  font-size: 20px;
+  font-size: clamp(25px, 5vw, 50px);
   cursor: pointer;
   color: #5e3370;
 }
