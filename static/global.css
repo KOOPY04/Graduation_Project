@@ -11,7 +11,7 @@
 @font-face {
   font-family: "辰宇落雁體 Thin Monospaced";  
   src: local("辰宇落雁體 Thin Monospaced"),
-       url("/ChenYuluoyan.ttf") format("truetype");
+       url("static/fonts/ChenYuluoyan.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
