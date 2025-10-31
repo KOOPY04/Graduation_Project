@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 8000
     envVars:
       - key: DATABASE_URL
         value: mysql+pymysql://root:CJYnDpbozqvRoMMpBGihalcJkJODjPWo@yamabiko.proxy.rlwy.net:16414/railway
