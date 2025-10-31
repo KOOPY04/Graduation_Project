@@ -21,6 +21,7 @@ function generateTarotHTML(slotTitles) {
     }
     html += "</div></div>";
 
+    // slot 區域
     html += `<div class='spread' data-count='${slotTitles.length}'>`;
     if (slotTitles.length === 4) {
         html += `<div class='slot slot-top' id='slot0'>${slotTitles[0]}</div><div class='slot-row'>`;
@@ -183,3 +184,28 @@ function initTarotPage() {
 }
 
 document.addEventListener("DOMContentLoaded", initTarotPage);
+
+// pageshow 事件（從 bfcache 回來時觸發）
+window.addEventListener("pageshow", () => {
+    console.log("🟢 PageShow triggered");
+
+    const count = parseInt(sessionStorage.getItem("count"), 10) || 4;
+    const slotTitles = count === 3
+        ? ["過去", "現在", "未來"]
+        : ["問題核心", "障礙或短處", "對策", "資源或長處"];
+
+    document.querySelectorAll(".slot").forEach((slot, i) => {
+        // 移除 slot 中的圖片
+        slot.querySelectorAll("img").forEach(img => img.remove());
+        // ✅ 重新填回 slot title
+        slot.textContent = slotTitles[i] || "";
+    });
+
+    // 移除所有被鎖定的卡牌
+    document.querySelectorAll(".card.locked").forEach(card => card.classList.remove("locked"));
+
+    // 清空已選牌記錄
+    if (window.selected) window.selected.length = 0;
+
+    console.log("🔁 Slots restored, selections cleared.");
+});
