@@ -1,0 +1,16 @@
+# 不要上傳這些
+venv/
+.venv/
+__pycache__/
+node_modules/
+*.log
+*.mp4
+*.zip
+*.tar.gz
+*.h5
+*.pth
+*.pkl
+*.npy
+*.npz
+.DS_Store
+.git/
