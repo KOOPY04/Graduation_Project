@@ -753,7 +753,7 @@ async def auth_google(request: Request):
 # ========= Google OAuth2 登入 =========
 @app.get("/login/google")
 async def login_google(request: Request):
-    redirect_uri = "https://tarot-arcana.onrender.com/auth/google"
+    redirect_uri = "https://tarot-arcana.up.railway.app/auth/google"
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
