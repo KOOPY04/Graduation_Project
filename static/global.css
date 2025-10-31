@@ -42,7 +42,7 @@ body {
   overflow-y: hidden;
 }
 h1 {
-  font-family: "辰宇落雁體 Thin Monospaced", sans-serif;
+  font-family: "辰宇落雁體 Thin Monospaced", "cwTeXFangSong", sans-serif;
   font-size: clamp(28px, 4vw, 50px); /* 改成自動縮放：手機小、桌機大 */
   font-weight: 950;
   margin-bottom: clamp(6px, 1vw, 10px);
