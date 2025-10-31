@@ -5,8 +5,6 @@
 *.tar.gz
 *.pt
 *.pkl
-*.jpg
-*.png
 *.webp
 *.mov
 __pycache__/
