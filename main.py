@@ -685,9 +685,9 @@ async def auth_google(request: Request):
         first_time = True
         # 新增使用者，auth_provider 設為 google
         cursor.execute(
-            "INSERT INTO users (email, name, picture, auth_provider) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO users (email, name, picture, auth_provider, password_hash) VALUES (%s, %s, %s, %s, %s)",
             (user_info["email"], user_info["name"],
-             user_info["picture"], "google")
+             user_info["picture"], "google", None)
         )
         conn.commit()
     else:
@@ -753,7 +753,7 @@ async def auth_google(request: Request):
 # ========= Google OAuth2 登入 =========
 @app.get("/login/google")
 async def login_google(request: Request):
-    redirect_uri = "https://tarot-arcana.up.railway.app/auth/google"
+    redirect_uri = "http://127.0.0.1:8000/auth/google"
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
