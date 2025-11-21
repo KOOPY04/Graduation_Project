@@ -986,7 +986,7 @@ async def update_password(data: PasswordUpdate, user: User = Depends(get_current
 
 
 # ===== API: 聯絡客服表單 =====
-@app.post("/contact")
+@app.post("/api/contact")
 async def contact_form(
     name: str = Form(...),
     email: str = Form(...),
@@ -1057,3 +1057,4 @@ async def set_password(
     conn.close()
 
     return {"message": "密碼設定成功"}
+
