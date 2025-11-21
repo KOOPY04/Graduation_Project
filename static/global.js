@@ -4,6 +4,13 @@ class GlobalAuth {
     constructor() {
         this.token = localStorage.getItem("token");
         this.userId = sessionStorage.getItem("user_id");
+
+        // 初始先隱藏按鈕，避免閃爍
+        const loginBtn = document.getElementById("login-btn");
+        const registerBtn = document.getElementById("register-btn");
+
+        if (loginBtn) loginBtn.style.visibility = "hidden";
+        if (registerBtn) registerBtn.style.visibility = "hidden";
     }
 
     // 檢查是否已登入，並更新 UI
@@ -36,9 +43,12 @@ class GlobalAuth {
             loginBtn.innerHTML = `<img src="${avatar}" class="user-avatar" />
             <span>嗨，${name} 👋</span>`;
 
+            loginBtn.style.visibility = "visible";
+            registerBtn.style.visibility = "none";
+            if (logoutBtn) logoutBtn.style.visibility = "block";
             loginBtn.style.display = "flex";
             registerBtn.style.display = "none";
-            if (logoutBtn) logoutBtn.style.display = "block";   //?
+            if (logoutBtn) logoutBtn.style.display = "block";
 
             loginBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -47,12 +57,17 @@ class GlobalAuth {
                 }
             };
 
-            return true; //?
+            return true;
         } catch {
             loginBtn.textContent = "登入";
             loginBtn.style.display = "flex";
             registerBtn.style.display = "flex";
             if (logoutBtn) logoutBtn.style.display = "none";
+
+            // ✅ 顯示按鈕
+            loginBtn.style.visibility = "visible";
+            registerBtn.style.visibility = "visible";
+            if (logoutBtn) logoutBtn.style.visibility = "visible";
 
             loginBtn.onclick = () => {
                 closeAllModals();
@@ -63,6 +78,8 @@ class GlobalAuth {
             return false;
         }
     }
+
+    
 
     // 登入
     async login(email, password) {
