@@ -22,7 +22,7 @@ class GlobalAuth {
 
             sessionStorage.setItem("user_id", user.user_id);
             sessionStorage.setItem("user_name", user.name || "使用者");
-            sessionStorage.setItem("user_avatar", user.picture || "/static/images/default_avatar.png");
+            sessionStorage.setItem("user_avatar", user.picture || "/static/images/default_avatar.webp");
             sessionStorage.setItem("auth_provider", user.auth_provider || "local");
 
             if (sessionStorage.getItem("justLoggedInByGoogle") === "true") {
@@ -426,7 +426,7 @@ class GlobalAuth {
             if (avatarPreview) {
                 avatarPreview.src = user.avatar
                     ? (user.avatar.startsWith("/static/") ? user.avatar : `/static/${user.avatar}`)
-                    : "/static/images/default_avatar.png";
+                    : "/static/images/default_avatar.webp";
             }
 
             // ✅ 判斷 Google 首次登入
@@ -649,7 +649,7 @@ function clearAccountSettings() {
     if (newPassword) newPassword.value = "";
     if (confirmPassword) confirmPassword.value = "";
     if (avatarPreview) {
-        avatarPreview.src = "/static/images/default_avatar.png";
+        avatarPreview.src = "/static/images/default_avatar.webp";
     }
 }
 

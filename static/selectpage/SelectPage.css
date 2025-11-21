@@ -46,7 +46,7 @@
   height: 189px;
   margin-left: -63px; /* 負的一半寬度置中 */
   border-radius: 12px;
-  background: url("/static/images/card_back.png") no-repeat center/cover;
+  background: url("/static/images/card_back.webp") no-repeat center/cover;
   box-shadow: 0 6px 20px rgba(0,0,0,0.45);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   transform-origin: bottom center;

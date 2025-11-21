@@ -93,7 +93,7 @@ h1 {
   width: 300px;
   height: 450px;
   /* 拿掉 margin */
-  background: url("/static/images/card_back.png") no-repeat center/cover;
+  background: url("/static/images/card_back.webp") no-repeat center/cover;
   cursor: pointer;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
@@ -247,24 +247,9 @@ h1 {
   display: block;
 }
 
-#modalCardName {
-  position: fixed;
-  top: calc(clamp(10%, 50%, 60%) + clamp(120px, 40vh, 240px));
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  font-size: clamp(1rem, 3vw, 1.8rem);
-  text-align: center;
-  display: none;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-  animation: glow 2s infinite;
-  transition: top 0.3s ease-in-out;
-}
-
 /* 螢光閃爍動畫 */
 @keyframes glow {
-  0%,
-  100% {
+  0%, 100% {
     text-shadow:
       0 0 5px #a678b2,
       0 0 10px #a678b2,
@@ -280,17 +265,41 @@ h1 {
   }
 }
 
-/* 卡牌名稱文字*/
-#modalCardName {
-  bottom: 30px;
-  display: inline-flex;
-  gap: 10px;
-  width: fit-content;
-  justify-content: center;
-  background: transparent;
-  z-index: 1005;
-  white-space: nowrap;
+@keyframes neonFlicker {
+  0%   { text-shadow: 0 0 5px #a678b2, 0 0 10px #a678b2; }
+  10%  { text-shadow: 0 0 2px #a678b2, 0 0 5px #a678b2; }
+  20%  { text-shadow: 0 0 15px #a678b2, 0 0 30px #a678b2; }
+  30%  { text-shadow: 0 0 8px #a678b2, 0 0 16px #a678b2; }
+  50%  { text-shadow: 0 0 12px #a678b2, 0 0 24px #a678b2; }
+  70%  { text-shadow: 0 0 4px #a678b2, 0 0 10px #a678b2; }
+  85%  { text-shadow: 0 0 20px #a678b2, 0 0 40px #a678b2; }
+  100% { text-shadow: 0 0 5px #a678b2, 0 0 10px #a678b2; }
 }
+
+/* 卡牌名稱文字 */
+#modalCardName {
+  position: fixed;                 /* 固定在視窗 */
+  bottom: clamp(20px, 5%, 50px);   /* 自適應距底部距離，避免與 top 衝突 */
+  left: 50%;                       /* 水平置中 */
+  transform: translateX(-50%);     /* 精確水平置中 */
+  
+  display: inline-flex;             /* 多元素水平排列 */
+  justify-content: center;          
+  gap: 10px;                        /* 元素間距 */
+  
+  color: white;                     /* 文字顏色 */
+  font-size: clamp(1rem, 3vw, 1.8rem); /* 響應式文字大小 */
+  text-align: center;
+  white-space: nowrap;              /* 不換行 */
+  background: transparent;          
+  z-index: 1005;                    /* 確保在上層 */
+  
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* 初始光暈 */
+  animation: neonFlicker 3s infinite;        /* 螢光閃爍動畫 */
+  
+  transition: bottom 0.3s ease-in-out; /* 平滑位置變化 */
+}
+
 
 .scroll-container .header {
   padding-top: 25px; /* ✅ 讓整個 header 往下移 */

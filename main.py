@@ -61,30 +61,7 @@ def generate_favicon():
     except Exception as e:
         print("⚠️ favicon 生成失敗:", e)
 
-'''
-# 讀取原圖
-img = Image.open("static/images/favicon.png")
 
-# 取得最大邊長
-size = max(img.size)
-
-# 建立正方形透明背景
-new_img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-
-# 計算置中位置
-x = (size - img.width) // 2
-y = (size - img.height) // 2
-
-# 貼上圖片
-new_img.paste(img, (x, y))
-
-# 儲存成多尺寸 favicon
-new_img.save(
-    "static/images/favicon.ico",
-    format="ICO",
-    sizes=[(16,16), (32,32), (48,48), (64,64), (128,128), (256,256)]
-)
-'''
 # ========= 初始化 =========
 load_dotenv()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -408,7 +385,7 @@ async def interpret_api(request: Request):
             folder = "權杖"
         else:
             folder = "其他"
-        image_path = f"/static/images/{folder}/{name}.png"
+        image_path = f"/static/images/{folder}/{name}.webp"
 
         result.append({
             "id": card["id"],
@@ -808,7 +785,7 @@ async def register(request: Request):
 
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-    default_avatar = "/static/images/default_avatar.png"  # ✅ 預設頭貼
+    default_avatar = "/static/images/default_avatar.webp"  # ✅ 預設頭貼
 
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()

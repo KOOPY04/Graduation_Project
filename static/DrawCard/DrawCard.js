@@ -1,6 +1,6 @@
 console.log("🟢 Tarot JS loaded");
 
-const cardBackUrl = "/static/images/card_back.png";
+const cardBackUrl = "/static/images/card_back.webp";
 
 // 自訂警示框
 function showAlert(msg) {

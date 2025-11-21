@@ -217,7 +217,7 @@ function getCardImagePath(name) {
             name.includes("錢幣") ? "錢幣" :
                 name.includes("寶劍") ? "寶劍" :
                     name.includes("權杖") ? "權杖" : "其他";
-    return `/static/images/${folder}/${name}.png`;
+    return `/static/images/${folder}/${name}.webp`;
 }
 
 fetchRecords();
