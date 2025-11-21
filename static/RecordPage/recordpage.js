@@ -170,25 +170,9 @@ function displayRecords(records) {
 
 function renderMusicRecommendation(musicData, container) {
     container.innerHTML = "";
-
-    // 如果 musicData 是字串，先解析
-    if (typeof musicData === "string") {
-        try {
-            musicData = JSON.parse(musicData);
-        } catch {
-            container.innerHTML = "<p>音樂資料格式錯誤</p>";
-            return;
-        }
-    }
-
-    // 如果沒有 music 陣列或長度為 0
-    if (!musicData.music || !Array.isArray(musicData.music) || musicData.music.length === 0) {
-        container.innerHTML = "<p>未找到音樂推薦。</p>";
-        return;
-    }
-
     const title = document.createElement("h3");
-    title.textContent = `🎧 推薦主題：${musicData.theme || ''}`;
+    title.style.color = "#fff";
+    title.textContent = `🎧 推薦主題：${musicData.theme}`;
     container.appendChild(title);
 
     const listDiv = document.createElement("div");
@@ -198,14 +182,29 @@ function renderMusicRecommendation(musicData, container) {
     musicData.music.forEach((m) => {
         const songDiv = document.createElement("div");
         songDiv.style.marginBottom = "20px";
-        songDiv.innerHTML = `
-            <p><strong style="font-size: clamp(16px, 3vw, 25px); color: #151515;">${m.name}</strong><br><span style="color:#e6e2e2; font-size: clamp(16px, 3vw, 25px);">${m.artist}</span></p>
-            <p style="font-style:italic; color:#ccc;">🎵 歌詞重點：${m.lyrics_hint || ''}</p>
-            <iframe style="border-radius:16px; border:none; box-shadow:0 8px 20px rgba(0,0,0,0.3);"
-                src="${m.embed_url}" width="350" height="80" allowtransparency="true" allow="encrypted-media">
-            </iframe>`;
+
+        const nameSpan = document.createElement("p");
+        nameSpan.innerHTML = `<strong style="font-size: clamp(16px, 3vw, 25px); color: #151515;">${m.name}</strong><br><span style="color:#e6e2e2; font-size: clamp(16px, 3vw, 25px);">${m.artist}</span>`;
+        songDiv.appendChild(nameSpan);
+
+        const lyricsSpan = document.createElement("p");
+        lyricsSpan.style.cssText = "font-style:italic; color:#ccc;";
+        lyricsSpan.textContent = `🎵 歌詞重點：${m.lyrics_hint}`;
+        songDiv.appendChild(lyricsSpan);
+
+        // 響應式 Spotify iframe
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("spotify-wrapper");
+        const iframe = document.createElement("iframe");
+        iframe.src = m.embed_url;
+        iframe.allow = "encrypted-media";
+        iframe.allowTransparency = true;
+        wrapper.appendChild(iframe);
+
+        songDiv.appendChild(wrapper);
         listDiv.appendChild(songDiv);
     });
+
     container.appendChild(listDiv);
 }
 
