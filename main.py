@@ -115,11 +115,13 @@ db_config = {
 SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_THIS_SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 小時
-SMTP_SERVER = os.getenv("SMTP_SERVER")
-SMTP_PORT = int(os.getenv("SMTP_PORT"))
-SMTP_USER = os.getenv("SMTP_USER")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+# SMTP_SERVER = os.getenv("SMTP_SERVER")
+# SMTP_PORT = int(os.getenv("SMTP_PORT"))
+# SMTP_USER = os.getenv("SMTP_USER")
+# SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL")
+FROM_EMAIL = os.getenv("FROM_EMAIL")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
 
@@ -994,35 +996,34 @@ async def contact_form(
     message: str = Form(...)
 ):
     try:
-        # 建立 HTML 郵件
-        msg = MIMEMultipart()
-        msg["From"] = SMTP_USER
-        msg["To"] = SUPPORT_EMAIL
-        msg["Reply-To"] = email  # 使用者填寫的 Email
-        msg["Subject"] = f"客服聯絡表單：{type}問題"
-        
-        safe_message = message.replace('\n','<br>')
-        # HTML 內容
-        message.replace('\n', '<br>')
-        body = f"""
-        <html>
-        <body>
-            <p><b>用戶:</b> {name}<br>
-            <b>Email:</b> {email}</p>
-            <p><b>問題類型:</b> {type}<br>
-            <b>訊息內容:</b><br>{message}</p>
-        </body>
-        </html>
+        html = f"""
+        <p><b>用戶:</b> {name}<br>
+        <b>Email:</b> {email}</p>
+        <p><b>問題類型:</b> {type}</p>
+        <p><b>訊息內容:</b><br>{message.replace("\n", "<br>")}</p>
         """
-        msg.attach(MIMEText(body, "html"))
 
-        # 使用 Gmail SMTP 發送
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, SUPPORT_EMAIL, msg.as_string())
+        res = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "from": FROM_EMAIL,
+                "to": [SUPPORT_EMAIL],
+                "subject": f"客服聯絡表單：{type}問題",
+                "html": html
+            }
+        )
 
-        return JSONResponse(content={"success": True, "message": "已成功寄送給客服"})
+        if res.status_code == 200:
+            return {"success": True, "message": "已成功寄送給客服"}
+
+        return {
+            "success": False,
+            "message": f"寄送失敗：{res.text}"
+        }
 
     except Exception as e:
         return JSONResponse(content={"success": False, "message": str(e)})
