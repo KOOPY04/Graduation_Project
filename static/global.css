@@ -8,14 +8,6 @@
   overflow-y: hidden;
 } */
 
-/* @font-face {
-  font-family: "辰宇落雁體 Thin Monospaced";  
-  src: local("辰宇落雁體 Thin Monospaced"),
-       url("static/fonts/ChenYuluoyan.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-} */
 @font-face {
   font-family: "ChenYuluoyan";
   src: url("/static/fonts/ChenYuluoyan.woff2") format("woff2"),
@@ -97,7 +89,7 @@ button,
   font-size: 20px;
   font-weight: 700;
   font-stretch: expanded;
-  font-family: "cwTeXFangSong", " ChenYuluoyan", sans-serif;
+  font-family: "cwTeXFangSong", "ChenYuluoyan", sans-serif;
   border: none;
   border-radius: 10px;
   background: linear-gradient(135deg, #5e3370, #a678b2);

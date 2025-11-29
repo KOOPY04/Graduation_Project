@@ -33,6 +33,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie, Body, UploadFile, File, status
 from passlib.context import CryptContext
 import urllib.parse
+from fastapi.staticfiles import StaticFiles
 # from OAuth import OAuth2PasswordRequestFormWithCookie
 # from email_config import conf
 
@@ -64,7 +65,12 @@ def generate_favicon():
 
 # ========= 初始化 =========
 load_dotenv()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory="static", html=True),
+    name="static"
+)
 templates = Jinja2Templates(directory="templates")
 
 
