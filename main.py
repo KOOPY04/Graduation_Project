@@ -27,7 +27,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import FastAPI, Request, Form, Depends, HTTPException, Cookie, Body, UploadFile, File, status
@@ -72,16 +72,6 @@ app.mount(
     name="static"
 )
 templates = Jinja2Templates(directory="templates")
-
-
-# ========= 資料庫 =========
-# db_config = {
-#     "host": "localhost",
-#     # "port":3307,
-#     "user": "root",
-#     "password": "",  # 改成你的密碼
-#     "database": "tarot_db"
-# }
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 url = urllib.parse.urlparse(DATABASE_URL)
@@ -252,6 +242,12 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+@app.get("/static/fonts/ChenYuluoyan.woff2")
+async def get_font(filename: str):
+    return FileResponse(
+        f"static/fonts/ChenYuluoyan.woff2",
+        media_type="font/woff2"
+    )
 
 # ===== 首頁 =====
 @app.get("/", response_class=HTMLResponse)
