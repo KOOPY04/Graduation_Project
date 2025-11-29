@@ -8,14 +8,23 @@
   overflow-y: hidden;
 } */
 
-@font-face {
+/* @font-face {
   font-family: "辰宇落雁體 Thin Monospaced";  
   src: local("辰宇落雁體 Thin Monospaced"),
        url("static/fonts/ChenYuluoyan.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+} */
+@font-face {
+  font-family: "ChenYuluoyan";
+  src: url("/static/fonts/ChenYuluoyan.woff2") format("woff2"),
+       url("/static/fonts/ChenYuluoyan.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
+
 @font-face {
   font-family: 'cwTeXFangSong';
   font-style: normal;
@@ -28,7 +37,7 @@
 }
 
 body {
-  font-family: "cwTeXFangSong", "辰宇落雁體 Thin Monospaced", sans-serif;
+  font-family: "cwTeXFangSong", "ChenYuluoyan", sans-serif;
   margin: 0;
   padding: 20px;
   background: url("/static/images/background.webp") no-repeat center center fixed;
@@ -42,7 +51,7 @@ body {
   overflow-y: hidden;
 }
 h1 {
-  font-family: "辰宇落雁體 Thin Monospaced", "cwTeXFangSong", sans-serif;
+  font-family: "ChenYuluoyan", "cwTeXFangSong", sans-serif;
   font-size: clamp(28px, 4vw, 50px); /* 改成自動縮放：手機小、桌機大 */
   font-weight: 950;
   margin-bottom: clamp(6px, 1vw, 10px);
@@ -88,7 +97,7 @@ button,
   font-size: 20px;
   font-weight: 700;
   font-stretch: expanded;
-  font-family: "cwTeXFangSong", "辰宇落雁體 Thin Monospaced", sans-serif;
+  font-family: "cwTeXFangSong", " ChenYuluoyan", sans-serif;
   border: none;
   border-radius: 10px;
   background: linear-gradient(135deg, #5e3370, #a678b2);
