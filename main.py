@@ -19,6 +19,8 @@ from datetime import datetime, timedelta
 from authlib.integrations.starlette_client import OAuth
 from starlette.requests import Request
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.types import Scope
+from starlette.responses import Response
 from typing import Any
 import aiohttp
 import asyncio
@@ -206,8 +208,21 @@ class TarotRecord(TarotRecordCreate):
     id: int
     created_at: datetime
 
+class FontStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        if path.endswith(".woff2"):
+            response.media_type = "font/woff2"
+        elif path.endswith(".woff"):
+            response.media_type = "font/woff"
+        elif path.endswith(".ttf"):
+            response.media_type = "font/ttf"
+        return response
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+app.mount("/static", FontStaticFiles(directory="static"), name="static")
 
 # ======== API 金鑰設定 =========
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
