@@ -49,6 +49,25 @@ function displayRecords(records) {
     }
 
     records.forEach(record => {
+        // 解析 music 字串
+        let musicData = null;
+        if (record.music) {
+            if (typeof record.music === "string") {
+                try {
+                    musicData = JSON.parse(record.music);
+                } catch (e) {
+                    console.error("music JSON 解析失敗:", e, record.music);
+                    musicData = null;
+                }
+            } else {
+                musicData = record.music; // 若後端哪天改成物件，也能相容
+            }
+        }
+
+        // 安全取得 music array
+        const musicList = musicData?.music;
+
+
         const recDiv = document.createElement("div");
         recDiv.className = "record";
 
@@ -103,7 +122,7 @@ function displayRecords(records) {
         console.log("record =", record);
 
         const sumDiv = document.createElement("div");
-        if (record.summary || (record.music && record.music.length)) {
+        if (record.summary || (Array.isArray(musicList) && musicList.length > 0)) {
             const summaryBtn = document.createElement("button");
             summaryBtn.textContent = "查看總結";
             summaryBtn.className = "summary-btn";
