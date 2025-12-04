@@ -100,10 +100,10 @@ function displayRecords(records) {
             cardsDiv.appendChild(cardDiv);
         });
 
-
+        console.log("record =", record);
 
         const sumDiv = document.createElement("div");
-        if (record.summary || (record.music && record.music.music && record.music.music.length)) {
+        if (record.summary || (record.music && record.music.length)) {
             const summaryBtn = document.createElement("button");
             summaryBtn.textContent = "查看總結";
             summaryBtn.className = "summary-btn";
@@ -178,6 +178,14 @@ function renderMusicRecommendation(musicData, container) {
     const listDiv = document.createElement("div");
     listDiv.style.marginTop = "10px";
     listDiv.style.textAlign = "center";
+
+    const musicList = musicData?.music?.music;
+
+    if (!Array.isArray(musicList)) {
+        console.warn("Music list 為 undefined 或不是陣列：", musicList);
+        return; // 不要再往下做，避免爆炸
+    }
+
 
     musicData.music.forEach((m) => {
         const songDiv = document.createElement("div");
