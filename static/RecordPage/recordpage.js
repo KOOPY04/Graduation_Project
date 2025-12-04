@@ -179,14 +179,6 @@ function renderMusicRecommendation(musicData, container) {
     listDiv.style.marginTop = "10px";
     listDiv.style.textAlign = "center";
 
-    const musicList = musicData?.music?.music;
-
-    if (!Array.isArray(musicList)) {
-        console.warn("Music list 為 undefined 或不是陣列：", musicList);
-        return; // 不要再往下做，避免爆炸
-    }
-
-
     musicData.music.forEach((m) => {
         const songDiv = document.createElement("div");
         songDiv.style.marginBottom = "20px";
